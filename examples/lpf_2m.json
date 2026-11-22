@@ -1,0 +1,24 @@
+{
+  "name": "lpf_2m",
+  "description": "5-pole Chebyshev low-pass filter for the 2 m band (fc ~170 MHz), 50 ohm, SMA in/out.",
+  "board": {"layers": 4, "mounting_holes": "none", "fab": "jlcpcb"},
+  "components": [
+    {"ref": "J1", "symbol": "Connector:Conn_Coaxial", "footprint": "Connector_Coaxial:SMA_Amphenol_132289_EdgeMount", "value": "SMA IN", "edge": "left"},
+    {"ref": "J2", "symbol": "Connector:Conn_Coaxial", "footprint": "Connector_Coaxial:SMA_Amphenol_132289_EdgeMount", "value": "SMA OUT", "edge": "right"},
+    {"ref": "C1", "symbol": "Device:C", "footprint": "Capacitor_SMD:C_0805_2012Metric", "value": "27p"},
+    {"ref": "C2", "symbol": "Device:C", "footprint": "Capacitor_SMD:C_0805_2012Metric", "value": "47p"},
+    {"ref": "C3", "symbol": "Device:C", "footprint": "Capacitor_SMD:C_0805_2012Metric", "value": "27p"},
+    {"ref": "L1", "symbol": "Device:L", "footprint": "Inductor_SMD:L_0805_2012Metric", "value": "68n"},
+    {"ref": "L2", "symbol": "Device:L", "footprint": "Inductor_SMD:L_0805_2012Metric", "value": "68n"}
+  ],
+  "nets": {
+    "RF_IN": ["J1.1", "C1.1", "L1.1"],
+    "N1": ["L1.2", "C2.1", "L2.1"],
+    "RF_OUT": ["L2.2", "C3.1", "J2.1"],
+    "GND": ["J1.2", "J2.2", "C1.2", "C2.2", "C3.2"]
+  },
+  "rf": [
+    {"net": "RF_IN", "impedance_ohm": 50, "from": "J1.1", "to": "L1.1", "max_freq_hz": 1e9},
+    {"net": "RF_OUT", "impedance_ohm": 50, "from": "L2.2", "to": "J2.1", "max_freq_hz": 1e9}
+  ]
+}

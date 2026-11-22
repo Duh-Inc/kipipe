@@ -1,0 +1,56 @@
+{
+ "id": "i2c_pullups",
+ "title": "I2C pull-ups",
+ "tags": [
+  "i2c",
+  "bus"
+ ],
+ "summary": "The two pull-up resistors every I2C bus needs exactly once.",
+ "params": {
+  "r": {
+   "default": "4.7k",
+   "choices": [
+    "2.2k",
+    "4.7k",
+    "10k"
+   ],
+   "label": "Pull-up value"
+  }
+ },
+ "ports": {
+  "SDA": "data line",
+  "SCL": "clock line",
+  "VCC": "bus supply (the lower of the device supplies)"
+ },
+ "components": [
+  {
+   "ref": "R_SDA",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "{r}"
+  },
+  {
+   "ref": "R_SCL",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "{r}"
+  }
+ ],
+ "nets": {
+  "SDA": [
+   "R_SDA.2"
+  ],
+  "SCL": [
+   "R_SCL.2"
+  ],
+  "VCC": [
+   "R_SDA.1",
+   "R_SCL.1"
+  ]
+ },
+ "notes": [
+  "Use one set per bus. Breakout modules often carry their own; several sets in parallel can add up to too strong a pull-up.",
+  "4.7 kΩ suits 100 kHz and short 400 kHz buses; use 2.2 kΩ for long wires or many devices."
+ ],
+ "source": "NXP UM10204 (I2C-bus specification)"
+}

@@ -1,0 +1,370 @@
+{
+  "name": "bipolar_5v_supply_lt1175",
+  "description": "Dual-rail \u00b15 V linear supply for op-amp circuits, powered from two 9 V batteries in series with the centre tap as ground (+9 V / GND / \u22129 V on a 3-pin screw terminal at the left edge). The positive rail uses an LT1129-5 micropower LDO and the negative rail uses an LT1175-5 negative micropower LDO; each rail is rated for 300 mA. Each battery input has a series Schottky diode, so a reversed battery or a swapped terminal blocks current instead of damaging the regulators. Each output has a Schottky clamp to ground so neither rail can be pulled to the wrong polarity at start-up. A green power LED on each rail shows that it is up. The regulated +5 V / GND / \u22125 V comes out on a 3-pin screw terminal at the right edge. The board is 2-layer and compact.",
+  "board": {
+    "width_mm": null,
+    "height_mm": null,
+    "layers": 2,
+    "thickness_mm": 1.6,
+    "copper_oz": 1,
+    "mounting_holes": "M3",
+    "shape": "rect",
+    "fab": "jlcpcb"
+  },
+  "components": [
+    {
+      "ref": "J1",
+      "symbol": "Connector:Screw_Terminal_01x03",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-3-5.08_1x03_P5.08mm_Horizontal",
+      "value": "IN +9/GND/-9",
+      "edge": "left"
+    },
+    {
+      "ref": "J2",
+      "symbol": "Connector:Screw_Terminal_01x03",
+      "footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-3-5.08_1x03_P5.08mm_Horizontal",
+      "value": "OUT +5/GND/-5",
+      "edge": "right"
+    },
+    {
+      "ref": "D1",
+      "symbol": "Device:D_Schottky",
+      "footprint": "Diode_SMD:D_SMA",
+      "value": "SS14",
+      "mpn": "SS14",
+      "edge": null
+    },
+    {
+      "ref": "D2",
+      "symbol": "Device:D_Schottky",
+      "footprint": "Diode_SMD:D_SMA",
+      "value": "SS14",
+      "mpn": "SS14",
+      "edge": null
+    },
+    {
+      "ref": "U1",
+      "symbol": "Regulator_Linear:LT1129-5.0_SOT223",
+      "footprint": "Package_TO_SOT_SMD:SOT-223-3_TabPin2",
+      "value": "LT1129-5",
+      "mpn": "LT1129CST-5",
+      "edge": null
+    },
+    {
+      "ref": "U2",
+      "symbol": "Regulator_Linear:LT1175-5_SOT223",
+      "footprint": "Package_TO_SOT_SMD:SOT-223-3_TabPin2",
+      "value": "LT1175-5",
+      "mpn": "LT1175CST-5",
+      "edge": null
+    },
+    {
+      "ref": "C1",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "value": "10u 25V X7R",
+      "edge": null
+    },
+    {
+      "ref": "C2",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "value": "100n 50V",
+      "edge": null
+    },
+    {
+      "ref": "C3",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_SMD:C_1206_3216Metric",
+      "value": "10u 25V X7R",
+      "edge": null
+    },
+    {
+      "ref": "C4",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "value": "100n 50V",
+      "edge": null
+    },
+    {
+      "ref": "C5",
+      "symbol": "Device:C_Polarized",
+      "footprint": "Capacitor_Tantalum_SMD:CP_EIA-3528-21_Kemet-B",
+      "value": "10u 16V Ta",
+      "edge": null
+    },
+    {
+      "ref": "C6",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "value": "100n 50V",
+      "edge": null
+    },
+    {
+      "ref": "C7",
+      "symbol": "Device:C_Polarized",
+      "footprint": "Capacitor_Tantalum_SMD:CP_EIA-3528-21_Kemet-B",
+      "value": "10u 16V Ta",
+      "edge": null
+    },
+    {
+      "ref": "C8",
+      "symbol": "Device:C",
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "value": "100n 50V",
+      "edge": null
+    },
+    {
+      "ref": "D3",
+      "symbol": "Device:D_Schottky",
+      "footprint": "Diode_SMD:D_SMA",
+      "value": "SS14",
+      "mpn": "SS14",
+      "edge": null
+    },
+    {
+      "ref": "D4",
+      "symbol": "Device:D_Schottky",
+      "footprint": "Diode_SMD:D_SMA",
+      "value": "SS14",
+      "mpn": "SS14",
+      "edge": null
+    },
+    {
+      "ref": "R1",
+      "symbol": "Device:R",
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "value": "1k5",
+      "edge": null
+    },
+    {
+      "ref": "R2",
+      "symbol": "Device:R",
+      "footprint": "Resistor_SMD:R_0805_2012Metric",
+      "value": "1k5",
+      "edge": null
+    },
+    {
+      "ref": "D5",
+      "symbol": "Device:LED",
+      "footprint": "LED_SMD:LED_0805_2012Metric",
+      "value": "Green +5V",
+      "edge": "top"
+    },
+    {
+      "ref": "D6",
+      "symbol": "Device:LED",
+      "footprint": "LED_SMD:LED_0805_2012Metric",
+      "value": "Green -5V",
+      "edge": "bottom"
+    }
+  ],
+  "nets": {
+    "VBAT_P": [
+      "J1.1",
+      "D1.2"
+    ],
+    "VBAT_N": [
+      "J1.3",
+      "D2.1"
+    ],
+    "VIN_P": [
+      "D1.1",
+      "U1.1",
+      "C1.1",
+      "C2.1"
+    ],
+    "VIN_N": [
+      "D2.2",
+      "U2.2",
+      "C3.2",
+      "C4.2"
+    ],
+    "+5V": [
+      "U1.3",
+      "C5.1",
+      "C6.1",
+      "D3.1",
+      "R1.1",
+      "J2.1"
+    ],
+    "-5V": [
+      "U2.1",
+      "C7.2",
+      "C8.2",
+      "D4.2",
+      "D6.1",
+      "J2.3"
+    ],
+    "GND": [
+      "J1.2",
+      "U1.2",
+      "U2.3",
+      "C1.2",
+      "C2.2",
+      "C3.1",
+      "C4.1",
+      "C5.2",
+      "C6.2",
+      "C7.1",
+      "C8.1",
+      "D3.2",
+      "D4.1",
+      "D5.1",
+      "R2.1",
+      "J2.2"
+    ],
+    "LED_P": [
+      "R1.2",
+      "D5.2"
+    ],
+    "LED_N": [
+      "R2.2",
+      "D6.2"
+    ]
+  },
+  "no_connect": [],
+  "netclasses": [
+    {
+      "name": "Power",
+      "track_mm": 0.6,
+      "clearance_mm": 0.2,
+      "current_a": 0.5,
+      "nets": [
+        "VBAT_P",
+        "VBAT_N",
+        "VIN_P",
+        "VIN_N",
+        "+5V",
+        "-5V",
+        "GND"
+      ]
+    }
+  ],
+  "floorplan": {
+    "grids": [],
+    "regions": [
+      {
+        "refs": [
+          "D1",
+          "C1",
+          "C2",
+          "U1",
+          "C5",
+          "C6",
+          "R1",
+          "D5"
+        ],
+        "area": [
+          0.0,
+          0.0,
+          0.7,
+          0.5
+        ]
+      },
+      {
+        "refs": [
+          "D2",
+          "C3",
+          "C4",
+          "U2",
+          "C7",
+          "C8",
+          "R2",
+          "D6"
+        ],
+        "area": [
+          0.0,
+          0.5,
+          0.7,
+          1.0
+        ]
+      },
+      {
+        "refs": [
+          "D3"
+        ],
+        "area": [
+          0.6,
+          0.5,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "refs": [
+          "D4"
+        ],
+        "area": [
+          0.6,
+          0.0,
+          1.0,
+          0.5
+        ]
+      }
+    ],
+    "near": [
+      {
+        "ref": "D1",
+        "to": "J1.1",
+        "max_mm": 6.0
+      },
+      {
+        "ref": "D2",
+        "to": "J1.3",
+        "max_mm": 6.0
+      },
+      {
+        "ref": "C5",
+        "to": "U1.3",
+        "max_mm": 3.0
+      },
+      {
+        "ref": "C7",
+        "to": "U2.1",
+        "max_mm": 4.0
+      },
+      {
+        "ref": "D3",
+        "to": "J2.1",
+        "max_mm": 6.0
+      },
+      {
+        "ref": "D4",
+        "to": "J2.3",
+        "max_mm": 6.0
+      }
+    ],
+    "keepouts": [
+      {
+        "ref": "U1",
+        "mm": 1.5
+      },
+      {
+        "ref": "U2",
+        "mm": 1.5
+      }
+    ]
+  },
+  "rf": [],
+  "rationale": {
+    "design": "There are two independent linear channels with a shared ground at the battery centre tap. Positive channel: +9 V \u2192 D1 (Schottky, about 0.35 V at 300 mA) \u2192 LT1129-5 \u2192 +5 V. Negative channel: \u22129 V \u2192 D2 \u2192 LT1175-5 \u2192 \u22125 V. D2's anode is on the regulator side because current flows out of the LT1175 IN pin into the battery's negative terminal. Headroom: a fresh battery gives 9.6 \u2212 0.35 = 9.25 V at the regulator. The LT1175 dropout is 0.15 + 1.1 \u00d7 0.3 = 0.48 V at 300 mA, and the LT1129 dropout is about 0.4 V. Both rails therefore stay in regulation until each battery drops to about 5.9 V, which is below the usual 6.0 V end-of-life of a 9 V cell. Dissipation per regulator at full load with fresh batteries is (9.25 \u2212 5) \u00d7 0.3 = 1.28 W. In SOT-223 with about 1 in\u00b2 of tab copper (about 50 \u00b0C/W) that is a rise of roughly 64 \u00b0C, which is acceptable. The LT1175 current limit is at least 520 mA with ILIM tied internally, so it covers 300 mA with margin. LEDs: (5 \u2212 2.0 V) / 1.5 k\u03a9 = 2 mA each. That is clearly visible on a modern green LED and costs little battery life compared with the LT1175's 45 \u00b5A quiescent current and the LT1129's similar micropower ground current. D3 and D4 are reverse-biased in normal operation. They clamp each output to within about 0.3 V of ground if the other rail or a latched op-amp load tries to drive it to the wrong polarity. The LT1175 output may only take 2 V of reverse voltage.",
+    "parts": {
+      "U1": "LT1129-5 (SOT-223) is the positive micropower LDO from the same LT family: 700 mA rating, so 300 mA has margin; dropout about 0.4 V; tab = GND. It needs at least 3.3 \u00b5F on its output, and C5 is 10 \u00b5F.",
+      "U2": "LT1175-5 (SOT-223) is a fixed \u22125 V negative micropower LDO with a 500 mA rating and a minimum current limit of 520 mA. Its maximum input-to-output differential is 20 V; here it is 4.3 V. Tab = VIN, so its copper is the \u22129 V input node.",
+      "D1": "SS14 Schottky in series with the +9 V input. A reversed battery reverse-biases it. It is rated 1 A / 40 V, and its 0.35 V drop wastes the least headroom.",
+      "D2": "SS14 in series with the \u22129 V input, cathode to the terminal. A reversed or swapped battery is blocked.",
+      "D3": "SS14 clamp from GND to +5V (cathode on +5V). It keeps the positive rail from going below about \u22120.3 V at power-up or under a fault.",
+      "D4": "SS14 clamp from \u22125V to GND (cathode on GND). It protects the LT1175 output, whose reverse-voltage limit is 2 V.",
+      "C1": "10 \u00b5F 25 V X7R input bulk for the LT1129. At 9 V it keeps about 5 \u00b5F after DC-bias derating, and it holds the input up against battery impedance during load steps.",
+      "C3": "10 \u00b5F 25 V X7R input bulk for the LT1175. The datasheet asks for at least 1 \u00b5F.",
+      "C5": "10 \u00b5F 16 V tantalum output capacitor for the LT1129. Tantalum ESR (about 1 \u03a9) keeps this older LDO's loop stable.",
+      "C7": "10 \u00b5F 16 V tantalum output capacitor for the LT1175, polarised with + to GND because the rail is negative.",
+      "C2": "100 nF high-frequency bypass at the regulator pins. C4, C6 and C8 serve the same purpose.",
+      "R1": "1.5 k\u03a9 sets the LED current to 2 mA from 5 V and dissipates 6 mW. R2 serves the same purpose on the \u22125 V rail.",
+      "J1": "Phoenix MKDS 3-way 5.08 mm screw terminal: 1 = +9 V, 2 = GND (battery centre tap), 3 = \u22129 V.",
+      "J2": "Same terminal type for the output: 1 = +5 V, 2 = GND, 3 = \u22125 V. The pin order matches J1, so polarity reads straight across the board."
+    },
+    "placement": "Power flows left to right: input terminal on the left edge, protection diodes and input capacitors next to it, regulators in the middle, output capacitors, clamps and output terminal on the right edge. The positive channel fills the top half and the negative channel the bottom half. This matches the terminal pin order (+ on pin 1, \u2212 on pin 3), so the paths do not cross, and GND runs through the middle as a shared pour on both layers. The power LEDs go on the top edge (+5 V) and bottom edge (\u22125 V) so each is visible next to its own half. The SOT-223 regulators have a small keepout so their tab copper (GND for U1, VIN_N for U2) can be enlarged for heat spreading. The output tantalums and clamp diodes are held close to the regulator outputs and the output terminal."
+  }
+}

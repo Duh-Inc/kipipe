@@ -1,0 +1,1726 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kipipe</title>
+<link rel="icon" type="image/svg+xml" href="/static/icon.svg">
+<style>
+  @font-face { font-family: "Overpass"; src: url("/static/vendor/fonts/overpass-latin-400-normal.woff2") format("woff2"); font-weight: 400 500; font-display: swap; }
+  @font-face { font-family: "Overpass"; src: url("/static/vendor/fonts/overpass-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+  @font-face { font-family: "Overpass"; src: url("/static/vendor/fonts/overpass-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+  @font-face { font-family: "Overpass Mono"; src: url("/static/vendor/fonts/overpass-mono-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+  @font-face { font-family: "Overpass Mono"; src: url("/static/vendor/fonts/overpass-mono-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+  :root {
+    /* brightness carries the hierarchy: header < form < work area; log darkest */
+    --hdr: #06301a;         /* board edge band */
+    --mask: #0b4a28;        /* LPI soldermask over laminate: the form side */
+    --mask-cu: #10602f;     /* mask over copper pour: the work area, lighter */
+    --mask-edge: #1d7a45;   /* copper outline seen through mask */
+    --seam: #052614;        /* dark seams between areas */
+    --sub: #062a17;         /* fields */
+    --sub2: #08311b;
+    --log: #031a0d;
+    --silk: #f2efe4;        /* silkscreen */
+    --silk-dim: #bccbc1;
+    --silk-faint: #85a592;
+    --gold: #d8b15a; --gold-hi: #efce7e; --gold-lo: #8e7332;
+    --led-ok: #63f28c; --led-warn: #ffb53b; --led-fail: #ff5b4b; --led-off: #3d5a4c;
+    --ok: var(--led-ok); --warn: var(--led-warn); --fail: var(--led-fail); --skip: var(--led-off);
+    --text: var(--silk); --dim: var(--silk-dim); --line: var(--mask-edge); --panel: var(--mask-cu); --panel2: var(--sub2);
+    --amber: var(--gold); --amber-dim: var(--gold-lo);
+    --mono: "Overpass Mono", "JetBrains Mono", ui-monospace, "DejaVu Sans Mono", monospace;
+    --sans: "Overpass", "Inter", system-ui, Ubuntu, sans-serif;
+    --r: 3px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; color: var(--silk); font: 14px/1.5 var(--sans); background-color: var(--mask); }
+  body {
+    /* matte mask: fine grain, a touch of sheen */
+    background-image:
+      radial-gradient(1200px 700px at 15% -10%, rgba(255,255,255,.06), transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  ::selection { background: var(--gold); color: #1b1404; }
+  :focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 2px; }
+
+  /* header ---------------------------------------------------------------- */
+  header { display: flex; align-items: center; gap: 10px 22px; padding: 10px 20px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--seam); background: var(--hdr); }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--silk); }
+  .logo svg { display: block; }
+  .logo b { font: 700 19px/1 var(--sans); letter-spacing: .01em; }
+  .logo small { font: 12px var(--mono); color: var(--silk-faint); }
+  header .env { font: 12px var(--mono); color: var(--silk-dim); display: flex; gap: 6px; flex-wrap: wrap; }
+  header .env > span { padding: 2px 8px; border: 1px solid var(--mask-edge); border-radius: 999px; }
+  header .env b { color: var(--silk); font-weight: 600; }
+  header .env .bad { color: var(--led-fail); }
+  .hdr-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .live-btn { font: 600 12px var(--mono); color: var(--silk); background: var(--sub); border: 1px solid var(--led-ok);
+    border-radius: 999px; padding: 5px 12px 5px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+  .live-btn::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--led-ok);
+    box-shadow: 0 0 8px var(--led-ok); animation: blink 1.4s ease-in-out infinite; }
+  @keyframes blink { 50% { opacity: .35; box-shadow: none; } }
+
+  main { display: grid; grid-template-columns: 400px minmax(0, 1fr); height: calc(100% - 55px); }
+  @media (max-width: 900px) { .hdr-right { margin-left: 0; width: 100%; } header select { width: 100% !important; max-width: none !important; }
+    main { grid-template-columns: 1fr; height: auto; } }
+
+  /* form side ------------------------------------------------------------- */
+  .side { border-right: 1px solid var(--seam); overflow-y: auto; padding: 18px 20px 28px; background: transparent; }
+  .work { overflow: hidden; display: grid; grid-template-rows: auto auto 1fr; min-height: 600px; background-color: var(--mask-cu);
+    background-image: radial-gradient(900px 500px at 70% 0%, rgba(255,255,255,.05), transparent 60%); box-shadow: inset 1px 0 0 rgba(255,255,255,.04); }
+  h2 { font: 600 15px/1.2 var(--sans); color: var(--silk); margin: 26px 0 10px; display: flex; align-items: baseline; gap: 8px; }
+  h2:first-child { margin-top: 0; }
+  h2 .opt { font: 400 12px var(--sans); color: var(--silk-faint); }
+  textarea, input, select { width: 100%; background: var(--sub); color: var(--silk); border: 1px solid #0f5f33;
+    border-radius: var(--r); padding: 8px 10px; font: 13.5px var(--sans); }
+  select { appearance: none; padding-right: 28px; cursor: pointer;
+    background-image: linear-gradient(45deg, transparent 50%, var(--gold) 50%), linear-gradient(135deg, var(--gold) 50%, transparent 50%);
+    background-position: calc(100% - 15px) 52%, calc(100% - 10px) 52%; background-size: 5px 5px; background-repeat: no-repeat; }
+  textarea { min-height: 128px; resize: vertical; line-height: 1.5; }
+  textarea::placeholder, input::placeholder { color: var(--silk-faint); }
+  textarea:focus, input:focus, select:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold-lo); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  label.f { display: block; font-size: 12.5px; color: var(--silk-dim); margin-bottom: 4px; }
+  .drop { border: 1px dashed var(--silk-faint); border-radius: var(--r); padding: 14px 12px; text-align: center; color: var(--silk-dim);
+    cursor: pointer; font-size: 13px; transition: border-color .15s, color .15s; }
+  .drop.over, .drop:hover { border-color: var(--silk); color: var(--silk);
+    background: repeating-linear-gradient(135deg, rgba(242,239,228,.07) 0 2px, transparent 2px 9px); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chip { background: var(--sub); border: 1px solid var(--mask-edge); border-radius: 999px; padding: 2px 8px 2px 10px;
+    font: 12px var(--mono); display: inline-flex; gap: 6px; align-items: center; }
+  .chip button { background: none; border: 0; color: var(--silk-dim); cursor: pointer; padding: 0; font-size: 15px; }
+  .thumbs { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .thumbs img { height: 56px; border-radius: var(--r); border: 1px solid var(--mask-edge); cursor: pointer; }
+  .hint { font-size: 12.5px; color: var(--silk-faint); margin-top: 6px; line-height: 1.45; }
+
+  /* checks: square pads, gold when plated */
+  .flag { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; padding: 8px 0;
+    border-bottom: 1px solid rgba(29,122,69,.45); cursor: pointer; }
+  .flag:last-child { border-bottom: 0; }
+  .flag input { appearance: none; width: 16px; height: 16px; margin: 2px 0 0; padding: 0; border: 1.5px solid var(--silk-faint);
+    border-radius: 2px; background: var(--sub); cursor: pointer; display: grid; place-items: center; }
+  .flag input:checked { background: radial-gradient(circle at 35% 30%, var(--gold-hi), var(--gold) 60%, var(--gold-lo));
+    border-color: var(--gold); }
+  .flag input:checked::after { content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--sub); }
+  .flag .n { font: 600 12.5px var(--mono); color: var(--silk); margin-right: 4px; }
+  .flag .d { font-size: 12.5px; color: var(--silk-dim); }
+  .flag .na { color: var(--led-warn); font-size: 12px; }
+  .flag.disabled { opacity: .45; cursor: default; }
+  details summary { cursor: pointer; color: var(--silk-dim); font-size: 13px; margin: 14px 0 8px; }
+  .mylib { border-top: 1px solid rgba(29,122,69,.45); margin-top: 12px; }
+  .mylib > summary { font-size: 13.5px; color: var(--silk); }
+  .libfind { display: grid; grid-template-columns: 1fr auto; gap: 6px; margin-bottom: 6px; }
+  .libfind button { background: var(--sub); border: 1px solid var(--mask-edge); color: var(--silk); border-radius: var(--r);
+    padding: 0 12px; cursor: pointer; font-size: 13px; }
+  .libfind button:hover { border-color: var(--silk-dim); }
+  #libSites a { color: var(--gold-hi); margin-right: 10px; }
+  .liblist { margin-top: 8px; display: grid; gap: 4px; }
+  .libpart { display: grid; grid-template-columns: 1fr auto; gap: 6px; align-items: center; background: var(--sub);
+    border: 1px solid var(--mask-edge); border-radius: var(--r); padding: 5px 8px; }
+  .libpart .n { font: 600 12px var(--mono); color: var(--silk); overflow-wrap: anywhere; }
+  .libpart .d { font-size: 11.5px; color: var(--silk-faint); overflow-wrap: anywhere; }
+  .libpart button { background: none; border: 0; color: var(--silk-dim); cursor: pointer; font-size: 15px; padding: 0 2px; }
+  .libpart button:hover { color: var(--led-fail); }
+  #libMsg.err { color: var(--led-warn); }
+  .chk { font: 600 10.5px var(--mono); padding: 1px 6px; border-radius: 9px; margin-left: 6px; vertical-align: 1px; }
+  .chk.ok { background: rgba(80,200,120,.16); color: #7fdc9c; }
+  .chk.part { background: rgba(230,180,60,.16); color: var(--gold-hi); }
+  .chk.run { background: rgba(120,160,255,.14); color: #9db8ff; }
+  .chk.bad { background: rgba(230,90,80,.16); color: #f08a80; }
+  .libpart.click { cursor: pointer; }
+  .libpart.click:hover { border-color: var(--silk-dim); }
+  #dsView { position: fixed; inset: 5vh 8vw; z-index: 50; background: var(--sub); border: 1px solid var(--mask-edge);
+    border-radius: 10px; box-shadow: 0 20px 60px rgba(0,0,0,.6); display: none; flex-direction: column; }
+  #dsView header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px;
+    border-bottom: 1px solid var(--mask-edge); color: var(--silk); font-weight: 600; }
+  #dsView header button { background: none; border: 0; color: var(--silk-dim); font-size: 20px; cursor: pointer; }
+  #dsView .body { overflow: auto; padding: 12px 16px; font-size: 13px; color: var(--silk); }
+  #dsView table { border-collapse: collapse; width: 100%; margin: 6px 0 16px; font-size: 12.5px; }
+  #dsView th, #dsView td { border-bottom: 1px solid rgba(255,255,255,.07); padding: 3px 8px; text-align: left; vertical-align: top; }
+  #dsView th { color: var(--silk-dim); font-weight: 600; }
+  #dsView h4 { margin: 14px 0 4px; color: var(--gold-hi); font-size: 13px; }
+  #dsView code { font: 12px var(--mono); }
+  .dsPics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0 12px; }
+  .dsPics figure { margin: 0; background: #f5f4ef; border-radius: 6px; padding: 8px; display: flex; flex-direction: column; }
+  .dsPics img { width: 100%; max-height: 420px; object-fit: contain; display: block; cursor: zoom-in; }
+  .dsPics figcaption { color: #4a5a4a; font-size: 11.5px; margin-top: 6px; text-align: center; }
+  @media (max-width: 900px) { .dsPics { grid-template-columns: 1fr; } }
+  details summary:hover { color: var(--silk); }
+
+  /* the one gold pad */
+  button.run { width: 100%; margin-top: 22px; padding: 12px; font: 700 15px var(--sans); letter-spacing: .01em;
+    color: #251a05; border: 1px solid var(--gold-lo); border-radius: var(--r); cursor: pointer;
+    background: linear-gradient(180deg, var(--gold-hi), var(--gold) 55%, #c49c48);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 1px 0 rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; gap: 10px; }
+  button.run::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 3px solid #6b5420; background: var(--sub); }
+  button.run:hover { filter: brightness(1.06); }
+  button.run:active { transform: translateY(1px); box-shadow: inset 0 1px 2px rgba(0,0,0,.3); }
+  button.run:disabled { background: var(--gold-lo); color: #20180a; cursor: progress; filter: none; }
+
+  /* stage LEDs ------------------------------------------------------------- */
+  .stages { display: flex; gap: 4px 14px; flex-wrap: nowrap; padding: 13px 18px; position: relative; min-width: 0; border-bottom: 1px solid var(--seam); min-height: 50px;
+    align-items: center; background: rgba(3,26,13,.28); }
+  .st { font: 12.5px var(--mono); color: var(--silk); display: inline-flex; align-items: center; gap: 8px; cursor: default; padding: 2px 0; }
+  .st i { font-size: 0; width: 9px; height: 9px; border-radius: 50%; background: var(--led-off);
+    box-shadow: inset 0 -1px 1px rgba(0,0,0,.4); flex: none; }
+  .st.ok i { background: var(--led-ok); box-shadow: 0 0 7px rgba(99,242,140,.75), inset 0 -1px 1px rgba(0,0,0,.25); }
+  .st.warn i { background: var(--led-warn); box-shadow: 0 0 7px rgba(255,181,59,.75), inset 0 -1px 1px rgba(0,0,0,.25); }
+  .st.fail i { background: var(--led-fail); box-shadow: 0 0 8px rgba(255,91,75,.85), inset 0 -1px 1px rgba(0,0,0,.25); }
+  .st.skip { color: var(--silk-faint); }
+  .summary { font: 12.5px var(--mono); color: var(--silk-dim); margin-left: auto; display: flex; gap: 14px; }
+  .summary b { color: var(--silk); font-weight: 600; }
+  .summary .bad { color: var(--led-fail); } .summary .good { color: var(--led-ok); }
+
+  /* revise bar */
+  .revise { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 10px 18px;
+    border-bottom: 1px solid var(--seam); background: rgba(3,26,13,.18); }
+  .revise[hidden] { display: none; }
+  .rev-l { font: 600 13px var(--sans); color: var(--silk); white-space: nowrap; }
+  .revise textarea { min-height: 0; height: 36px; resize: none; padding: 8px 10px; line-height: 1.4; transition: height .15s; }
+  .revise textarea:focus { height: 76px; }
+  .rev-keep { font-size: 12.5px; color: var(--silk-dim); display: flex; gap: 6px; align-items: center; white-space: nowrap; cursor: pointer; }
+  .rev-keep input { width: auto; accent-color: var(--gold); }
+  .rev-go { font: 700 13px var(--sans); color: #251a05; border: 1px solid var(--gold-lo); border-radius: var(--r); padding: 9px 16px; cursor: pointer;
+    background: linear-gradient(180deg, var(--gold-hi), var(--gold)); }
+  .rev-go:disabled { background: var(--gold-lo); cursor: progress; }
+  @media (max-width: 1100px) { .revise { grid-template-columns: 1fr auto; } .rev-l { grid-column: 1 / -1; } }
+  /* viewer ---------------------------------------------------------------- */
+  .panes { display: grid; grid-template-columns: minmax(0, 1fr) 380px; min-height: 0; min-width: 0; }
+  .viewer, .work { min-width: 0; }
+  .log div { overflow-wrap: anywhere; }
+  @media (max-width: 1300px) { .panes { grid-template-columns: 1fr; } .log { max-height: 280px; } }
+  .viewer { display: grid; grid-template-rows: auto 1fr auto; min-height: 0; }
+  .tabs { display: flex; gap: 0; padding: 8px 10px 0; border-bottom: 1px solid rgba(5,38,20,.6); overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { white-space: nowrap; }
+  .tab { background: none; border: 0; color: var(--silk-dim); padding: 8px 11px 9px; font: 500 13px var(--sans); cursor: pointer;
+    border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab:hover:not(:disabled) { color: var(--silk); }
+  .tab.on { color: var(--gold-hi); border-bottom-color: var(--gold); }
+  .tab:disabled { color: var(--silk-faint); opacity: .45; cursor: default; }
+  .view { overflow: auto; padding: 16px; background: #f5f4ee; min-height: 0; position: relative; margin: 12px; border-radius: var(--r);
+    box-shadow: 0 0 0 1px rgba(3,26,13,.6), 0 8px 28px rgba(0,0,0,.3); }
+  .view.dark { background: var(--sub); }
+  .view.idle { background: transparent; box-shadow: none; display: grid; place-items: center; }
+  .view img { display: block; margin: 0 auto; width: 100%; height: 100%; object-fit: contain; }
+  .view img.stack { height: auto; margin-bottom: 12px; }
+  .view pre { margin: 0; font: 12.5px/1.6 var(--mono); color: var(--silk); white-space: pre; }
+  .view .empty { color: var(--silk-dim); font: 14px var(--sans); text-align: center; max-width: 34ch; line-height: 1.6; }
+  .view .empty svg { display: block; margin: 0 auto 14px; opacity: .8; }
+  .view:not(.idle) .empty { color: #6b6a62; padding: 60px 0; margin: 0 auto; }
+  .view.dark .empty { color: var(--silk-dim); }
+  .downloads { display: flex; gap: 6px; flex-wrap: wrap; padding: 10px 14px; border-top: 1px solid rgba(5,38,20,.6); align-items: center; }
+  .downloads a, .downloads button { font: 12px var(--mono); color: var(--silk); background: var(--sub); border: 1px solid var(--mask-edge);
+    padding: 5px 10px; border-radius: var(--r); text-decoration: none; cursor: pointer; }
+  .downloads a:hover, .downloads button:hover { border-color: var(--gold); color: var(--gold-hi); }
+  .downloads a.main { background: linear-gradient(180deg, var(--gold-hi), var(--gold)); color: #251a05; border-color: var(--gold-lo); font-weight: 600; }
+  .more { position: relative; }
+  .more summary { list-style: none; font: 12px var(--mono); color: var(--silk); background: var(--sub); border: 1px solid var(--mask-edge);
+    padding: 5px 10px; border-radius: var(--r); cursor: pointer; }
+  .more summary::-webkit-details-marker { display: none; }
+  .more summary::after { content: ""; display: inline-block; margin-left: 8px; border: 4px solid transparent; border-bottom-color: var(--gold); transform: translateY(-1px); }
+  .more[open] summary { border-color: var(--gold); }
+  .more .menu { position: absolute; bottom: calc(100% + 6px); left: 0; z-index: 5; display: grid; gap: 4px; min-width: 190px; padding: 6px;
+    background: var(--mask-cu); border: 1px solid var(--mask-edge); border-radius: var(--r); box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+  .more .menu a { display: block; }
+  .downloads .path { color: var(--silk-faint); font: 11px var(--mono); margin-left: auto; }
+
+  /* log: the substrate under everything */
+  .log { background: var(--log); overflow-y: auto; padding: 12px 14px; font: 11.5px/1.6 var(--mono); color: var(--silk-dim); min-height: 0;
+    border-left: 1px solid var(--seam); }
+  .log div { white-space: pre-wrap; word-break: break-word; }
+  .log .s { color: var(--silk); font-weight: 600; margin-top: 4px; }
+  .log .e { color: var(--led-fail); }
+  .log .w { color: var(--led-warn); }
+  .log:empty::before { content: "Build log"; color: var(--silk-faint); }
+  .err { background: #3a1410; border: 1px solid #7a2a20; color: #ffc2b8; padding: 10px 12px; margin: 12px 12px 0;
+    border-radius: var(--r); font: 12px/1.5 var(--mono); white-space: pre-wrap; display: none; max-height: 220px; overflow: auto; }
+
+  /* editor + review ----------------------------------------------------------- */
+  .view.editor { padding: 0; overflow: hidden; background: var(--sub); }
+  .ed { display: grid; grid-template-rows: auto auto 1fr; height: 100%; }
+  .ed-bar { display: flex; gap: 6px; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--mask-edge); flex-wrap: wrap; background: var(--mask-cu); }
+  .ed-bar button { font: 12px var(--mono); color: var(--silk); background: var(--sub); border: 1px solid var(--mask-edge);
+    padding: 5px 10px; border-radius: var(--r); cursor: pointer; }
+  .ed-bar button:hover { border-color: var(--gold); }
+  .ed-bar .ed-go, .rv-head .ed-go { background: linear-gradient(180deg, var(--gold-hi), var(--gold)); color: #251a05; border: 1px solid var(--gold-lo);
+    font: 600 12px var(--mono); border-radius: var(--r); padding: 6px 10px; cursor: pointer; }
+  .rv-head .ed-go { margin-right: 6px; }
+  .ed-info { font: 12px var(--mono); color: var(--silk-dim); margin-left: 6px; }
+  .ed-info.warn { color: var(--led-warn); }
+  .ed-sp { flex: 1; }
+  .ed-go-wrap { display: flex; gap: 6px; margin-left: auto; }
+  .ed-hint { font: 11.5px var(--sans); color: var(--silk-faint); padding: 5px 10px; border-bottom: 1px solid var(--mask-edge); }
+  .ed-svg { width: 100%; height: 100%; background: #04150d; touch-action: none; user-select: none; min-height: 420px; }
+  .ed-board { fill: var(--mask); stroke: var(--silk); stroke-width: 0.15; }
+  .ed-rats line { stroke: #9fd6ff; stroke-width: 0.08; opacity: 0.75; }
+  .ed-rats line.gnd { stroke: #3d6a80; }
+  .ed-part { cursor: grab; }
+  .ed-court { fill: rgba(242,239,228,0.03); stroke: var(--silk-dim); stroke-width: 0.08; }
+  .ed-pad { fill: var(--gold); }
+  .ed-part.back .ed-pad { fill: #4a78c8; opacity: 0.7; }
+  .ed-part.fixed .ed-court { stroke-dasharray: 0.4 0.3; }
+  .ed-part.fixed .ed-pad { fill: #04150d; stroke: var(--gold); stroke-width: 0.6; }
+  .ed-part.sel .ed-court { stroke: var(--gold-hi); stroke-width: 0.2; fill: rgba(216,177,90,0.12); }
+  .ed-part.bad .ed-court { stroke: var(--led-fail); stroke-width: 0.2; fill: rgba(255,91,75,0.15); }
+  .ed-ref { fill: var(--silk); text-anchor: middle; dominant-baseline: central; font-family: var(--mono); pointer-events: none; }
+  .rv { display: grid; grid-template-columns: minmax(300px, 40%) 1fr; height: 100%; min-height: 0; }
+  .rv-list { overflow-y: auto; border-right: 1px solid var(--mask-edge); padding: 12px; }
+  .rv-head { padding: 4px 4px 12px; border-bottom: 1px solid var(--mask-edge); margin-bottom: 10px; }
+  .rv-head p { color: var(--silk); font-size: 13.5px; margin: 6px 0 10px; }
+  .rv-ok { color: var(--led-ok); font-family: var(--mono); } .rv-bad { color: var(--led-warn); font-family: var(--mono); }
+  .rv-item { padding: 9px 10px; border: 1px solid var(--mask-edge); border-radius: var(--r); margin-bottom: 6px; font-size: 13px; cursor: pointer; background: var(--sub2); }
+  .rv-item:hover { border-color: var(--silk-faint); }
+  .rv-item.on { border-color: var(--gold); background: #1c2a17; }
+  .rv-sev { font: 600 11.5px var(--mono); display: inline-flex; align-items: center; gap: 6px; }
+  .rv-sev::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 6px currentColor; }
+  .sev-error .rv-sev { color: var(--led-fail); } .sev-warning .rv-sev { color: var(--led-warn); } .sev-note .rv-sev { color: var(--silk-dim); }
+  .rv-where { font: 11px var(--mono); color: var(--silk-faint); }
+  .rv-fix { color: var(--silk-dim); font-size: 12.5px; margin-top: 3px; }
+  .rv-img { display: grid; grid-template-rows: 1fr auto auto; min-height: 0; padding: 10px; gap: 6px; }
+  .rv-img > img { width: 100%; height: 100%; object-fit: contain; min-height: 0; }
+  .rv-cap { font: 11.5px var(--mono); color: var(--silk-dim); }
+  .rv-thumbs { display: flex; gap: 4px; overflow-x: auto; }
+  .rv-thumbs img { height: 54px; border: 1px solid var(--mask-edge); border-radius: 2px; cursor: pointer; }
+  .rv-thumbs img:hover { border-color: var(--gold); }
+  .dl3 { font: 12px var(--mono); color: var(--silk); background: var(--sub); border: 1px solid var(--mask-edge);
+    padding: 5px 10px; border-radius: var(--r); text-decoration: none; }
+  .dl3:hover { border-color: var(--gold); }
+  /* zoomable drawings */
+  .view.zoom { padding: 0; overflow: hidden; display: grid; grid-template-rows: auto 1fr; background: #f5f4ee; }
+  .zv-bar { display: flex; gap: 6px; align-items: center; padding: 8px 10px; background: var(--mask-cu); border-bottom: 1px solid var(--seam); flex-wrap: wrap; }
+  .zv-bar button { font: 600 13px var(--mono); color: var(--silk); background: var(--sub); border: 1px solid #0f5f33; border-radius: var(--r);
+    min-width: 32px; padding: 4px 9px; cursor: pointer; }
+  .zv-bar button:hover { border-color: var(--gold); }
+  .zv-pct { font: 12px var(--mono); color: var(--silk-dim); min-width: 44px; }
+  .zv-help { font-size: 12px; color: var(--silk-faint); }
+  .zv-bar .dl3 { margin-left: auto; }
+  .zv-stage { position: relative; overflow: hidden; cursor: grab; touch-action: none; min-height: 300px; }
+  .zv-stage.grab { cursor: grabbing; }
+  .zv-stage img { position: absolute; max-width: none; user-select: none; -webkit-user-drag: none; }
+  .view.zoom img { width: auto; height: auto; object-fit: initial; margin: 0; }
+  /* 3D viewer */
+  .v3 { display: grid; grid-template-rows: auto 1fr; height: 100%; }
+  .v3-bar { display: flex; gap: 6px; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--seam); background: var(--mask-cu); flex-wrap: wrap; }
+  .v3-bar button { font: 12px var(--mono); color: var(--silk); background: var(--sub); border: 1px solid #0f5f33; padding: 5px 10px; border-radius: var(--r); cursor: pointer; }
+  .v3-bar button:hover { border-color: var(--gold); }
+  .v3-help { font-size: 12px; color: var(--silk-dim); margin-left: 6px; }
+  .v3-right { margin-left: auto; }
+  .v3-stage { position: relative; min-height: 420px; overflow: hidden; outline: none; }
+  .v3-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .v3-load { position: absolute; inset: 0; display: grid; place-items: center; color: var(--silk-dim); }
+  .v3-tip { position: absolute; pointer-events: none; font: 600 12px var(--mono); color: #1b1404; background: var(--gold-hi);
+    padding: 3px 7px; border-radius: 3px; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,.4); }
+  .v3-info { position: absolute; top: 12px; right: 12px; width: min(360px, calc(100% - 24px)); max-height: calc(100% - 24px); overflow: auto;
+    background: rgba(6,42,23,.94); border: 1px solid #0f5f33; border-radius: var(--r); padding: 14px 16px; box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+  .v3-info h4 { margin: 0; font: 700 20px var(--sans); color: var(--silk); }
+  .v3-val { color: var(--gold-hi); font: 600 14px var(--mono); margin: 2px 0 10px; }
+  .v3-info dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; margin: 0 0 10px; font-size: 12.5px; }
+  .v3-info dt { color: var(--silk-faint); } .v3-info dd { margin: 0; color: var(--silk); word-break: break-word; }
+  .v3-why { border-left: 2px solid var(--gold); padding: 2px 0 2px 10px; margin: 0 0 12px; font-size: 13px; }
+  .v3-why b { font-size: 12px; color: var(--silk-dim); font-weight: 600; } .v3-why p { margin: 3px 0 0; }
+  .v3-info table { width: 100%; border-collapse: collapse; font: 12px var(--mono); }
+  .v3-info th { text-align: left; color: var(--silk-faint); font-weight: 400; padding: 3px 6px 3px 0; border-bottom: 1px solid #0f5f33; }
+  .v3-info td { padding: 3px 6px 3px 0; border-bottom: 1px solid rgba(15,95,51,.5); vertical-align: top; }
+  .v3-oth { color: var(--silk-dim); font-family: var(--sans); }
+  .v3-keys { position: absolute; left: 12px; bottom: 12px; background: rgba(6,42,23,.94); border: 1px solid #0f5f33; border-radius: var(--r);
+    padding: 10px 12px; font: 12px/1.7 var(--mono); color: var(--silk-dim); }
+  .v3-x { position: absolute; top: 8px; right: 10px; background: none; border: 0; color: var(--silk-dim); font-size: 20px; cursor: pointer; }
+  .notice { background: #3a2a0c; border: 1px solid #7a5a1c; color: #ffe2a8; padding: 10px 12px; border-radius: var(--r); margin-bottom: 12px; font-size: 13px; }
+  /* review: dismissed findings */
+  .rv-sep { font-size: 12px; color: var(--silk-faint); margin: 14px 4px 6px; }
+  .rv-item.gone { opacity: .6; } .rv-item.gone .rv-text { text-decoration: line-through; text-decoration-color: rgba(242,239,228,.45); }
+  .rv-why { font-size: 12.5px; color: var(--led-ok); margin-top: 4px; }
+  /* level, project, guide */
+  .lvl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 0 0 4px; border: 1px solid var(--mask-edge); border-radius: var(--r); overflow: hidden; }
+  .lvl label { text-align: center; padding: 6px 4px; font-size: 13px; color: var(--silk-dim); cursor: pointer; border-right: 1px solid var(--mask-edge); }
+  .lvl label:last-child { border-right: 0; } .lvl input { display: none; }
+  .lvl label:has(input:checked) { background: var(--sub); color: var(--gold-hi); font-weight: 600; }
+  .pj textarea { min-height: 62px; font-size: 13px; } .pj .libfind { margin-top: 6px; }
+  .pj .row2 { display: grid; grid-template-columns: 1fr auto; gap: 6px; }
+  .appr { display: grid; gap: 6px; margin-top: 6px; }
+  .appr .a { border: 1px solid var(--mask-edge); border-radius: var(--r); padding: 8px 10px; background: var(--sub); cursor: pointer; font-size: 12.5px; color: var(--silk-dim); line-height: 1.45; }
+  .appr .a:hover { border-color: var(--gold); } .appr .a b { color: var(--silk); font-size: 13.5px; } .appr .a i { color: var(--led-ok); font-style: normal; } .appr .a u { color: var(--led-warn); text-decoration: none; }
+  .gd-sum { font-size: 15.5px; line-height: 1.6; margin: 6px 0 14px; }
+  .gd-sec { border-left: 3px solid var(--mask-edge); padding: 2px 0 2px 14px; margin: 0 0 16px; }
+  .gd-sec h5 { font: 600 15px var(--sans); margin: 0 0 2px; } .gd-sec .p { font: 12px var(--mono); color: var(--gold-hi); margin-bottom: 4px; }
+  .gd-sec p { margin: 0 0 6px; color: var(--silk); } .gd-sec .c { color: var(--led-ok); font-size: 13.5px; }
+  .gd-it { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 9px 0; border-bottom: 1px solid rgba(29,122,69,.4); }
+  .gd-it input { margin-top: 3px; } .gd-it.done { opacity: .5; } .gd-it b { font-weight: 600; } .gd-it .d { color: var(--silk-dim); font-size: 13px; } .gd-it .h { color: var(--led-ok); font-size: 13px; overflow-wrap: anywhere; }
+  .gd-gl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; font-size: 13.5px; } .gd-gl dt { color: var(--gold-hi); } .gd-gl dd { margin: 0; color: var(--silk-dim); }
+  .tb-f .hd { display: flex; gap: 8px; align-items: baseline; } .tb-f .hd b { flex: 1 1 auto; min-width: 0; } .tb-f .hd .src { margin-left: auto; float: none; flex: none; max-width: 34%; text-align: right; }
+  .tb-f input.pick { margin: 0; flex: none; width: auto; position: relative; top: 2px; } .tb-f a.locate { flex: none; margin-left: 0; }
+  body.lv-expert #brief, body.lv-expert .startrow, body.lv-expert #apprBtn { display: none; }
+  /* compact run status */
+  .sbar { display: flex; gap: 4px; align-items: center; cursor: pointer; flex: none; padding: 4px 0; }
+  .sbar i { width: 9px; height: 9px; border-radius: 50%; background: var(--led-off); box-shadow: inset 0 -1px 1px rgba(0,0,0,.4); }
+  .sbar i.ok { background: var(--led-ok); } .sbar i.warn { background: var(--led-warn); box-shadow: 0 0 6px rgba(255,181,59,.7); }
+  .sbar i.fail { background: var(--led-fail); box-shadow: 0 0 7px rgba(255,91,75,.8); } .sbar i.skip { opacity: .45; }
+  .snow { font: 12.5px var(--mono); color: var(--silk); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; cursor: pointer; }
+  .snow .w { color: var(--led-warn); } .snow .f { color: var(--led-fail); } .snow .d { color: var(--silk-faint); }
+  .summary { flex: none; white-space: nowrap; }
+  .slist { position: absolute; z-index: 30; left: 12px; top: 100%; background: var(--log); border: 1px solid var(--mask-edge); border-radius: var(--r); padding: 10px 14px;
+    display: grid; gap: 3px; max-height: 70vh; overflow: auto; box-shadow: 0 12px 30px rgba(0,0,0,.45); max-width: min(760px, 90%); }
+  .slist[hidden] { display: none; }
+  .slist .st { display: grid; grid-template-columns: 12px 170px 1fr; gap: 8px; align-items: baseline; } .slist .st em { font-style: normal; color: var(--silk-dim); font-size: 12px; white-space: normal; }
+  /* sidebar panes */
+  .sidetabs { display: grid; grid-template-columns: 1fr 1fr; margin: -4px 0 14px; border-bottom: 1px solid var(--seam); }
+  .sidetabs button { background: none; border: 0; border-bottom: 2px solid transparent; color: var(--silk-dim); padding: 7px 4px 9px; font: 500 13.5px var(--sans); cursor: pointer; }
+  .sidetabs button.on { color: var(--gold-hi); border-bottom-color: var(--gold); }
+  .side form { display: flex; flex-direction: column; min-height: 100%; } .side .pane { flex: 1; } .side .pane[hidden] { display: none; }
+  .side .run { position: sticky; bottom: -28px; margin-top: 16px; z-index: 5; box-shadow: 0 -10px 14px -6px rgba(3,26,13,.85); }
+  /* grouped tabs */
+  .subtabs { display: flex; gap: 6px; padding: 8px 12px 0; flex-wrap: wrap; } .subtabs:empty { display: none; }
+  .subtabs .tab { border: 1px solid var(--mask-edge); border-radius: 999px; padding: 3px 12px 4px; font-size: 12.5px; margin: 0; }
+  .subtabs .tab.on { background: var(--sub); border-color: var(--gold); color: var(--gold-hi); }
+  /* findings: groups, filter, locate, previews, compare */
+  .tb-filter { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 2px 0 10px; font-size: 12.5px; color: var(--silk-faint); }
+  .tb-filter button { padding: 2px 10px; border-radius: 999px; font-size: 12.5px; } .tb-filter button.on { border-color: var(--gold); color: var(--gold-hi); }
+  .tb-grp { border: 1px solid rgba(29,122,69,.5); border-radius: var(--r); margin: 0 0 8px; background: rgba(255,255,255,.02); }
+  .tb-grp > summary { cursor: pointer; padding: 7px 12px; font-weight: 600; display: flex; gap: 8px; align-items: baseline; list-style: none; }
+  .tb-grp > summary::-webkit-details-marker { display: none; } .tb-grp > summary small { font-weight: 400; color: var(--silk-faint); font-size: 12.5px; }
+  .tb-grp > summary .c { margin-left: auto; display: flex; gap: 6px; } .tb-grp > div { padding: 0 12px 4px; } .tb-grp .tb-f:last-child { border-bottom: 0; }
+  a.locate { color: var(--gold-hi); font-size: 12px; cursor: pointer; margin-left: 8px; white-space: nowrap; text-decoration: underline dotted; }
+  .loc { margin: 8px 0 4px; background: #0c2416; border-radius: var(--r); padding: 8px; max-width: 440px; } .loc svg { width: 100%; height: auto; max-height: 300px; display: block; }
+  .loc .hi rect.b { fill: #ffd23f; stroke: #000; } .loc .dim rect.b { fill-opacity: .22; } .loc text { pointer-events: none; }
+  .tb-card.wide { grid-column: 1 / -1; }
+  .pv { margin-top: 2px; } .pv > summary { cursor: pointer; color: var(--gold-hi); font-size: 12.5px; }
+  .pv img { max-width: 100%; background: #f5f4ee; border-radius: 4px; margin-top: 6px; display: block; }
+  .pv pre { max-height: 420px; overflow: auto; background: var(--log); padding: 10px; border-radius: 4px; font: 11.5px/1.5 var(--mono); white-space: pre-wrap; margin: 6px 0 0; color: var(--silk); }
+  .cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } @media (max-width: 900px) { .cmp { grid-template-columns: 1fr; } }
+  .cmp figure { margin: 0; background: #f5f4ee; border-radius: var(--r); padding: 8px; } .cmp figcaption { color: #333; font: 600 12.5px var(--sans); margin-bottom: 6px; } .cmp img { width: 100%; display: block; }
+  .cmp-t { width: 100%; border-collapse: collapse; font-size: 13px; margin: 4px 0 14px; } .cmp-t td, .cmp-t th { text-align: left; padding: 4px 10px 4px 0; border-bottom: 1px solid rgba(29,122,69,.4); }
+  .cmp-t th { color: var(--silk-faint); font-weight: 500; } .cmp-t .add { color: var(--led-ok); } .cmp-t .del { color: var(--led-fail); }
+  /* preflight */
+  .pf-q { border: 1px solid rgba(29,122,69,.55); border-radius: var(--r); padding: 12px 14px; margin: 0 0 10px; background: rgba(255,255,255,.03); }
+  .pf-q b { font-size: 15px; } .pf-q .w { color: var(--silk-dim); font-size: 13px; margin: 2px 0 8px; }
+  .pf-q label { display: flex; gap: 8px; align-items: baseline; padding: 3px 0; cursor: pointer; } .pf-q label input[type=radio] { width: auto; flex: none; position: relative; top: 2px; }
+  .pf-q input[type=text] { width: 100%; margin-top: 6px; }
+  .pf-p { display: grid; grid-template-columns: minmax(150px, 220px) 1fr; gap: 6px 16px; padding: 10px 0; border-bottom: 1px solid rgba(29,122,69,.4); align-items: start; }
+  .pf-p .n b { display: block; } .pf-p .n span { color: var(--silk-dim); font-size: 12.5px; }
+  .pf-p .s { font-size: 13px; color: var(--silk-dim); display: grid; gap: 5px; } .pf-p .s .ok { color: var(--led-ok); } .pf-p .s .no { color: var(--led-warn); }
+  .pf-p input[type=text] { width: 100%; } .pf-p input[type=file] { font-size: 12px; color: var(--silk-dim); }
+  .pf-go { display: flex; gap: 10px; align-items: center; margin-top: 18px; flex-wrap: wrap; }
+  .pf-go .go { background: linear-gradient(180deg, var(--gold-hi), var(--gold)); color: #251a05; border: 0; font-weight: 600; padding: 8px 18px; }
+  /* toolbox */
+  .tb { max-width: 1060px; margin: 0 auto; padding: 4px 6px 40px; color: var(--silk); font-size: 14px; line-height: 1.5; }
+  .tb h3 { font: 600 17px var(--sans); margin: 26px 0 4px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .tb h3 small { font: 400 12.5px var(--sans); color: var(--silk-faint); }
+  .tb h4 { font: 600 12px var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--silk-faint); margin: 18px 0 8px; }
+  .tb-sum { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 8px 0 10px; }
+  .tb-pill { font: 600 12px var(--mono); padding: 3px 10px; border-radius: 999px; background: rgba(255,255,255,.05); color: var(--silk-dim); }
+  .tb-pill.error { background: rgba(230,90,80,.18); color: #f08a80; } .tb-pill.warning { background: rgba(230,180,60,.16); color: var(--gold-hi); }
+  .tb-pill.ok { background: rgba(80,200,120,.16); color: #7fdc9c; }
+  .tb button { background: var(--sub); border: 1px solid var(--mask-edge); color: var(--silk); border-radius: var(--r); padding: 5px 12px; cursor: pointer; font: 500 13px var(--sans); }
+  .tb button:hover:not(:disabled) { border-color: var(--gold); color: var(--gold-hi); } .tb button:disabled { opacity: .5; cursor: default; }
+  .tb-f { display: grid; grid-template-columns: 74px 1fr; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(29,122,69,.4); }
+  .tb-f .sv { font: 600 11px var(--mono); padding-top: 2px; } .tb-f .sv.error { color: #f08a80; } .tb-f .sv.warning { color: var(--gold-hi); } .tb-f .sv.note { color: var(--silk-faint); }
+  .tb-f b { font-weight: 600; } .tb-f .d { color: var(--silk-dim); font-size: 13px; } .tb-f .fx { color: var(--led-ok); font-size: 13px; }
+  .tb-f .src { color: var(--silk-faint); font-size: 12px; float: right; margin-left: 10px; }
+  .tb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; align-items: start; }
+  .tb-card { background: rgba(255,255,255,.035); border: 1px solid rgba(29,122,69,.55); border-radius: var(--r); padding: 12px 13px; display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+  .tb-card.na { opacity: .55; }
+  .tb-card .t { font-weight: 600; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .tb-card .s { color: var(--silk-dim); font-size: 13px; flex: 1; }
+  .tb-badge { font: 600 10px var(--mono); padding: 1px 6px; border-radius: 9px; text-transform: uppercase; letter-spacing: .04em; }
+  .tb-badge.beta { background: rgba(120,160,255,.14); color: #9db8ff; } .tb-badge.preview { background: rgba(230,180,60,.16); color: var(--gold-hi); }
+  .tb-badge.plugin { background: rgba(255,255,255,.08); color: var(--silk-dim); }
+  .tb-card label { display: grid; gap: 3px; font-size: 12px; color: var(--silk-faint); }
+  .tb-card input[type=text], .tb-card input[type=number] { width: 100%; }
+  .tb-card label.ck { display: flex; gap: 6px; align-items: center; }
+  .tb-res { font-size: 13px; border-top: 1px solid rgba(29,122,69,.4); padding-top: 7px; display: grid; gap: 5px; overflow-wrap: anywhere; }
+  .tb-res .sm { color: var(--silk); } .tb-res .sm.error { color: #f08a80; } .tb-res a { color: var(--gold-hi); margin-right: 12px; white-space: nowrap; }
+  .tb-res .fi { color: var(--silk-dim); font-size: 12.5px; } .tb-res .fi b { color: var(--silk); font-weight: 600; }
+  .tb-ans { white-space: pre-wrap; background: rgba(255,255,255,.04); border-left: 3px solid var(--gold); padding: 8px 10px; font-size: 13.5px; }
+  .tb-foot { color: var(--silk-faint); font-size: 12.5px; margin-top: 26px; }
+  .brief { margin-top: 6px; display: grid; gap: 4px; }
+  .brief button { text-align: left; background: none; border: 1px dashed var(--mask-edge); border-radius: var(--r); color: var(--silk-dim); padding: 5px 8px; font: 12.5px var(--sans); cursor: pointer; }
+  .brief button:hover { border-color: var(--gold); color: var(--silk); } .brief button span { color: var(--silk-faint); }
+  .startrow { display: flex; gap: 6px; align-items: center; margin-top: 6px; } .startrow select { flex: 1; min-width: 0; }
+  .blk { cursor: pointer; } .blk .x { display: none; font-size: 12px; color: var(--silk-dim); margin-top: 5px; line-height: 1.45; } .blk.open .x { display: block; }
+  .blk code { font: 11.5px var(--mono); color: var(--gold-hi); }
+  .use td { padding: 2px 10px 2px 0; font-size: 12.5px; color: var(--silk-dim); } .use td:first-child { color: var(--silk); }
+  /* reasoning */
+  .rs { max-width: 78ch; margin: 0 auto; padding: 6px 6px 30px; color: var(--silk); font-size: 14.5px; line-height: 1.6; }
+  .rs blockquote { white-space: pre-line; margin: 0 0 8px; padding: 10px 14px; border-left: 3px solid var(--gold); background: rgba(255,255,255,.03); color: var(--silk); }
+  .rs-note { font-size: 12.5px; color: var(--silk-faint); margin: 0 0 18px; }
+  .rs h3 { font: 600 17px var(--sans); margin: 26px 0 8px; } .rs h4 { font: 600 14px var(--sans); margin: 16px 0 6px; color: var(--silk-dim); }
+  .rs p { margin: 0 0 10px; } .rs ul { margin: 0 0 10px; padding-left: 20px; } .rs li { margin: 3px 0; }
+  .rs-dim { color: var(--silk-faint); font-size: 13px; } .rs-warn { color: var(--led-warn); }
+  .rs-ok { color: var(--led-ok); } .rs-bad { color: var(--led-warn); }
+  .rs-parts { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .rs-parts th { text-align: left; font-weight: 400; color: var(--silk-faint); padding: 6px 10px 6px 0; border-bottom: 1px solid #0f5f33; }
+  .rs-parts td { padding: 8px 10px 8px 0; border-bottom: 1px solid rgba(15,95,51,.55); vertical-align: top; }
+  .rs-parts td:first-child { font: 600 13px var(--mono); white-space: nowrap; } .rs-parts td:nth-child(2) { white-space: nowrap; font-family: var(--mono); font-size: 12.5px; }
+  .rs-rev { display: grid; grid-template-columns: 220px 1fr; gap: 14px; align-items: start; margin-bottom: 14px; }
+  .rs-rev img { width: 100%; border-radius: var(--r); border: 1px solid #0f5f33; }
+  @media (max-width: 700px) { .rs-rev { grid-template-columns: 1fr; } }
+  .rs-models td { padding: 3px 16px 3px 0; font-size: 13px; } .rs-models td:last-child { font-family: var(--mono); color: var(--gold-hi); }
+  ::-webkit-scrollbar { width: 10px; height: 10px; } ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--mask-edge); border-radius: 5px; border: 2px solid transparent; background-clip: padding-box; }
+  * { scrollbar-color: var(--mask-edge) transparent; }
+  @media (prefers-reduced-motion: reduce) { .live-btn::before { animation: none; } }
+</style>
+</head>
+<body>
+<div id="dsView"><header><span id="dsTitle"></span><button type="button" id="dsClose">×</button></header><div class="body" id="dsBody"></div></div>
+<header>
+  <a class="logo" href="/" aria-label="kipipe home"><svg width="26" height="29" viewBox="8 0 214 240" aria-hidden="true">
+    <defs>
+    <filter id="kp-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <linearGradient id="kp-au" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efce7e"/><stop offset=".6" stop-color="#d8b15a"/><stop offset="1" stop-color="#b8923f"/></linearGradient>
+  </defs>
+    <g fill="none" stroke="url(#kp-au)" stroke-width="16" stroke-linejoin="round">
+      <path d="M80 82 H66 a14 14 0 0 1 -14 -14 V10"/>
+      <path d="M80 118 H42 a20 20 0 0 1 -20 -20 V10"/>
+      <path d="M140 82 H178 a20 20 0 0 1 20 20 V170"/>
+      <path d="M140 118 H154 a14 14 0 0 1 14 14 V170"/>
+    </g>
+    <rect x="80" y="62" width="60" height="76" fill="#0b4a28" stroke="#f2efe4" stroke-width="7"/>
+    <circle cx="93" cy="76" r="6" fill="#f2efe4"/>
+    <g fill="#fff4c2" filter="url(#kp-glow)">
+      <polygon points="160,178 176,178 168,200 180,200 158,236 164,210 152,210"/>
+      <polygon points="190,178 206,178 200,198 212,198 192,232 196,208 184,208"/>
+    </g></svg>
+    <b>kipipe</b></a>
+  <div class="env" id="env"><span>checking tools…</span></div>
+  <span class="hdr-right">
+    <button id="liveBtn" class="live-btn" style="display:none" onclick="showLive()">live</button>
+    <select id="history" style="width:auto;max-width:280px"><option value="">Previous runs</option></select>
+  </span>
+</header>
+<main>
+  <section class="side">
+    <form id="form">
+      <div class="sidetabs" role="tablist">
+        <button type="button" class="on" data-pane="req">Request</button>
+        <button type="button" data-pane="set">Library and settings</button>
+      </div>
+      <div class="pane" data-pane="req">
+      <div class="lvl" title="How much is explained and how much is asked. The design itself is the same at every level.">
+        <label><input type="radio" name="level" value="guided"> Guided</label>
+        <label><input type="radio" name="level" value="standard" checked> Standard</label>
+        <label><input type="radio" name="level" value="expert"> Expert</label>
+      </div>
+      <div class="hint" id="lvlHint" style="margin:0 0 12px"></div>
+      <h2>Describe the circuit</h2>
+      <textarea name="prompt" id="prompt" placeholder="e.g. ATtiny85 board driving a WS2812 strip from a 5 V barrel jack, 3 A supply, button on PB3, programming header"></textarea>
+
+      <div class="startrow"><select id="starters" title="Fill the box with an example request"><option value="">Start from an example…</option></select></div>
+      <div class="brief" id="brief"></div>
+      <div class="startrow"><button type="button" id="apprBtn" class="mini" style="background:var(--sub);border:1px solid var(--mask-edge);color:var(--silk);border-radius:var(--r);padding:5px 10px;cursor:pointer;font-size:12.5px">Compare approaches first</button><span class="hint" id="apprMsg" style="margin:0"></span></div>
+      <div class="appr" id="appr"></div>
+
+      <details class="mylib pj" id="pjBox">
+        <summary>Project and context <span class="opt" id="pjCount"></span></summary>
+        <label class="f">Project</label>
+        <div class="row2"><select id="pjSel"><option value="">none</option></select><button type="button" id="pjNew" style="background:var(--sub);border:1px solid var(--mask-edge);color:var(--silk);border-radius:var(--r);padding:0 10px;cursor:pointer;font-size:13px">New…</button></div>
+        <input id="pjNewName" placeholder="New project name, then Enter (for example: OSCAR CubeSat)" style="display:none;margin-top:6px">
+        <input type="hidden" name="project" id="pjName">
+        <div id="pjInfo"></div>
+        <label class="f" style="margin-top:8px">Context for this board <span class="opt">optional</span></label>
+        <textarea name="context" id="ctx" placeholder="Background that is not a request: what it sits next to, what plugs into it, what already exists"></textarea>
+        <div class="hint">A project carries its own context, the boards already designed in it and its connector interfaces into every new board, and checks that shared connectors agree pin for pin.</div>
+      </details>
+
+      <h2>Images <span class="opt">optional</span></h2>
+      <div class="drop" id="imgDrop">Drop, paste or click to add sketches, photos or block diagrams</div>
+      <input type="file" id="imgInput" accept="image/*" multiple hidden>
+      <div class="thumbs" id="thumbs"></div>
+
+      <h2>Files <span class="opt">optional</span></h2>
+      <div class="drop" id="fileDrop">A spec .json, an existing .kicad_sch, a .kicad_pcb with locked parts, or datasheet PDFs</div>
+      <input type="file" id="fileInput" accept=".json,.kicad_sch,.kicad_pcb,.pdf" multiple hidden>
+      <div class="chips" id="fileChips"></div>
+      <input name="datasheet_urls" placeholder="Datasheet links for this run (direct PDF links, space separated)" style="margin-top:8px">
+      <div class="hint">A .kicad_sch skips the model. A .kicad_pcb keeps locked footprints and locked tracks (hybrid mode). Datasheet PDFs are read into the part database before the design starts.</div>
+
+      <details class="mylib" id="brdBox">
+        <summary>Board <span class="opt" id="brdSum">auto</span></summary>
+      <div class="row3">
+        <div><label class="f">Layers</label><select name="layers"><option value="">auto</option><option>2</option><option>4</option></select></div>
+        <div><label class="f">Fab</label><select name="fab" id="fab"><option value="">auto</option></select></div>
+        <div><label class="f">Holes</label><select name="holes"><option value="">auto</option><option value="none">none</option><option>M2</option><option>M2.5</option><option>M3</option></select></div>
+      </div>
+      <div class="row" style="grid-template-columns:1fr"><div><label class="f">Shape</label><select name="shape">
+        <option value="">auto (rectangle unless the description asks for a shape)</option>
+        <option value="rect">Rectangle</option><option value="rounded">Rounded rectangle</option><option value="circle">Circle</option>
+        <option value="plus">Plus</option><option value="hexagon">Hexagon</option><option value="octagon">Octagon</option></select></div></div>
+      <div class="hint" style="margin:-2px 0 10px">Any other outline: draw it on Edge.Cuts in KiCad and drop the .kicad_pcb under Files.</div>
+      <div class="row">
+        <div><label class="f">Width mm (blank = fit)</label><input name="width" type="number" step="0.5" min="5"></div>
+        <div><label class="f">Height mm</label><input name="height" type="number" step="0.5" min="5"></div>
+      </div>
+
+      </details>
+
+      <div class="hint" id="setSum" style="margin-top:14px;cursor:pointer" title="Open Library and settings"></div>
+      </div>
+      <div class="pane" data-pane="set" hidden>
+      <h2>Model</h2>
+      <div class="row" style="grid-template-columns:1.5fr 1fr">
+        <div><label class="f">Backend</label>
+          <select name="backend" id="backend">
+            <option value="claude-code">Claude (Pro, via Claude Code)</option>
+            <option value="anthropic-api">Anthropic API key</option>
+            <option value="codex">ChatGPT (Plus/Pro, via Codex CLI)</option>
+            <option value="openai-api">OpenAI API key</option>
+            <option value="ollama">Ollama (local)</option>
+          </select></div>
+        <div id="planBox"><label class="f">Models per step</label>
+          <select name="models" id="models">
+            <option value="mixed">mixed: Opus designs, Sonnet/Haiku check</option>
+            <option value="opus">Opus for everything</option>
+            <option value="sonnet">Sonnet for everything</option>
+            <option value="cheap">cheap: Sonnet + Haiku</option>
+            <option value="igor">Igor: Opus thinks, local model does the grunt work</option>
+            <option value="fable">Fable designs and gives the verdict (pay per use)</option>
+          </select></div>
+      </div>
+      <div class="row" style="grid-template-columns:1fr"><div><label class="f">Force one model (blank = use the plan above)</label><input name="model" id="model" placeholder="e.g. opus"></div></div>
+      <div class="hint" id="planHint"></div>
+      <div id="apiRow" class="row" style="display:none;grid-template-columns:1fr"><div><label class="f" id="apiLabel">API key (blank = ANTHROPIC_API_KEY)</label><input name="api_key" type="password" autocomplete="off"></div></div>
+      <div id="localRow" class="row" style="display:none;grid-template-columns:1fr"><div><label class="f">Local model (Ollama)</label><input name="local_model" id="local_model" value="qwen3.5:9b"></div></div>
+      <div id="ollamaRow" class="row" style="display:none;grid-template-columns:1fr"><div><label class="f">Ollama host</label><input name="ollama_host" id="ollama_host"></div></div>
+
+      <h2>Checks</h2>
+      <div id="flags"></div>
+      <div class="hint">ERC, DRC and the schematic-vs-spec netlist check always run.</div>
+
+      <details>
+        <summary>More settings</summary>
+        <div><label class="f">Schematic drawing</label><select name="sch_style"><option value="wired">Wires and power symbols</option><option value="labels">Name tag on every pin</option></select></div>
+        <div class="row">
+          <div><label class="f">Max passes</label><input name="passes" type="number" value="30" min="1" max="500"></div>
+          <div><label class="f">Timeout s</label><input name="timeout" type="number" value="300" min="30"></div>
+        </div>
+        <div style="margin-top:10px"><label class="f">Video size</label><select name="video_size"><option>1280x720</option><option>1920x1080</option><option value="1080x1920">1080x1920 (vertical)</option></select></div>
+        <div style="margin-top:10px"><label class="f">Video style</label><select name="video_style"><option value="3d">3D</option><option value="flat">Flat</option></select></div>
+        <label style="display:block;margin-top:10px" title="The same request normally reuses its earlier design, so reruns give the same board"><input type="checkbox" name="fresh" value="1"> Fresh design (ask the model again instead of reusing an identical earlier request)</label>
+      </details>
+
+
+      <h2>My rules <span class="opt">given to every design</span></h2>
+      <textarea id="rules" placeholder="One per line: always use 0805 passives; fuse every supply input; no QFN"></textarea>
+
+      <h2>Library</h2>
+      <details class="mylib" id="libBox">
+        <summary>My parts <span class="opt" id="libCount"></span></summary>
+        <div class="libfind"><input id="libQ" placeholder="part number, e.g. TPS61088"><button type="button" id="libGo">Find</button></div>
+        <div class="hint" id="libSites" style="display:none"></div>
+        <div class="drop" id="libDrop">Drop part downloads here: the KiCad zip from SnapEDA, Ultra Librarian, SamacSys or DigiKey</div>
+        <input type="file" id="libInput" accept=".zip,.kicad_sym,.lib,.kicad_mod,.mod,.step,.stp,.wrl" multiple hidden>
+        <div class="hint" id="libMsg"></div>
+        <div class="liblist" id="libList"></div>
+        <div class="hint">The model sees these parts with their pins and uses them when they fit. Projects open in KiCad with them too.</div>
+      </details>
+
+      <details class="mylib" id="dsBox">
+        <summary>Datasheets <span class="opt" id="dsCount"></span></summary>
+        <div class="drop" id="dsDrop">Drop datasheet PDFs here: read once (two cheap reads compared, disagreements settled), then reused by every design</div>
+        <input type="file" id="dsInput" accept=".pdf" multiple hidden>
+        <div class="libfind"><input id="dsUrl" placeholder="or paste a direct link to the PDF"><button type="button" id="dsUrlGo">Fetch</button></div>
+        <div class="hint" id="dsUrlMsg" style="margin:2px 0 6px"></div>
+        <div class="libfind"><input id="dsQ" placeholder="search part number or function"><button type="button" id="dsExport" title="Download the core as CSV">CSV</button></div>
+        <div class="liblist" id="dsTasks"></div>
+        <div class="liblist" id="dsList"></div>
+        <div class="hint">Reads use the backend and plan set under Model (Igor: your local model reads first).</div>
+      </details>
+
+      <details class="mylib" id="blkBox">
+        <summary>Blocks <span class="opt" id="blkCount"></span></summary>
+        <div class="liblist" id="blkList"></div>
+        <div class="hint">Sub-circuits known to be right, placed by code instead of re-derived by the model. Turn on the <b>blocks</b> option to offer them to the designer (beta), or use them in a spec file. Save your own from a finished board in its Toolbox.</div>
+      </details>
+
+      <details class="mylib" id="useBox">
+        <summary>Usage <span class="opt" id="useCount"></span></summary>
+        <div id="useBody"></div>
+        <div class="hint">Every model call of the last 30 days. Cost is only what a backend reports itself; nothing is estimated.</div>
+      </details>
+
+      </div>
+      <button class="run" id="run" type="submit">Run pipeline</button>
+    </form>
+  </section>
+
+  <section class="work">
+    <div class="stages" id="stages"><div class="sbar" id="sbar"></div><span class="snow" id="snow"></span><span class="summary" id="summary">Idle</span><div class="slist" id="slist" hidden></div></div>
+    <form class="revise" id="revise" hidden>
+      <label for="revText" class="rev-l">Revise this design</label>
+      <textarea id="revText" rows="1" placeholder="e.g. make the LED blue, add a power switch on the left edge, use 1206 resistors"></textarea>
+      <label class="rev-keep"><input type="checkbox" id="revKeep" checked> Keep unchanged parts where they are</label>
+      <button type="submit" class="rev-go">Revise</button>
+    </form>
+    <div class="panes">
+      <div class="viewer">
+        <div>
+          <div class="err" id="err"></div>
+          <div class="tabs" id="tabs"></div>
+          <div class="subtabs" id="subtabs"></div>
+        </div>
+        <div class="view idle" id="view"><div class="empty"><svg width="120" height="78" viewBox="0 0 120 78" aria-hidden="true"><rect x="1" y="1" width="118" height="76" rx="4" fill="none" stroke="#22684b" stroke-width="1.5" stroke-dasharray="5 4"/><g fill="#8e7332"><circle cx="14" cy="14" r="3.5"/><circle cx="106" cy="14" r="3.5"/><circle cx="14" cy="64" r="3.5"/><circle cx="106" cy="64" r="3.5"/></g><rect x="44" y="26" width="32" height="26" fill="none" stroke="#a8c2b3" stroke-width="1.3"/><circle cx="49" cy="31" r="1.6" fill="#a8c2b3"/></svg>Describe a circuit and run the pipeline. The schematic, board, 3D model and review will show up here.</div></div>
+        <div class="downloads" id="downloads"></div>
+      </div>
+      <div class="log" id="log"></div>
+    </div>
+  </section>
+</main>
+
+<script src="/static/editor.js"></script>
+<script type="importmap">{"imports": {"three": "/static/vendor/three/three.module.min.js", "three/addons/": "/static/vendor/three/addons/"}}</script>
+<script type="module">import * as V from "/static/viewer3d.js"; window.Viewer3D = V; window.dispatchEvent(new Event("viewer3d-ready"));</script>
+<script>
+const $ = s => document.querySelector(s);
+const state = { images: [], files: [], env: null, job: null, result: null, tab: null,
+                live: null };   // live: {id, es, log: [], stages: [], result, done}
+const TABS = [
+  ["schematic", "Schematic", r => r.files.schematic_svg],
+  ["connections", "Connections", r => r.files.connections],
+  ["pcb_top", "PCB top", r => r.files.pcb_top],
+  ["pcb_bottom", "PCB bottom", r => r.files.pcb_bottom],
+  ["pcb_copper", "Copper", r => r.files.pcb_copper],
+  ["edit", "Edit layout", r => r.files.layout],
+  ["inspect", "Review", r => r.files.inspect],
+  ["reasoning", "Reasoning", r => r.files.reasoning],
+  ["render3d", "3D", r => r.files.model3d || r.files.render3d],
+  ["video", "Video", r => r.files.video],
+  ["ems", "openEMS", r => Object.keys(r.files).find(k => k.startsWith("ems_")) || r.files.sim_config],
+  ["guide", "Guide", r => r.files.spec && r.level !== "expert"],
+  ["compare", "Compare", r => r.files.spec],
+  ["toolbox", "Toolbox", r => r.files.spec],
+  ["spec", "Spec", r => r.files.spec],
+];
+
+async function loadEnv() {
+  const e = state.env = await (await fetch("/api/env")).json();
+  const k = e.kicad || {};
+  const bits = [
+    k.version ? `KiCad <b>${k.version.split(" ")[0]}</b>` : `<span class="bad">KiCad missing</span>`,
+    e.pcbnew ? `pcbnew <b>ok</b>` : `<span class="bad">pcbnew missing</span>`,
+    e.java ? `Java <b>${e.java}</b>` : `<span class="bad">Java missing</span>`,
+    e.freerouting ? `Freerouting <b>${e.freerouting}</b>` : `Freerouting <b>n/a</b>`,
+    e.claude_cli ? `claude <b>ok</b>` : (e.codex_cli ? null : `claude <b>not installed</b>`),
+    e.codex_cli ? `codex <b>ok</b>` : null,
+    e.gerber2ems ? `openEMS <b>ok</b>` : `openEMS <b>not installed</b>`,
+  ];
+  $("#env").innerHTML = bits.filter(Boolean).map(b => b.startsWith("<span") ? b : `<span>${b}</span>`).join("");
+  $("#ollama_host").value = e.ollama_host;
+  for (const f of e.fabs) $("#fab").insertAdjacentHTML("beforeend", `<option>${f}</option>`);
+  const box = $("#flags");
+  for (const [name, desc] of Object.entries(e.flags)) {
+    let na = "", disabled = false;
+    if (name === "render3d" && k.major < 9) { na = "needs KiCad 9+"; disabled = true; }
+    if (name === "openems" && !e.gerber2ems) na = "gerber2ems not installed: prepares the sim folder only";
+    const checked = e.default_flags.includes(name) && !disabled ? "checked" : "";
+    box.insertAdjacentHTML("beforeend", `<label class="flag ${disabled ? "disabled" : ""}">
+      <input type="checkbox" value="${name}" ${checked} ${disabled ? "disabled" : ""}>
+      <span><span class="n">${name}</span> <span class="d">${desc}</span>${na ? `<div class="na">${na}</div>` : ""}</span></label>`);
+  }
+  loadHistory(true);
+}
+
+async function loadHistory(attach) {
+  const jobs = await (await fetch("/api/jobs")).json();
+  if (attach && !state.live) {
+    const running = jobs.find(j => j.ok === null);
+    if (running) { $("#run").disabled = true; $("#run").textContent = "Running…"; follow(running.id); }
+  }
+  const sel = $("#history");
+  sel.length = 1;
+  for (const j of jobs) sel.insertAdjacentHTML("beforeend", `<option value="${j.id}">${j.ok === true ? "✓" : j.ok === false ? "✗" : "…"} ${j.name || "untitled"}  (${j.id})</option>`);
+}
+$("#history").onchange = async e => {
+  const id = e.target.value;
+  if (!id) return;
+  if (state.live && state.live.id === id) { showLive(); return; }
+  const j = await (await fetch(`/api/jobs/${id}`)).json();
+  if (j.status === "running" || j.status === "queued") { follow(id); return; }
+  state.job = j.id; resetView();
+  j.log.forEach(addLog);
+  if (j.result) showResult(j.result);
+  liveBadge();
+};
+
+const PLAN_TEXT = {
+  mixed: "Opus designs the circuit. Sonnet fixes errors (Opus after two failed rounds) and reviews placement. Inspection runs Haiku on tiles, Sonnet on blocks, Opus on the whole board.",
+  opus: "Every model step uses Opus. Uses your plan limits fastest.",
+  sonnet: "Every model step uses Sonnet.",
+  cheap: "Sonnet designs and reviews. Haiku fixes errors and checks detail tiles.",
+  fable: "Fable, the tier above Opus, designs the circuit and gives the final verdict on the board; everything else as in mixed. Most plans bill Fable per token, and one design call costs far more than Opus. If your account cannot use it, the run falls back to Opus and says so in the log.",
+  igor: "Opus designs the circuit and gives the final verdict. Your local model fixes validation errors and takes the first look at the detail tiles; if it fails, Claude takes over that step. Sonnet reviews placement and checks the larger tiles.",
+};
+const planHint = () => {
+  const b = $("#backend").value;
+  let t = b === "ollama" ? "Ollama uses one local model for every step."
+    : ($("#model").value.trim() ? `${$("#model").value.trim()} for every step.` : PLAN_TEXT[$("#models").value]);
+  if (b === "codex" && !$("#model").value.trim()) t = "Codex uses its default model for every step (name one above to change it). Local steps still go to Ollama.";
+  else if (b === "openai-api" && !$("#model").value.trim()) t += " On OpenAI, Opus means your newest big model, Sonnet the same, Haiku your newest mini/nano model.";
+  $("#planHint").textContent = t;
+};
+const localRows = () => {
+  const b = $("#backend").value, igor = $("#models").value === "igor" && b !== "ollama" && !$("#model").value.trim();
+  $("#localRow").style.display = igor ? "grid" : "none";
+  $("#ollamaRow").style.display = (b === "ollama" || igor) ? "grid" : "none";
+};
+$("#models").onchange = () => { planHint(); localRows(); }; $("#model").oninput = () => { planHint(); localRows(); };
+try { const sv = localStorage.getItem("kipipe.models"); if (sv && PLAN_TEXT[sv]) $("#models").value = sv; } catch (e) {}
+$("#models").addEventListener("change", () => { try { localStorage.setItem("kipipe.models", $("#models").value); } catch (e) {} });
+$("#backend").onchange = () => {
+  const b = $("#backend").value;
+  $("#model").placeholder = { "claude-code": "e.g. opus", "anthropic-api": "e.g. claude-opus-5-5", "codex": "blank = Codex default",
+                              "openai-api": "blank = newest models on your account", "ollama": "qwen3.5:9b" }[b];
+  $("#apiRow").style.display = (b === "anthropic-api" || b === "openai-api") ? "grid" : "none";
+  $("#apiLabel").textContent = b === "openai-api" ? "API key (blank = OPENAI_API_KEY)" : "API key (blank = ANTHROPIC_API_KEY)";
+  $("#planBox").style.display = b === "ollama" ? "none" : "";
+  planHint();
+  localRows();
+};
+planHint(); localRows();
+
+function wireDrop(dropEl, inputEl, onFiles) {
+  dropEl.onclick = () => inputEl.click();
+  inputEl.onchange = () => { onFiles([...inputEl.files]); inputEl.value = ""; };
+  dropEl.ondragover = e => { e.preventDefault(); dropEl.classList.add("over"); };
+  dropEl.ondragleave = () => dropEl.classList.remove("over");
+  dropEl.ondrop = e => { e.preventDefault(); dropEl.classList.remove("over"); onFiles([...e.dataTransfer.files]); };
+}
+wireDrop($("#imgDrop"), $("#imgInput"), fs => { state.images.push(...fs.filter(f => f.type.startsWith("image/"))); renderInputs(); });
+wireDrop($("#fileDrop"), $("#fileInput"), fs => { state.files.push(...fs); renderInputs(); });
+
+// ---- my parts: imported vendor libraries ----
+const escH = t => String(t ?? "").replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+async function loadLibs() {
+  let d;
+  try { d = await (await fetch("/api/libs")).json(); } catch (e) { return; }
+  const ps = d.parts || [];
+  $("#libCount").textContent = ps.length ? `(${ps.length})` : "none yet";
+  $("#libList").innerHTML = ps.map(p => `<div class="libpart"><div><div class="n">${escH(p.symbol.split(":")[1])}</div>
+    <div class="d">${escH(p.footprint ? p.footprint.split(":")[1] : "no footprint")} · ${p.pins.length} pins${p.description ? " · " + escH(p.description.slice(0, 60)) : ""}</div></div>
+    <button type="button" title="Remove" data-rm="${escH(p.symbol)}">×</button></div>`).join("");
+  $("#libList").querySelectorAll("[data-rm]").forEach(b => b.onclick = async () => {
+    if (!confirm(`Remove ${b.dataset.rm} from your parts?`)) return;
+    await fetch("/api/libs/" + encodeURIComponent(b.dataset.rm), { method: "DELETE" });
+    loadLibs();
+  });
+}
+wireDrop($("#libDrop"), $("#libInput"), async fs => {
+  if (!fs.length) return;
+  const fd = new FormData();
+  fs.forEach(f => fd.append("file", f));
+  $("#libMsg").className = "hint"; $("#libMsg").textContent = "importing...";
+  try {
+    const r = await (await fetch("/api/libs", { method: "POST", body: fd })).json();
+    const got = [];
+    if ((r.symbols || []).length) got.push(`${r.symbols.length} symbol${r.symbols.length > 1 ? "s" : ""}`);
+    if ((r.footprints || []).length) got.push(`${r.footprints.length} footprint${r.footprints.length > 1 ? "s" : ""}`);
+    if ((r.models || []).length) got.push(`${r.models.length} 3D model${r.models.length > 1 ? "s" : ""}`);
+    const warn = (r.warnings || []).concat(r.error ? [r.error] : []);
+    $("#libMsg").textContent = (got.length ? "Imported " + got.join(", ") + ". " : "") + warn.join(" ");
+    $("#libMsg").className = warn.length && !got.length ? "hint err" : "hint";
+  } catch (e) { $("#libMsg").className = "hint err"; $("#libMsg").textContent = "import failed: " + e; }
+  loadLibs();
+});
+const findPart = () => {
+  const q = encodeURIComponent($("#libQ").value.trim());
+  if (!q) return;
+  $("#libSites").style.display = "";
+  $("#libSites").innerHTML = `Download the KiCad format, then drop the zip below:<br>
+    <a target="_blank" rel="noopener" href="https://www.snapeda.com/search/?q=${q}">SnapEDA</a>
+    <a target="_blank" rel="noopener" href="https://app.ultralibrarian.com/search?queryText=${q}">Ultra Librarian</a>
+    <a target="_blank" rel="noopener" href="https://componentsearchengine.com/search?term=${q}">SamacSys</a>
+    <a target="_blank" rel="noopener" href="https://www.digikey.com/en/products/result?keywords=${q}">DigiKey</a>`;
+  window.open(`https://www.snapeda.com/search/?q=${q}`, "_blank", "noopener");
+};
+$("#libGo").onclick = findPart;
+$("#libQ").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); findPart(); } };
+loadLibs();
+
+// ---- datasheets: the part database ----
+const CHK = { verified: ["ok", "verified"], "partly unchecked": ["part", "partly checked"] };
+const chkTag = c => c === "parsed" ? '<span class="chk ok" title="read from the table by the parser, no model">parsed</span>'
+  : c === "corrected" ? '<span class="chk part" title="parsed, with an OCR slip fixed against the datasheet\'s own symbols">corrected</span>'
+  : c === "agreed" ? '<span class="chk ok">agreed</span>' : c === "resolved" ? '<span class="chk part">settled</span>' : '<span class="chk bad">unchecked</span>';
+let dsTimer = null;
+async function loadParts() {
+  let d;
+  try { d = await (await fetch("/api/parts?q=" + encodeURIComponent($("#dsQ").value.trim()))).json(); } catch (e) { return; }
+  const ps = d.parts || [], tasks = (d.tasks || []).filter(t => t.status !== "done" || Date.now() / 1000 - t.started < 600);
+  $("#dsCount").textContent = ps.length ? `(${ps.length})` : "none yet";
+  $("#dsTasks").innerHTML = tasks.map(t => `<div class="libpart"><div><div class="n">${escH(t.mpn || t.file)}
+      <span class="chk ${t.status === "reading" ? "run" : t.status === "failed" ? "bad" : "ok"}">${t.status}</span></div>
+      <div class="d">${escH(t.error || (t.log || []).slice(-1)[0] || "")}</div></div><span></span></div>`).join("");
+  $("#dsList").innerHTML = ps.map(p => {
+    const [cls, txt] = CHK[p.status] || ["bad", p.status || "?"];
+    return `<div class="libpart click" data-mpn="${escH(p.mpn)}"><div><div class="n">${escH(p.mpn)}<span class="chk ${cls}">${txt}</span></div>
+      <div class="d">${escH([p.manufacturer, p.description].filter(Boolean).join(" · "))}</div></div>
+      <button type="button" title="Remove" data-rm="${escH(p.mpn)}">×</button></div>`;
+  }).join("");
+  $("#dsList").querySelectorAll("[data-mpn]").forEach(el => el.onclick = e => { if (!e.target.dataset.rm) showPart(el.dataset.mpn); });
+  $("#dsList").querySelectorAll("[data-rm]").forEach(b => b.onclick = async e => {
+    e.stopPropagation();
+    if (!confirm(`Remove ${b.dataset.rm} and its stored datasheet?`)) return;
+    await fetch("/api/parts/" + encodeURIComponent(b.dataset.rm), { method: "DELETE" });
+    loadParts();
+  });
+  clearTimeout(dsTimer);
+  if (tasks.some(t => t.status === "reading")) dsTimer = setTimeout(loadParts, 3000);
+}
+function tbl(head, rows) {
+  if (!rows.length) return "<div class='d'>none</div>";
+  return `<table><tr>${head.map(h => `<th>${h}</th>`).join("")}</tr>${rows.map(r => `<tr>${r.map(c => `<td>${c ?? ""}</td>`).join("")}</tr>`).join("")}</table>`;
+}
+async function showPart(mpn) {
+  const r = await (await fetch("/api/parts/" + encodeURIComponent(mpn))).json();
+  const id = r.identity || {}, v = (r.verification || {}).counts || {}, src = r.source || {};
+  $("#dsTitle").textContent = [id.mpn, id.manufacturer, id.description].filter(Boolean).join(" · ");
+  let h = `<div class="d">Datasheet ${escH(id.revision || "")}, ${src.pages || "?"} pages.${src.parser === "docling" ? " Tables parsed by Docling;" : ""} ${(v.parsed || 0) + (v.corrected || 0)} parsed, read by ${escH((src.read_by || []).join(" + "))}`
+    + (src.settled_by ? `, disagreements settled by ${escH(src.settled_by)}` : "") + `. ${v.agreed || 0} agreed, ${v.resolved || 0} settled, ${v.single || 0} unchecked.</div>`;
+  const cv = r.conventions || {};
+  if ((cv.rules || []).length || cv.sign === "magnitudes" || (cv.table_conditions || []).length) {
+    h += "<h4>Conventions (apply to every value below)</h4>";
+    if (cv.sign === "magnitudes") h += `<div style="color:#f0c060;font-weight:600">This datasheet writes negative quantities as positive magnitudes.</div>`;
+    h += tbl(["Applies to", "Rule", "p", "As printed"], (cv.rules || []).map(x => [escH(x.applies_to), escH(x.rule), x.page, `<i>${escH(x.quote || "")}</i>`]));
+  }
+  h += "<h4>Pins</h4>" + tbl(["Name", "Numbers", "Type", "Functions", "p", ""], (r.pins || []).map(p => [escH(p.name),
+    escH(Object.entries(p.numbers || {}).map(([k, x]) => `${k}: ${x}`).join("; ")), escH(p.type), escH((p.functions || []).join(", ")), p.page, chkTag(p.chk)]));
+  for (const [k, label] of [["abs_max", "Absolute maximum"], ["recommended", "Recommended operating"], ["electrical", "Electrical characteristics"], ["thermal", "Thermal"], ["timing", "Timing"]]) {
+    const rows = (r.ratings || []).filter(x => x.kind === k);
+    if (rows.length) h += `<h4>${label}</h4>` + tbl(["Parameter", "Symbol", "Min", "Typ", "Max", "Unit", "Conditions", "p", ""],
+      rows.map(x => [escH(x.param), escH(x.symbol), x.min ?? escH(x.min_expr), x.typ, x.max ?? escH(x.max_expr), escH(x.unit),
+      escH(x.conditions) + (x.table_conditions && !x.conditions ? `<span class="d">table: ${escH(x.table_conditions)}</span>` : ""), x.page, chkTag(x.chk)]));
+  }
+  h += "<h4>Support parts</h4>" + tbl(["What", "Value", "Between", "Required", "Why", "p", ""], (r.support_parts || []).map(s =>
+    [escH(s.what), escH(s.value), escH((s.between || []).join(" / ")), s.required === false ? "optional" : "yes", escH(s.why), s.page, chkTag(s.chk)]));
+  h += "<h4>Equations</h4>" + tbl(["Name", "Equation", "Variables", "p", ""], (r.equations || []).map(e =>
+    [escH(e.name), `<code>${escH(e.expr)}</code>` + (e.invalid ? `<div class="d" style="color:#f08a80">${escH(e.invalid)}</div>` : ""),
+     escH(Object.entries(e.vars || {}).map(([k, x]) => `${k} [${x.unit || ""}] ${x.from || ""}${x.symbol ? " " + x.symbol : ""}${x.ref ? " " + x.ref : ""}`).join("; ")), e.page, chkTag(e.chk)]));
+  const c = r.application_circuit;
+  const enc = encodeURIComponent(id.mpn), bust = encodeURIComponent(r.updated || "");
+  h += "<h4>Typical application circuit</h4>" + (c ? `<div class="d">${escH(c.title || "")} (page ${c.page}) ${chkTag(c.chk)}</div>
+    <div class="dsPics">
+      <figure><a href="/api/part-circuit/${enc}?v=${bust}" target="_blank" rel="noopener"><img src="/api/part-circuit/${enc}?v=${bust}" alt=""
+        onerror="this.closest('figure').innerHTML='<div class=d>could not draw the stored circuit</div>'"></a>
+        <figcaption>As stored in the record, drawn by kipipe</figcaption></figure>
+      <figure><a href="/api/part-figure/${enc}" target="_blank" rel="noopener"><img src="/api/part-figure/${enc}" alt=""
+        onerror="this.closest('figure').innerHTML='<div class=d>datasheet page not available</div>'"></a>
+        <figcaption>Datasheet page ${escH(c.page)}: compare the two</figcaption></figure>
+    </div>`
+    + tbl(["Ref", "Kind", "Value"], (c.components || []).map(x => [escH(x.ref), escH(x.kind), escH(x.value)]))
+    + tbl(["Net", "Connects"], Object.entries(c.nets || {}).map(([n, xs]) => [escH(n), escH(xs.join(", "))])) : "<div class='d'>none found</div>");
+  if ((r.layout_notes || []).length) h += "<h4>Layout notes</h4>" + r.layout_notes.map(n => `<div>• ${escH(n)}</div>`).join("");
+  if (Object.keys(r.extra || {}).length) h += "<h4>Other notes</h4>" + Object.entries(r.extra).map(([k, x]) => `<div><b>${escH(k)}</b>: ${escH(typeof x === "string" ? x : JSON.stringify(x))}</div>`).join("");
+  $("#dsBody").innerHTML = h;
+  $("#dsView").style.display = "flex";
+}
+$("#dsClose").onclick = () => $("#dsView").style.display = "none";
+document.addEventListener("keydown", e => { if (e.key === "Escape") $("#dsView").style.display = "none"; });
+wireDrop($("#dsDrop"), $("#dsInput"), async fs => {
+  for (const f of fs) {
+    const fd = new FormData();
+    fd.append("file", f);
+    for (const k of ["backend", "models", "model", "local_model", "ollama_host", "api_key"]) {
+      const el = $("#form").elements[k];
+      if (el && el.value) fd.append(k, el.value);
+    }
+    const r = await (await fetch("/api/parts", { method: "POST", body: fd })).json();
+    if (r.error) alert(r.error);
+  }
+  loadParts();
+});
+async function dsFetchUrl() {
+  const url = $("#dsUrl").value.trim(); if (!url) return;
+  if (!/^https?:\/\//i.test(url)) { $("#dsUrlMsg").textContent = "That is not a web link."; return; }
+  const fd = new FormData(); fd.append("url", url);
+  for (const k of ["backend", "models", "model", "local_model", "ollama_host", "api_key"]) { const el = $("#form").elements[k]; if (el && el.value) fd.append(k, el.value); }
+  const r = await (await fetch("/api/parts", { method: "POST", body: fd })).json();
+  $("#dsUrlMsg").textContent = r.error || "Downloading, then reading. If the site refuses the download, it will say so below; add the file by hand in that case.";
+  if (!r.error) $("#dsUrl").value = "";
+  loadParts();
+}
+$("#dsUrlGo").onclick = dsFetchUrl;
+$("#dsUrl").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); dsFetchUrl(); } };
+let dsQT = null;
+$("#dsQ").oninput = () => { clearTimeout(dsQT); dsQT = setTimeout(loadParts, 250); };
+$("#dsExport").onclick = () => { location.href = "/api/parts-export"; };
+loadParts();
+document.addEventListener("paste", e => {
+  const imgs = [...(e.clipboardData?.files || [])].filter(f => f.type.startsWith("image/"));
+  if (imgs.length) { state.images.push(...imgs); renderInputs(); }
+});
+function renderInputs() {
+  $("#thumbs").innerHTML = "";
+  state.images.forEach((f, i) => {
+    const img = document.createElement("img"); img.src = URL.createObjectURL(f); img.title = "click to remove";
+    img.onclick = () => { state.images.splice(i, 1); renderInputs(); };
+    $("#thumbs").append(img);
+  });
+  $("#fileChips").innerHTML = "";
+  state.files.forEach((f, i) => {
+    const c = document.createElement("span"); c.className = "chip"; c.textContent = f.name;
+    const x = document.createElement("button"); x.type = "button"; x.textContent = "×";
+    x.onclick = () => { state.files.splice(i, 1); renderInputs(); }; c.append(x); $("#fileChips").append(c);
+  });
+}
+
+$("#revise").onsubmit = async e => {
+  e.preventDefault();
+  const req = $("#revText").value.trim();
+  if (!req) { $("#revText").focus(); return; }
+  const btn = $("#revise .rev-go"); btn.disabled = true;
+  const res = await fetch(`/api/jobs/${state.job}/revise`, { method: "POST", headers: { "content-type": "application/json" },
+                                                            body: JSON.stringify({ request: req, keep_layout: $("#revKeep").checked }) });
+  const j = await res.json(); btn.disabled = false;
+  if (!res.ok) { showError(j.error || "revision failed to start"); return; }
+  $("#revText").value = "";
+  $("#run").disabled = true; $("#run").textContent = "Revising…";
+  resetView(); follow(j.id);
+};
+function resetView() {
+  $("#log").innerHTML = ""; $("#err").style.display = "none"; $("#revise").hidden = true;
+  stagesReset("Running…");
+  $("#tabs").innerHTML = ""; $("#subtabs").innerHTML = ""; $("#downloads").innerHTML = "";
+  $("#view").className = "view dark"; $("#view").innerHTML = `<div class="empty">Working. Results appear as each stage finishes.</div>`;
+  state.result = null;
+}
+function addLog(line) {
+  const d = document.createElement("div");
+  if (line.startsWith("== ")) d.className = /: FAIL/.test(line) ? "e" : /: WARN/.test(line) ? "w" : "s";
+  else if (/STOPPED|Traceback|^\s*error:|ERROR/.test(line)) d.className = "e";
+  else if (/warning:|WARN/.test(line)) d.className = "w";
+  d.textContent = line; const log = $("#log");
+  const stick = log.scrollTop + log.clientHeight >= log.scrollHeight - 30;
+  log.append(d); if (stick) log.scrollTop = log.scrollHeight;
+}
+const ICON = { ok: "✓", warn: "!", fail: "✗", skip: "–" };
+const GROUPS = [
+  ["circuit", "Circuit", ["schematic", "connections", "spec"]],
+  ["board", "Board", ["pcb_top", "pcb_bottom", "pcb_copper", "edit", "render3d", "video", "ems"]],
+  ["understand", "Understand", ["guide", "reasoning", "inspect", "compare"]],
+  ["toolbox", "Toolbox", ["toolbox"]],
+];
+const SUBLABEL = { pcb_top: "Top", pcb_bottom: "Bottom", pcb_copper: "Copper", edit: "Edit layout", guide: "Guide", inspect: "Model review", compare: "Compare runs" };
+state.lastIn = {}; state.avail = [];
+function syncTabs(key) {
+  const grp = GROUPS.find(g => g[2].includes(key)); if (!grp) return;
+  state.lastIn[grp[0]] = key;
+  document.querySelectorAll("#tabs .gtab").forEach(t => t.classList.toggle("on", t.dataset.g === grp[0]));
+  const have = grp[2].filter(k => state.avail.includes(k)), sub = $("#subtabs");
+  sub.innerHTML = "";
+  if (have.length > 1) for (const k of have) {
+    const b = document.createElement("button"); b.className = "tab" + (k === key ? " on" : ""); b.dataset.k = k;
+    b.textContent = SUBLABEL[k] || TABS.find(t => t[0] === k)[1]; b.onclick = () => openTab(k); sub.append(b);
+  }
+}
+function stagesReset(text) {
+  $("#stages").innerHTML = `<div class="sbar" id="sbar" title="Show every step"></div><span class="snow" id="snow"></span><span class="summary" id="summary">${text}</span><div class="slist" id="slist" hidden></div>`;
+  const tog = e => { e.stopPropagation(); if ($("#slist").children.length) $("#slist").hidden = !$("#slist").hidden; };
+  $("#sbar").onclick = tog; $("#snow").onclick = tog;
+}
+function addStage(s) {
+  if (!$("#slist")) stagesReset("");
+  const el = document.createElement("div"); el.className = `st ${s.status}`;
+  el.innerHTML = `<i>${ICON[s.status] || "?"}</i><span>${escH(s.name)}</span><em>${escH(s.detail || "")}</em>`;
+  $("#slist").append(el);
+  const dot = document.createElement("i"); dot.className = s.status; dot.title = s.name + (s.detail ? ": " + s.detail : ""); $("#sbar").append(dot);
+  $("#snow").innerHTML = `${escH(s.name)} <span class="d">${escH((s.detail || "").slice(0, 90))}</span>`;
+}
+function stagesDone(r) {
+  const bad = r.stages.filter(x => x.status === "fail"), warn = r.stages.filter(x => x.status === "warn");
+  $("#snow").innerHTML = bad.length || warn.length
+    ? bad.map(x => `<span class="f">✗ ${escH(x.name)}</span>`).concat(warn.map(x => `<span class="w">! ${escH(x.name)}</span>`)).join(" &nbsp; ")
+    : `<span class="d">${r.stages.length} steps, all clear</span>`;
+}
+document.addEventListener("click", e => { const l = $("#slist"); if (l && !l.hidden && !e.target.closest("#stages")) l.hidden = true; });
+
+$("#form").onsubmit = async e => {
+  e.preventDefault();
+  const fd = new FormData($("#form"));
+  fd.delete("images"); fd.delete("files");
+  state.images.forEach(f => fd.append("images", f));
+  state.files.forEach(f => fd.append("files", f));
+  fd.set("flags", JSON.stringify([...document.querySelectorAll("#flags input:checked")].map(i => i.value)));
+  $("#run").disabled = true; $("#run").textContent = "Running…";
+  resetView();
+  const r = await fetch("/api/run", { method: "POST", body: fd });
+  const j = await r.json();
+  if (!r.ok) { showError(j.error); done(); return; }
+  follow(j.id);
+};
+function follow(id) {
+  if (state.live && state.live.es && !state.live.done) state.live.es.close();
+  const L = state.live = { id, es: null, log: [], stages: [], result: null, done: false };
+  showLive(true);
+  const es = L.es = new EventSource(`/api/jobs/${id}/events`);
+  const viewing = () => state.job === id;
+  es.addEventListener("log", ev => { const l = JSON.parse(ev.data); L.log.push(l); if (viewing()) addLog(l); });
+  es.addEventListener("stage", ev => { const st = JSON.parse(ev.data); L.stages.push(st); if (viewing()) addStage(st); });
+  es.addEventListener("result", ev => { L.result = JSON.parse(ev.data); if (viewing()) showResult(L.result, true); });
+  es.addEventListener("end", () => { es.close(); L.done = true; done(); liveBadge(); loadHistory(); loadProjects(); loadUsage(); });
+  es.onerror = () => { es.close(); L.done = true; done(); liveBadge(); };
+  liveBadge();
+}
+function showLive(fresh) {
+  const L = state.live;
+  if (!L) return;
+  state.job = L.id;
+  resetView();
+  L.log.forEach(addLog);
+  if (L.result) showResult(L.result);
+  else L.stages.forEach(addStage);
+  const log = $("#log"); log.scrollTop = log.scrollHeight;
+  liveBadge();
+}
+function liveBadge() {
+  const b = $("#liveBtn"), L = state.live;
+  const running = L && !L.done;
+  b.style.display = running && state.job !== L.id ? "inline-block" : "none";
+  b.textContent = "Back to live run";
+}
+function done() { $("#run").disabled = false; $("#run").textContent = "Run pipeline"; }
+function showError(msg) { const el = $("#err"); el.textContent = msg; el.style.display = "block"; }
+
+function showResult(r, live) {
+  state.result = r;
+  $("#revise").hidden = !(r.files && r.files.spec) || (state.live && !state.live.done && state.live.id === state.job);
+  if (!live || !$("#stages .st")) { stagesReset(""); r.stages.forEach(addStage); }
+  stagesDone(r);
+  const m = r.metrics || {}; const b = m.board || {}; const rt = m.routing || {};
+  $("#summary").innerHTML = `<b class="${r.ok ? "good" : "bad"}">${r.ok ? "Done" : "Failed"}</b><span>${r.seconds} s</span>`
+    + (b.width ? `<span>${(+b.width).toFixed(0)} × ${(+b.height).toFixed(0)} mm</span>` : "") + (rt.vias != null ? `<span>${rt.vias} vias</span>` : "");
+  if (r.error) showError(r.error);
+  const tabs = $("#tabs"); tabs.innerHTML = "";
+  let first = null;
+  state.avail = TABS.filter(t => t[2](r)).map(t => t[0]);
+  for (const [g, label, keys] of GROUPS) {
+    const have = keys.filter(k => state.avail.includes(k));
+    if (!have.length) continue;
+    const t = document.createElement("button"); t.className = "tab gtab"; t.textContent = label; t.dataset.g = g;
+    t.onclick = () => openTab(state.lastIn[g] && have.includes(state.lastIn[g]) ? state.lastIn[g] : have[0]);
+    tabs.append(t);
+    if (!first) first = have[0];
+  }
+  if (r.paused === "preflight") { $("#tabs").innerHTML = ""; $("#subtabs").innerHTML = ""; $("#revise").hidden = true; $("#downloads").innerHTML = "";
+    $("#summary").innerHTML = `<b class="good">Before the design</b><span>waiting for you</span>`; return renderPreflight($("#view")); }
+  if (r.paused) first = "toolbox";
+  else if (r.level === "guided" && r.files.spec && !state.tab) first = "guide";
+  if (first) openTab(!r.paused && state.tab && TABS.find(t => t[0] === state.tab)?.[2](r) ? state.tab : first);
+  if (r.paused) {
+    $("#summary").innerHTML = `<b class="good">Circuit ready</b><span>waiting for your review</span><button id="contBtn" style="margin-left:10px;background:var(--gold);color:#1a1200;border:0;border-radius:var(--r);padding:4px 12px;font-weight:600;cursor:pointer">Continue to layout</button>`;
+    $("#contBtn").onclick = async () => {
+      const f = new FormData($("#form")), m = {}; ["backend", "model", "models", "local_model", "api_key", "ollama_host"].forEach(k => { if (f.get(k)) m[k] = f.get(k); });
+      const res = await fetch(`/api/jobs/${state.job}/continue`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ _model: m }) });
+      const j = await res.json(); if (!res.ok) { showError(j.error); return; }
+      $("#run").disabled = true; $("#run").textContent = "Running…"; const id = state.job; resetView(); state.job = id; follow(id);
+    };
+  }
+  const dl = $("#downloads"); dl.innerHTML = "";
+  const a = (label, p, cls = "") => p ? `<a class="${cls}" href="/jobs/${state.job}/${p}" download>${label}</a>` : "";
+  dl.insertAdjacentHTML("beforeend", a("project .zip", r.files.project_zip, "main") + a("gerbers .zip", r.files.gerbers_zip));
+  const more = [a(".kicad_sch", r.files.schematic), a(".kicad_pcb", r.files.pcb), a(".kicad_pro", r.files.project),
+    a("schematic .png", r.files.schematic_png), a("connections .txt", r.files.connections), a("review .md", r.files.inspect_md),
+    a("video", r.files.video), a("3D model .glb", r.files.model3d), a("DRC report", r.files.drc), a("ERC report", r.files.erc)].filter(Boolean);
+  if (more.length) dl.insertAdjacentHTML("beforeend", `<details class="more"><summary>More files (${more.length})</summary><div class="menu">${more.join("")}</div></details>`);
+  if (["127.0.0.1", "localhost", "[::1]"].includes(location.hostname)) {
+    dl.insertAdjacentHTML("beforeend", `<button id="openK">Open in KiCad</button><button id="openF">Open folder</button>`);
+    $("#openK").onclick = () => fetch(`/api/jobs/${state.job}/open`, { method: "POST" });
+    $("#openF").onclick = () => fetch(`/api/jobs/${state.job}/folder`, { method: "POST" });
+  }
+  dl.insertAdjacentHTML("beforeend", `<span class="path" title="${r.dir}">${r.dir.split("/").slice(-2).join("/")}</span>`);
+}
+
+async function openTab(key) {
+  if (state.v3d) { try { state.v3d.dispose(); } catch (e) {} state.v3d = null; }
+  state.tab = key; const r = state.result; const v = $("#view");
+  syncTabs(key);
+  const url = p => `/jobs/${state.job}/${p}?t=${Date.now()}`;
+  v.className = "view";
+  if (key === "toolbox") { v.className = "view dark"; return renderToolbox(v); }
+  if (key === "guide") { v.className = "view dark"; return renderGuide(v); }
+  if (key === "compare") { v.className = "view dark"; return renderCompare(v); }
+  if (key === "connections" || key === "spec") {
+    v.className = "view dark";
+    const txt = await (await fetch(url(key === "spec" ? r.files.spec : r.files.connections))).text();
+    v.innerHTML = ""; const pre = document.createElement("pre"); pre.textContent = txt; v.append(pre);
+  } else if (key === "render3d") {
+    if (!r.files.model3d) {
+      v.className = "view dark";
+      v.innerHTML = `<div class="notice">Interactive model not available for this run: KiCad's GLB export failed, so this is the static render. The 3D render stage in the log has KiCad's message.</div><img class="stack" src="${url(r.files.render3d)}">`;
+      return;
+    }
+    v.className = "view editor";
+    const go = async () => {
+      const job = state.job;
+      const h = await window.Viewer3D.open(v, { glb: url(r.files.model3d), layoutUrl: r.files.layout && url(r.files.layout),
+        specUrl: r.files.spec && url(r.files.spec), metaUrl: r.files.model3d_meta && url(r.files.model3d_meta) });
+      if (state.tab === "render3d" && state.job === job) state.v3d = h; else h.dispose();
+    };
+    if (window.Viewer3D) go(); else window.addEventListener("viewer3d-ready", go, { once: true });
+  } else if (key === "inspect") {
+    v.className = "view editor";
+    const R = await (await fetch(url(r.files.inspect))).json();
+    const sevs = ["error", "warning", "note"];
+    const tileFor = f => {
+      for (const ps of R.passes) for (const t of ps.tiles) {
+        const c = t.crop; if (f.x >= c[0] && f.x <= c[2] && f.y >= c[1] && f.y <= c[3]) return t;
+      }
+      return R.passes[R.passes.length - 1].tiles[0];
+    };
+    const esc = t => String(t ?? "").replace(/[&<>]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[ch]));
+    const items = [...sevs.flatMap(sv => R.findings.filter(f => f.severity === sv && !f.dismissed)), ...R.findings.filter(f => f.dismissed)];
+    const nMoves = Object.keys(R.moves || {}).length;
+    v.innerHTML = `<div class="rv">
+      <div class="rv-list">
+        <div class="rv-head"><b class="rv-${R.verdict === "ok" ? "ok" : "bad"}">verdict: ${esc(R.verdict)}</b>
+          <p>${esc(R.summary)}</p>
+          ${nMoves ? `<button id="rvApply" class="ed-go">apply ${nMoves} suggested move(s) and reroute</button>` : ""}
+          <a class="dl3" href="${url(r.files.inspect_md)}" target="_blank">report .md</a></div>
+        ${items.length ? items.map((f, i) => `${f.dismissed && (i === 0 || !items[i - 1].dismissed) ? `<div class="rv-sep">Dismissed by a later pass</div>` : ""}<div class="rv-item sev-${f.severity}${f.dismissed ? " gone" : ""}" data-i="${i}">
+            <span class="rv-sev">${f.severity}</span> <b>${esc((f.refs || []).join(", "))}</b>
+            <span class="rv-where">${f.x != null ? `(${(+f.x).toFixed(1)}, ${(+f.y).toFixed(1)}) mm` : ""}, ${esc(f.pass_ || "")}${f.model_ ? ", " + esc(f.model_) : ""}</span>
+            <div class="rv-text">${esc(f.issue)}</div>${f.fix && !f.dismissed ? `<div class="rv-fix">Fix: ${esc(f.fix)}</div>` : ""}
+            ${f.dismissed ? `<div class="rv-why">Dismissed: ${esc(f.dismissed)}</div>` : ""}</div>`).join("")
+          : `<div class="rv-item">No findings.</div>`}
+      </div>
+      <div class="rv-img"><img id="rvImg"><div id="rvCap" class="rv-cap"></div>
+        <div class="rv-thumbs">${R.passes.map(ps => ps.tiles.map(t => `<img data-f="${t.file}" title="${esc(ps.name)} ${t.id}" src="${url(t.file)}">`).join("")).join("")}</div></div>
+    </div>`;
+    const show = (file, cap, f) => {
+      $("#rvImg").src = url(file); $("#rvCap").textContent = cap;
+    };
+    const last = R.passes[R.passes.length - 1].tiles[0];
+    show(last.file, "whole board");
+    v.querySelectorAll(".rv-item[data-i]").forEach(el => el.onclick = () => {
+      const f = items[+el.dataset.i]; const t = tileFor(f);
+      v.querySelectorAll(".rv-item").forEach(x => x.classList.toggle("on", x === el));
+      show(t.file, `tile ${t.id} · finding at (${(+f.x || 0).toFixed(1)}, ${(+f.y || 0).toFixed(1)}) mm`);
+    });
+    v.querySelectorAll(".rv-thumbs img").forEach(im => im.onclick = () => show(im.dataset.f, im.title));
+    if (nMoves) $("#rvApply").onclick = async () => {
+      const res = await fetch(`/api/jobs/${state.job}/reroute`, { method: "POST", headers: { "content-type": "application/json" },
+                                                                 body: JSON.stringify({ moves: R.moves, replace: false }) });
+      const j = await res.json(); if (!res.ok) { alert(j.error); return; }
+      $("#run").disabled = true; $("#run").textContent = "Rerouting…"; state.tab = "pcb_top"; resetView(); follow(j.id);
+    };
+  } else if (key === "reasoning") {
+    v.className = "view dark";
+    const R = await (await fetch(url(r.files.reasoning))).json();
+    v.innerHTML = renderReasoning(R, url);
+  } else if (key === "edit") {
+    v.className = "view editor";
+    Editor.open(v, url(r.files.layout), state.job, newId => {
+      $("#run").disabled = true; $("#run").textContent = "Rerouting…";
+      state.tab = "pcb_top";
+      resetView(); follow(newId);
+    });
+  } else if (key === "video") {
+    v.className = "view dark";
+    const p = r.files.video;
+    v.innerHTML = p.endsWith(".gif") ? `<img src="${url(p)}">` :
+      `<video src="${url(p)}" controls autoplay loop muted playsinline style="width:100%;height:100%;object-fit:contain"></video>`;
+  } else if (key === "ems") {
+    const imgs = Object.keys(r.files).filter(k => k.startsWith("ems_")).map(k => r.files[k]);
+    if (imgs.length) v.innerHTML = imgs.map(p => `<img class="stack" src="${url(p)}">`).join("");
+    else { v.className = "view dark"; const txt = await (await fetch(url(r.files.sim_config))).text();
+      v.innerHTML = ""; const pre = document.createElement("pre"); pre.textContent = "simulation.json (gerber2ems not installed)\n\n" + txt; v.append(pre); }
+  } else {
+    const p = TABS.find(t => t[0] === key)[2](r);
+    zoomView(v, url(p), key);
+  }
+}
+
+// Pan/zoom for the schematic and board drawings: wheel zooms at the cursor, drag pans, double-click fits.
+// The image is resized (not CSS-scaled), so SVGs stay sharp at any zoom.
+function zoomView(v, src, label) {
+  v.className = "view zoom";
+  v.innerHTML = `<div class="zv-bar"><button data-z="in" title="Zoom in (+)">+</button><button data-z="out" title="Zoom out (-)">−</button>
+    <button data-z="fit" title="Fit (0)">Fit</button><span class="zv-pct"></span>
+    <span class="zv-help">Wheel to zoom, drag to pan, double-click to fit</span>
+    <a class="dl3" href="${src}" target="_blank">Open full size</a></div>
+    <div class="zv-stage"><img alt="${label}" draggable="false"></div>`;
+  const stage = v.querySelector(".zv-stage"), img = stage.querySelector("img"), pct = v.querySelector(".zv-pct");
+  let nw = 1, nh = 1, z = 1, fitZ = 1, x = 0, y = 0;
+  const apply = () => {
+    img.style.width = nw * z + "px"; img.style.height = nh * z + "px";
+    img.style.left = x + "px"; img.style.top = y + "px";
+    pct.textContent = Math.round(z / fitZ * 100) + "%";
+  };
+  const fit = () => {
+    const W = stage.clientWidth, H = stage.clientHeight;
+    fitZ = z = Math.min(W / nw, H / nh) * 0.98;
+    x = (W - nw * z) / 2; y = (H - nh * z) / 2; apply();
+  };
+  const zoomAt = (k, cx, cy) => {
+    const nz = Math.min(fitZ * 40, Math.max(fitZ * 0.5, z * k));
+    x = cx - (cx - x) * nz / z; y = cy - (cy - y) * nz / z; z = nz; apply();
+  };
+  img.onload = () => { nw = img.naturalWidth || 1000; nh = img.naturalHeight || 700; fit(); };
+  img.src = src;
+  stage.addEventListener("wheel", e => {
+    e.preventDefault();
+    const r = stage.getBoundingClientRect();
+    zoomAt(e.deltaY < 0 ? 1.18 : 1 / 1.18, e.clientX - r.left, e.clientY - r.top);
+  }, { passive: false });
+  let drag = null;
+  stage.addEventListener("pointerdown", e => { drag = { sx: e.clientX, sy: e.clientY, x, y }; stage.setPointerCapture(e.pointerId); stage.classList.add("grab"); });
+  stage.addEventListener("pointermove", e => { if (!drag) return; x = drag.x + e.clientX - drag.sx; y = drag.y + e.clientY - drag.sy; apply(); });
+  stage.addEventListener("pointerup", () => { drag = null; stage.classList.remove("grab"); });
+  stage.addEventListener("dblclick", fit);
+  v.querySelector(".zv-bar").onclick = e => {
+    const a = e.target.dataset.z, W = stage.clientWidth / 2, H = stage.clientHeight / 2;
+    if (a === "in") zoomAt(1.4, W, H); else if (a === "out") zoomAt(1 / 1.4, W, H); else if (a === "fit") fit();
+  };
+  const keys = e => {
+    if (!document.body.contains(stage)) { window.removeEventListener("keydown", keys); return; }
+    if (e.target.matches("input, textarea, select")) return;
+    const W = stage.clientWidth / 2, H = stage.clientHeight / 2;
+    if (e.key === "+" || e.key === "=") zoomAt(1.4, W, H);
+    else if (e.key === "-" || e.key === "_") zoomAt(1 / 1.4, W, H);
+    else if (e.key === "0") fit();
+  };
+  window.addEventListener("keydown", keys);
+  new ResizeObserver(() => { if (Math.abs(z - fitZ) < 1e-6) fit(); }).observe(stage);
+}
+function renderReasoning(R, url) {
+  const esc = t => String(t ?? "").replace(/[&<>]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[ch]));
+  const nat = (a, b) => a.localeCompare(b, undefined, { numeric: true });
+  const rat = R.rationale || {}, why = rat.parts || {}, fp = R.floorplan || {};
+  const para = t => t ? String(t).split(/\n{2,}/).map(x => `<p>${esc(x)}</p>`).join("") : "";
+  const range = refs => refs.length > 3 ? `${refs[0]} to ${refs[refs.length - 1]} (${refs.length} parts)` : refs.join(", ");
+  const pin = t => { const [ref, n] = String(t).split("."); return n ? `${ref} pin ${n}` : ref; };
+  const cons = [];
+  for (const c of R.components || []) if (c.edge) cons.push(`${c.ref} on the ${c.edge} edge`);
+  for (const g of fp.grids || []) cons.push(`${range(g.refs || [])} as a grid, ${g.cols} columns${g.pitch_mm ? `, ${g.pitch_mm} mm pitch` : ""}`);
+  for (const g of fp.regions || []) cons.push(`${(g.refs || []).join(", ")} kept in the ${Array.isArray(g.area) ? "area " + g.area.join(", ") : g.area} of the board`);
+  for (const n of fp.near || []) cons.push(`${n.ref} within ${n.max_mm ?? "?"} mm of ${pin(n.to)}`);
+  for (const k of fp.keepouts || []) cons.push(`nothing within ${k.mm} mm of ${k.ref}`);
+  for (const nc of R.netclasses || []) cons.push(`${nc.name} class: ${(nc.nets || []).join(", ")}${nc.current_a ? `, sized for ${nc.current_a} A` : ""}${nc.track_mm ? `, ${nc.track_mm} mm tracks` : ""}`);
+  for (const f of R.rf || []) cons.push(`${f.net} routed as ${f.impedance_ohm || 50} Ω line`);
+  const pl = R.placer || {};
+  const parts = [...(R.components || [])].sort((a, b) => nat(a.ref, b.ref));
+  const withWhy = parts.filter(c => why[c.ref]), rest = parts.filter(c => !why[c.ref]);
+  const ROLE = { spec: "Designing the circuit", fix: "Fixing validation errors", escalate: "Fixing errors after two failed rounds",
+    review: "Placement review", inspect_detail: "Inspection, detail tiles", inspect_blocks: "Inspection, larger tiles", inspect_final: "Inspection, whole board" };
+  return `<article class="rs">
+    ${R.request ? `<blockquote>${esc(R.request)}</blockquote>` : ""}
+    <p class="rs-note">${R.source === "model" ? "Written by the model alongside the design, to explain its choices. It is the model's stated reasoning, not a record of its internal thinking."
+      : `This design came from a ${esc(R.source)}, so there is no model reasoning; the constraints and placer decisions below still apply.`}</p>
+    ${(rat.changes || []).length ? `<h3>What changed in this revision</h3><ul>${rat.changes.map(c => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}
+    <h3>How it works</h3>
+    ${para(rat.design) || para(R.description) || `<p class="rs-dim">No explanation was given.</p>`}
+    <h3>Parts</h3>
+    ${withWhy.length ? `<table class="rs-parts"><tr><th>Ref</th><th>Value</th><th>Why</th></tr>${withWhy.map(c =>
+      `<tr><td>${esc(c.ref)}</td><td>${esc(c.value)}<div class="rs-dim">${esc((c.footprint || "").split(":").pop())}</div></td><td>${esc(why[c.ref])}</td></tr>`).join("")}</table>`
+      : `<p class="rs-dim">No per-part reasons were given.</p>`}
+    ${rest.length ? `<p class="rs-dim">No specific reason given for: ${rest.map(c => esc(c.ref + " " + (c.value || ""))).join(", ")}.</p>` : ""}
+    <h3>Layout plan</h3>
+    ${para(rat.placement) || `<p class="rs-dim">No layout explanation was given.</p>`}
+    ${cons.length ? `<h4>Constraints given to the placer</h4><ul>${cons.map(c => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}
+    ${(pl.rules || []).length || (pl.antennas || []).length ? `<h4>What the placer did on its own</h4><ul>${(pl.rules || []).map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+    ${(pl.relaxed || []).length ? `<p class="rs-warn">Constraints the placer could not meet and dropped: ${esc(pl.relaxed.join(", "))}</p>` : ""}
+    ${(R.reviews || []).length ? `<h3>Placement review</h3>${R.reviews.map(rv => `<div class="rs-rev">
+        ${rv.image ? `<img src="${url(rv.image)}" alt="placement reviewed in round ${rv.round}">` : ""}
+        <div><b class="${rv.verdict === "ok" ? "rs-ok" : "rs-bad"}">Round ${rv.round}: ${rv.verdict === "ok" ? "accepted" : rv.verdict === "revise" ? "asked for changes" : esc(rv.verdict)}</b>
+        ${(rv.issues || []).length ? `<ul>${rv.issues.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : ""}
+        ${Object.keys(rv.edges || {}).length ? `<p>Edge changes: ${Object.entries(rv.edges).map(([k, e]) => esc(`${k} to ${e || "no edge"}`)).join(", ")}</p>` : ""}
+        ${rv.floorplan_changed ? `<p>Revised the floorplan.</p>` : ""}${rv.outcome ? `<p class="rs-dim">${esc(rv.outcome)}</p>` : ""}</div></div>`).join("")}` : ""}
+    ${Object.keys(R.models || {}).length ? `<h3>Models used</h3><table class="rs-models">${Object.entries(R.models).map(([k, m]) => `<tr><td>${ROLE[k] || k}</td><td>${esc(m)}</td></tr>`).join("")}</table>` : ""}
+  </article>`;
+}
+
+// ---- toolbox: checks, generators, design aids ----
+const TB_OPEN = /\.(html|svg|pdf|md|txt|json|png|csv|h|py|ini|cir|scad)$/i;
+function tbFiles(files) {
+  return (files || []).map(f => `<a href="/jobs/${state.job}/${escH(f.path)}" ${TB_OPEN.test(f.path) ? 'target="_blank"' : "download"}>${escH(f.label)}</a>`).join("");
+}
+function tbFinding(f, src) {
+  const pick = f.severity !== "note" ? `<input type="checkbox" class="pick" title="Include in a Revise request" data-t="${escH(f.title + (f.detail ? ". " + f.detail : "") + (f.fix ? " Suggested fix: " + f.fix : ""))}">` : "";
+  return `<div class="tb-f ${f.severity}"><span class="sv ${f.severity}">${f.severity}</span><div><div class="hd">${pick}<b>${escH(f.title)}</b>`
+    + ((f.refs || []).length ? `<a class="locate" data-refs="${escH(f.refs.join(","))}">show on board</a>` : "") + (src ? `<span class="src">${escH(src)}</span>` : "") + `</div>`
+    + (f.detail ? `<div class="d">${escH(f.detail)}</div>` : "") + (f.fix ? `<div class="fx">${escH(f.fix)}</div>` : "") + `</div></div>`;
+}
+const PV_IMG = /\.(svg|png)$/i, PV_TXT = /\.(md|txt|h|py|ini|cir|csv|scad)$/i;
+function wirePreviews(root) {
+  root.querySelectorAll("details.pv").forEach(d => { if (d._w) return; d._w = 1; d.addEventListener("toggle", async () => {
+    const card = d.closest(".tb-card"); if (card) card.classList.toggle("wide", !!card.querySelector("details.pv[open]"));
+    const box = d.querySelector("div"); if (!d.open || box.childNodes.length) return;
+    const url = `/jobs/${state.job}/${d.dataset.path}?t=${Date.now()}`;
+    if (PV_IMG.test(d.dataset.path)) box.innerHTML = `<img src="${url}" alt="">`;
+    else { const pre = document.createElement("pre"); try { pre.textContent = (await (await fetch(url)).text()).slice(0, 20000); } catch (e) { pre.textContent = String(e); } box.append(pre); }
+  }); });
+}
+function tbResult(rec) {
+  if (!rec) return "";
+  const bad = rec.status === "error" || rec.status === "unavailable";
+  let h = `<div class="sm ${bad ? "error" : ""}">${escH(rec.status === "error" ? "Failed: " + rec.summary : rec.summary || "")}</div>`;
+  if (rec.data && rec.data.answer) h = `<div class="tb-ans">${escH(rec.data.answer)}</div><div class="fi">${escH(rec.data.model || "")}</div>`;
+  if ((rec.files || []).length) h += `<div>${tbFiles(rec.files)}</div>`
+    + rec.files.filter(f => PV_IMG.test(f.path) || PV_TXT.test(f.path)).slice(0, 3).map(f => `<details class="pv" data-path="${escH(f.path)}"><summary>Preview: ${escH(f.label)}</summary><div></div></details>`).join("");
+  for (const f of rec.findings || []) h += `<div class="fi"><b>${escH(f.title)}</b>${f.detail ? " " + escH(f.detail) : ""}</div>`;
+  return `<div class="tb-res">${h}<div class="fi">${escH(rec.ran_at || "")}</div></div>`;
+}
+function tbCard(a) {
+  const opts = (a.options || []).map(o => o.type === "select"
+    ? `<label>${escH(o.label)}<select data-k="${o.key}">${(o.choices || []).map(c => `<option ${c === o.default ? "selected" : ""}>${escH(c)}</option>`).join("")}</select></label>`
+    : o.type === "bool"
+    ? `<label class="ck"><input type="checkbox" data-k="${o.key}" ${o.default ? "checked" : ""}> ${escH(o.label)}</label>`
+    : `<label>${escH(o.label)}<input type="${o.type === "number" ? "number" : "text"}" ${o.type === "number" ? 'step="any"' : ""} data-k="${o.key}" value="${escH(o.default ?? "")}"></label>`).join("");
+  const badge = (a.status !== "ready" ? `<span class="tb-badge ${a.status}">${a.status}</span>` : "") + (a.source !== "built in" ? `<span class="tb-badge plugin">plugin</span>` : "");
+  return `<div class="tb-card ${a.available ? "" : "na"}" data-id="${a.id}"><div class="t">${escH(a.title)}${badge}</div><div class="s">${escH(a.summary)}</div>${opts}
+    <div><button data-run="${a.id}" ${a.available ? "" : "disabled"}>${a.kind === "aid" && a.id === "aid.ask" ? "Ask" : a.last ? "Run again" : "Run"}</button>
+    ${a.available ? "" : `<span class="fi" style="margin-left:8px;color:var(--silk-faint);font-size:12.5px">${escH(a.why)}</span>`}</div>
+    <div class="res">${tbResult(a.last)}</div></div>`;
+}
+const tbView = { sev: "all", by: "part" };
+function tbFindings(all) {
+  const keep = ([f]) => tbView.sev === "all" || (tbView.sev === "error" ? f.severity === "error" : f.severity !== "note");
+  const rows = all.filter(keep);
+  if (!rows.length) return `<p class="tb-foot">Nothing at this level.</p>`;
+  if (tbView.by === "none") return rows.map(([f, t]) => tbFinding(f, t)).join("");
+  const groups = new Map();
+  for (const [f, t] of rows) {
+    const k = tbView.by === "check" ? t : ((f.refs || [])[0] || "Whole board");
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push([f, t]);
+  }
+  const rank = g => g.some(([f]) => f.severity === "error") ? 0 : g.some(([f]) => f.severity === "warning") ? 1 : 2;
+  const parts = (window._tbSpec || {}).components || [];
+  return [...groups.entries()].sort((a, b) => rank(a[1]) - rank(b[1])).map(([k, g]) => {
+    const n = sv => g.filter(([f]) => f.severity === sv).length, c = parts.find(x => x.ref === k);
+    return `<details class="tb-grp" ${rank(g) < 2 ? "open" : ""}><summary>${escH(k)}${c ? ` <small>${escH(c.value || "")}</small>` : ""}<span class="c">${n("error") ? `<span class="tb-pill error">${n("error")}</span>` : ""}${n("warning") ? `<span class="tb-pill warning">${n("warning")}</span>` : ""}${n("note") ? `<span class="tb-pill">${n("note")}</span>` : ""}</span></summary>
+      <div>${g.map(([f, t]) => tbFinding(f, tbView.by === "check" ? "" : t)).join("")}</div></details>`;
+  }).join("");
+}
+// a small board drawing with some parts lit up, placed under whatever asked for it
+async function locate(anchor, refs) {
+  let host = anchor.closest(".tb-f, .gd-it, .gd-sec") || anchor.parentElement;
+  if (host.matches(".tb-f, .gd-it")) host = host.children[1] || host;
+  const old = host.querySelector(".loc"); if (old) { old.remove(); return; }
+  const job = state.job;
+  if (!state.layoutCache || state.layoutCache.job !== job) state.layoutCache = { job, layout: await getJson(`/jobs/${job}/out/layout.json`) };
+  const L = state.layoutCache.layout, div = document.createElement("div"); div.className = "loc";
+  if (!L || !(L.parts || []).length) { div.innerHTML = `<span class="rs-dim">The board has not been placed yet, so there is nothing to point at.</span>`; }
+  else {
+    const [w, h] = L.board, hi = new Set(refs), found = L.parts.filter(p => hi.has(p.ref)).map(p => p.ref);
+    let o = `<svg viewBox="-1 -1 ${w + 2} ${h + 2}" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="${w}" height="${h}" rx="0.8" fill="#1f6b3a" stroke="#0d3d20" stroke-width="0.2"/>`;
+    for (const p of L.parts) {
+      const g = (p.geo || {})[String(p.rot ?? 0)]; if (!g) continue;
+      if ((p.lib || "").startsWith("MountingHole")) { o += `<circle cx="${p.x}" cy="${p.y}" r="1.6" fill="#fff" stroke="#c9a23c" stroke-width="0.5"/>`; continue; }
+      const b = g.box, x = p.x + b[0], y = p.y + b[1], bw = b[2] - b[0], bh = b[3] - b[1], on = hi.has(p.ref), fs = Math.max(0.8, Math.min(1.8, bw / Math.max(p.ref.length, 2) * 1.3, bh * 0.7));
+      o += `<g class="${on ? "hi" : "dim"}"><rect class="b" x="${x}" y="${y}" width="${bw}" height="${bh}" rx="0.25" fill="${p.back ? "#27506e" : "#4a4f57"}" stroke="#0b0d10" stroke-width="${on ? 0.3 : 0.08}"/>`
+        + (on ? `<text x="${x + bw / 2}" y="${y + bh / 2 + fs * 0.35}" font-size="${fs}" text-anchor="middle" fill="#000" font-family="sans-serif" font-weight="700">${escH(p.ref)}</text>` : "") + `</g>`;
+    }
+    const miss = refs.filter(x => !found.includes(x));
+    div.innerHTML = o + `</svg>` + (miss.length ? `<div class="rs-dim" style="font-size:12px;margin-top:4px">Not on the placed board: ${escH(miss.join(", "))}</div>` : "");
+  }
+  host.append(div);
+}
+document.addEventListener("click", e => { const a = e.target.closest("a.locate"); if (a) { e.preventDefault(); e.stopPropagation(); locate(a, a.dataset.refs.split(",")); } });
+function tbChecks(chk, list) {
+  window._tbChk = chk;
+  if (!chk) return `<div class="tb-sum"><span class="tb-pill">not run for this board yet</span><button id="tbRunChecks">Run the checks</button></div>`;
+  const c = chk.counts, all = chk.checks.flatMap(x => x.findings.map(f => [f, x.title]));
+  const order = ["error", "warning", "note"]; all.sort((p, q) => order.indexOf(p[0].severity) - order.indexOf(q[0].severity));
+  const clean = chk.checks.filter(x => !x.findings.length && x.status === "ok");
+  return `<div class="tb-sum"><span class="tb-pill ${c.error ? "error" : ""}">${c.error} errors</span><span class="tb-pill ${c.warning ? "warning" : ""}">${c.warning} warnings</span>
+    <span class="tb-pill">${c.note} notes</span><span class="tb-pill ${!c.error && !c.warning ? "ok" : ""}">${chk.checks.length} checks ran</span><button id="tbRunChecks">Run again</button>
+    ${c.error + c.warning ? `<button id="tbFix" title="Tick the findings to fix; they are written into the Revise box for you to read and send">Fix ticked with Revise</button>` : ""}
+</div>`
+    + `<div class="tb-filter">Show <button data-sev="all" class="${tbView.sev === "all" ? "on" : ""}">all</button><button data-sev="error" class="${tbView.sev === "error" ? "on" : ""}">errors</button><button data-sev="warning" class="${tbView.sev === "warning" ? "on" : ""}">errors and warnings</button>
+       &nbsp; group <button data-by="part" class="${tbView.by === "part" ? "on" : ""}">by part</button><button data-by="check" class="${tbView.by === "check" ? "on" : ""}">by check</button><button data-by="none" class="${tbView.by === "none" ? "on" : ""}">flat list</button></div>`
+    + tbFindings(all)
+    + (clean.length ? `<p class="tb-foot" style="margin-top:10px">Found nothing: ${clean.map(x => escH(x.title) + " (" + escH(x.summary) + ")").join("; ")}.</p>` : "")
+    + ((chk.broken || []).length ? `<p class="rs-warn">Could not run: ${escH(chk.broken.join(", "))}</p>` : "");
+}
+async function renderToolbox(v) {
+  const job = state.job;
+  v.innerHTML = `<div class="tb"><p class="rs-dim">Loading…</p></div>`;
+  const d = await (await fetch(`/api/jobs/${job}/addons`)).json();
+  if (state.tab !== "toolbox" || state.job !== job) return;
+  if (d.error) { v.innerHTML = `<div class="tb"><p class="rs-dim">${escH(d.error)}</p></div>`; return; }
+  if (!tbView.touched) tbView.sev = state.result && state.result.level === "expert" ? "warning" : "all";
+  if (!window._tbSpec || window._tbSpecJob !== job) { window._tbSpec = await getJson(`/jobs/${job}/spec.json`) || {}; window._tbSpecJob = job; }
+  const by = k => d.addons.filter(a => a.kind === k);
+  const groups = {}; by("generate").forEach(a => (groups[a.group || "Other"] = groups[a.group || "Other"] || []).push(a));
+  const extra = by("check").filter(a => !a.auto);
+  v.innerHTML = `<div class="tb">
+    <h3>Design checks <small>fixed rules for common wiring and layout mistakes; no model involved. A clean result is not proof the circuit works.</small></h3>
+    <div id="tbChecks">${tbChecks(d.checks, d.addons)}</div>
+    ${extra.length ? `<h4>Optional checks</h4><div class="tb-grid">${extra.map(tbCard).join("")}</div>` : ""}
+    <h3>Make <small>files generated from this board. Beta and preview say how far each one is.</small></h3>
+    ${Object.entries(groups).map(([g, as]) => `<h4>${escH(g)}</h4><div class="tb-grid">${as.map(tbCard).join("")}</div>`).join("")}
+    <h3>Design aids</h3><div class="tb-grid">${by("aid").map(tbCard).join("")}</div>
+    <p class="tb-foot">Your own checks and generators: drop a .py file into <code>${escH(d.plugin_dir)}</code> (format in kipipe/addons/__init__.py).
+    ${(d.plugin_errors || []).map(e => `<br><span class="rs-warn">${escH(e)}</span>`).join("")}</p></div>`;
+  wirePreviews(v);
+  v.querySelector(".tb").onclick = async e => {
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.sev || b.dataset.by) {
+      if (b.dataset.sev) tbView.sev = b.dataset.sev; else tbView.by = b.dataset.by; tbView.touched = true;
+      const chk = window._tbChk; if (chk) $("#tbChecks").innerHTML = tbChecks(chk);
+      return;
+    }
+    if (b.id === "tbFix") {
+      const picks = [...v.querySelectorAll(".pick:checked")].map(i => "- " + i.dataset.t);
+      if (!picks.length) { b.textContent = "Tick findings first"; setTimeout(() => b.textContent = "Fix ticked with Revise", 1500); return; }
+      $("#revText").value = "Fix these problems found by the design checks. Change nothing else.\n" + picks.join("\n"); $("#revText").focus();
+      return;
+    }
+    if (b.id === "tbNotes") { const hide = b.textContent.startsWith("Hide"); window._tbNotes = !hide; v.querySelectorAll(".tb-f.note").forEach(x => x.style.display = hide ? "none" : ""); if (!hide && state.result.level === "expert") return renderToolbox(v); b.textContent = (hide ? "Show" : "Hide") + " notes"; return; }
+    if (b.id === "tbRunChecks") {
+      b.disabled = true; b.textContent = "Checking…";
+      const chk = await (await fetch(`/api/jobs/${job}/addons/checks`, { method: "POST" })).json();
+      if (state.job === job && $("#tbChecks")) $("#tbChecks").innerHTML = tbChecks(chk);
+      return;
+    }
+    const id = b.dataset.run; if (!id) return;
+    const card = b.closest(".tb-card"), body = {};
+    card.querySelectorAll("[data-k]").forEach(i => body[i.dataset.k] = i.type === "checkbox" ? i.checked : i.value);
+    if (id === "aid.ask") { const f = new FormData($("#form")); body._model = {}; ["backend", "model", "models", "local_model", "api_key", "ollama_host"].forEach(k => { if (f.get(k)) body._model[k] = f.get(k); }); }
+    const label = b.textContent; b.disabled = true; b.textContent = "Working…";
+    let rec;
+    try {
+      const r = await fetch(`/api/jobs/${job}/addons/${id}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      rec = await r.json(); if (rec.error && !rec.status) rec = { status: "error", summary: rec.error };
+    } catch (err) { rec = { status: "error", summary: String(err) }; }
+    b.disabled = false; b.textContent = label === "Ask" ? "Ask" : "Run again";
+    card.querySelector(".res").innerHTML = tbResult(rec); wirePreviews(card);
+    if (id === "aid.saveblock") loadBlocks();
+    if (id === "aid.ask") loadUsage();
+  };
+}
+
+// ---- starters, brief check, blocks, usage ----
+async function loadStarters() {
+  try {
+    const st = await (await fetch("/api/starters")).json(); const sel = $("#starters");
+    st.forEach((x, i) => sel.insertAdjacentHTML("beforeend", `<option value="${i}">${escH(x.title)}</option>`));
+    sel.onchange = () => { if (sel.value !== "") { $("#prompt").value = st[+sel.value].prompt; sel.value = ""; briefSoon(); } };
+  } catch (e) {}
+}
+let briefT = null;
+function briefSoon() { clearTimeout(briefT); briefT = setTimeout(runBrief, 700); }
+async function runBrief() {
+  const box = $("#brief"), text = $("#prompt").value;
+  if (text.trim().length < 12) { box.innerHTML = ""; return; }
+  try {
+    const d = await (await fetch("/api/brief", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: text }) })).json();
+    if ($("#prompt").value !== text) return;
+    box.innerHTML = (d.questions || []).map((q, i) => `<button type="button" data-i="${i}" title="${escH(q.why)}">${escH(q.question)} <span>not stated</span></button>`).join("");
+    box.querySelectorAll("button").forEach(b => b.onclick = () => {
+      const q = d.questions[+b.dataset.i], ta = $("#prompt");
+      ta.value = ta.value.replace(/\s*$/, "") + "\n" + q.stub; ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); b.remove();
+    });
+  } catch (e) { box.innerHTML = ""; }
+}
+async function loadBlocks() {
+  try {
+    const d = await (await fetch("/api/blocks")).json();
+    $("#blkCount").textContent = d.blocks.length ? d.blocks.length : "";
+    $("#blkList").innerHTML = d.blocks.map(b => `<div class="libpart blk"><div><div class="n">${escH(b.title || b.id)}${b.source_kind === "yours" ? ' <span class="chk part">yours</span>' : ""}${b.error ? ' <span class="chk bad">unreadable</span>' : ""}</div>
+      <div class="d">${escH(b.summary || b.error || "")}</div>
+      <div class="x"><code>${escH(b.id)}</code> · ports: ${escH(Object.keys(b.ports || {}).join(", "))}${Object.keys(b.params || {}).length ? " · options: " + escH(Object.entries(b.params).map(([k, p]) => `${k}=${p.default}`).join(", ")) : ""}
+      <br>${(b.components || []).length} parts: ${escH((b.components || []).map(c => c.value).join(", "))}${(b.notes || []).map(n => "<br>• " + escH(n)).join("")}${b.source ? "<br>Source: " + escH(b.source) : ""}</div></div></div>`).join("");
+    $("#blkList").querySelectorAll(".blk").forEach(el => el.onclick = () => el.classList.toggle("open"));
+  } catch (e) {}
+}
+async function loadUsage() {
+  try {
+    const u = await (await fetch("/api/usage")).json(); const t = u.total;
+    $("#useCount").textContent = t.calls ? `${t.calls} calls` : "";
+    const row = ([k, x]) => `<tr><td>${escH(k)}</td><td>${x.calls}</td><td>${(x.seconds / 60).toFixed(1)} min</td><td>${x.cost ? "$" + x.cost.toFixed(x.cost < 1 ? 3 : 2) : ""}</td></tr>`;
+    const top = o => Object.entries(o).sort((p, q) => q[1].seconds - p[1].seconds).slice(0, 8).map(row).join("");
+    $("#useBody").innerHTML = t.calls ? `<table class="use"><tr><td>Total</td><td>${t.calls}</td><td>${(t.seconds / 60).toFixed(1)} min</td><td>${t.cost ? "$" + t.cost.toFixed(t.cost < 1 ? 3 : 2) : ""}</td></tr>${top(u.by_model)}</table>
+      <div class="hint" style="margin:6px 0 2px">By step</div><table class="use">${top(u.by_role)}</table>`
+      + (u.budget.usd_month || u.budget.calls_day ? `<div class="hint">Limit: ${u.budget.usd_month ? "$" + u.budget.usd_month + " a month" : ""} ${u.budget.calls_day ? u.budget.calls_day + " calls a day" : ""}</div>` : "")
+      : `<div class="hint">No model calls recorded yet.</div>`;
+  } catch (e) {}
+}
+$("#prompt").addEventListener("input", briefSoon);
+loadStarters(); loadBlocks(); loadUsage();
+
+
+// ---- guide: what to check first, and a plain-language walkthrough ----
+async function getJson(url) { try { const r = await fetch(url, { cache: "no-store" }); return r.ok ? await r.json() : null; } catch (e) { return null; } }
+function modelFields() { const f = new FormData($("#form")), m = {}; ["backend", "model", "models", "local_model", "api_key", "ollama_host"].forEach(k => { if (f.get(k)) m[k] = f.get(k); }); return m; }
+async function renderGuide(v) {
+  const job = state.job;
+  v.innerHTML = `<div class="tb"><p class="rs-dim">Loading…</p></div>`;
+  let [g, w] = await Promise.all([getJson(`/jobs/${job}/out/guide.json`), getJson(`/jobs/${job}/out/addons/aid.explain/walkthrough.json`)]);
+  if (!g) { const rec = await (await fetch(`/api/jobs/${job}/addons/gen.guide`, { method: "POST" })).json(); g = rec.data && rec.data.items ? rec.data : { items: [], counts: {} }; }
+  if (state.tab !== "guide" || state.job !== job) return;
+  let done = {}; try { done = JSON.parse(localStorage.getItem("kipipe.guide." + job) || "{}"); } catch (e) {}
+  const head = { must: "Fix before building", should: "Check before ordering", glance: "Worth a glance" };
+  const item = (i, n) => `<label class="gd-it ${done[n] ? "done" : ""}"><input type="checkbox" data-n="${n}" ${done[n] ? "checked" : ""}><div><b>${escH(i.title)}</b>${(i.refs || []).length ? ` <span class="rs-dim">${escH(i.refs.slice(0, 6).join(", "))}</span><a class="locate" data-refs="${escH(i.refs.join(","))}">show on board</a>` : ""}
+    ${i.why ? `<div class="d">${escH(i.why)}</div>` : ""}${i.how ? `<div class="h">${escH(i.how)}</div>` : ""}</div></label>`;
+  const walk = w ? `<p class="gd-sum">${escH(w.summary || "")}</p>` + (w.sections || []).map(s => `<div class="gd-sec"><h5>${escH(s.title)}</h5><div class="p">${escH((s.parts || []).join(" "))}${(s.parts || []).length ? `<a class="locate" data-refs="${escH(s.parts.join(","))}">show on board</a>` : ""}</div>
+      <p>${escH(s.what || "")}</p><p class="rs-dim" style="font-size:13.5px">${escH(s.why || "")}</p>${s.check ? `<p class="c">Check: ${escH(s.check)}</p>` : ""}</div>`).join("")
+      + ((w.glossary || []).length ? `<h4>Terms</h4><dl class="gd-gl">${w.glossary.map(x => `<dt>${escH(x.term)}</dt><dd>${escH(x.meaning)}</dd>`).join("")}</dl>` : "")
+      + `<p class="tb-foot">Written for ${escH(w.level || "")} by ${escH(w.model || "a model")} from this board's own data. It explains the design; it does not verify it. <button id="gdWalk">Write it again</button></p>`
+    : `<p class="rs-dim">A plain-language tour of the board, block by block. One call to the small model. <button id="gdWalk">Walk me through this board</button></p>`;
+  const c = g.counts || {};
+  v.innerHTML = `<div class="tb"><h3>How this board works</h3><div id="gdW">${walk}</div>
+    <h3>What to check <small>${c.must || 0} to fix, ${c.should || 0} to check, ${c.glance || 0} to glance at. Most important first; ticks are kept in this browser.</small></h3>`
+    + ["must", "should", "glance"].map(l => { const rows = g.items.map((i, n) => [i, n]).filter(([i]) => i.level === l); return rows.length ? `<h4>${head[l]}</h4>` + rows.map(([i, n]) => item(i, n)).join("") : ""; }).join("")
+    + (g.items.length ? "" : `<p class="rs-dim">Nothing flagged.</p>`) + `</div>`;
+  v.querySelectorAll(".gd-it input").forEach(i => i.onchange = () => { done[i.dataset.n] = i.checked; i.closest(".gd-it").classList.toggle("done", i.checked); try { localStorage.setItem("kipipe.guide." + job, JSON.stringify(done)); } catch (e) {} });
+  const wb = $("#gdWalk"); if (wb) wb.onclick = async () => {
+    wb.disabled = true; wb.textContent = "Writing…";
+    const lv = (new FormData($("#form"))).get("level") || "standard";
+    const rec = await (await fetch(`/api/jobs/${job}/addons/aid.explain`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ level: lv, _model: modelFields() }) })).json();
+    if (rec.status === "error" || rec.error) { wb.disabled = false; wb.textContent = "Failed: " + (rec.summary || rec.error || "") + " (try again)"; return; }
+    if (state.tab === "guide" && state.job === job) renderGuide(v);
+  };
+}
+
+// ---- level, projects, context, rules, approaches ----
+const LVL_HINT = { guided: "Explains the finished board in plain words and lists what to check, most important first (one extra small-model call per run).",
+  standard: "Results, reasoning and a list of what to check.", expert: "No explanations. Stops once the circuit is designed so you can read it before any layout work; notes are hidden." };
+function setLevel(l) {
+  document.body.classList.remove("lv-guided", "lv-standard", "lv-expert"); document.body.classList.add("lv-" + l);
+  $("#lvlHint").textContent = LVL_HINT[l]; try { localStorage.setItem("kipipe.level", l); } catch (e) {}
+}
+document.querySelectorAll('input[name="level"]').forEach(i => i.onchange = () => setLevel(i.value));
+try { const l = localStorage.getItem("kipipe.level"); if (LVL_HINT[l]) document.querySelector(`input[name="level"][value="${l}"]`).checked = true; } catch (e) {}
+setLevel(document.querySelector('input[name="level"]:checked').value);
+
+let PROJECTS = [];
+async function loadProjects(keep) {
+  const d = await getJson("/api/projects"); if (!d) return;
+  PROJECTS = d.projects; const sel = $("#pjSel"), cur = keep ?? sel.value ?? "";
+  sel.innerHTML = `<option value="">none</option>` + PROJECTS.map(p => `<option value="${escH(p.slug)}">${escH(p.name)}</option>`).join("");
+  sel.value = PROJECTS.some(p => p.slug === cur) ? cur : "";
+  if (document.activeElement !== $("#rules")) $("#rules").value = d.rules || "";
+  showProject();
+}
+function showProject() {
+  const p = PROJECTS.find(x => x.slug === $("#pjSel").value);
+  $("#pjName").value = p ? p.name : ""; $("#pjCount").textContent = p ? p.name : "";
+  try { localStorage.setItem("kipipe.project", p ? p.slug : ""); } catch (e) {}
+  if (!p) { $("#pjInfo").innerHTML = ""; return; }
+  const ifs = Object.entries(p.interfaces || {});
+  $("#pjInfo").innerHTML = `<label class="f" style="margin-top:8px">About the project <span class="opt">goes into every board</span></label><textarea id="pjCtx">${escH(p.context || "")}</textarea>
+    <div class="liblist">${p.boards.map(b => `<div class="libpart"><div><div class="n">${escH(b.name)}${b.build ? ` <span class="chk ${b.build === "works" ? "ok" : b.build === "has a problem" ? "bad" : "part"}">${escH(b.build)}</span>` : ""}</div><div class="d">${b.exists ? `<a href="#" data-job="${escH(b.job)}" style="color:var(--gold-hi)">open</a>` : "run no longer on disk"}</div></div><button type="button" data-drop-board="${escH(b.name)}" title="Take it out of the project">×</button></div>`).join("")}
+    ${ifs.map(([n, it]) => `<div class="libpart"><div><div class="n">${escH(n)} <span class="chk run">interface</span></div><div class="d">${escH(Object.entries(it.pins || {}).map(([k, x]) => k + "=" + x).join(", "))}</div></div><button type="button" data-drop-if="${escH(n)}" title="Remove this interface">×</button></div>`).join("")}</div>
+    ${p.boards.length || ifs.length ? "" : `<div class="hint">No boards yet. Runs started with this project selected join it when they finish. Make a connector a shared interface from a board's Toolbox.</div>`}`;
+  const post = body => fetch("/api/projects", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug: p.slug, name: p.name, ...body }) }).then(() => loadProjects(p.slug));
+  $("#pjCtx").onchange = () => post({ context: $("#pjCtx").value });
+  $("#pjInfo").querySelectorAll("[data-drop-if]").forEach(b => b.onclick = () => post({ drop_interface: b.dataset.dropIf }));
+  $("#pjInfo").querySelectorAll("[data-drop-board]").forEach(b => b.onclick = () => post({ drop_board: b.dataset.dropBoard }));
+  $("#pjInfo").querySelectorAll("[data-job]").forEach(a => a.onclick = e => { e.preventDefault(); const h = $("#history"); if ([...h.options].some(o => o.value === a.dataset.job)) { h.value = a.dataset.job; h.dispatchEvent(new Event("change")); } });
+}
+$("#pjSel").onchange = showProject;
+$("#pjNew").onclick = () => { const i = $("#pjNewName"); i.style.display = i.style.display === "none" ? "" : "none"; if (i.style.display === "") i.focus(); };
+$("#pjNewName").onkeydown = async e => {
+  if (e.key !== "Enter") return; e.preventDefault();
+  const name = e.target.value.trim(); if (!name) return;
+  const p = await (await fetch("/api/projects", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name }) })).json();
+  e.target.value = ""; e.target.style.display = "none"; loadProjects(p.slug);
+};
+$("#rules").onchange = () => fetch("/api/rules", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ rules: $("#rules").value }) });
+$("#apprBtn").onclick = async () => {
+  const b = $("#apprBtn"), fd = new FormData($("#form"));
+  if (($("#prompt").value || "").trim().length < 12) { $("#apprMsg").textContent = "Describe the circuit first."; return; }
+  b.disabled = true; $("#apprMsg").textContent = "Asking the small model…"; $("#appr").innerHTML = "";
+  let d; try { d = await (await fetch("/api/approaches", { method: "POST", body: fd })).json(); } catch (e) { d = { error: String(e) }; }
+  b.disabled = false;
+  if (d.error || !(d.approaches || []).length) { $("#apprMsg").textContent = d.error || "No answer."; return; }
+  $("#apprMsg").textContent = "Click one to add it to the request. Nothing has been designed yet.";
+  $("#appr").innerHTML = d.approaches.map((a, i) => `<div class="a" data-i="${i}"><b>${escH(a.name)}</b><br>${escH(a.summary)}<br><i>+ ${escH(a.good)}</i><br><u>− ${escH(a.bad)}</u><br>${escH(a.fits || "")}</div>`).join("")
+    + ((d.open || []).length ? `<div class="hint">Would change the choice: ${d.open.map(escH).join(" · ")}</div>` : "");
+  $("#appr").querySelectorAll(".a").forEach(el => el.onclick = () => { const a = d.approaches[+el.dataset.i], ta = $("#prompt"); ta.value = ta.value.replace(/\s*$/, "") + "\n" + (a.line || ("Approach: " + a.name)); $("#appr").innerHTML = ""; $("#apprMsg").textContent = ""; briefSoon(); loadUsage(); });
+};
+(async () => { let k = ""; try { k = localStorage.getItem("kipipe.project") || ""; } catch (e) {} await loadProjects(k); })();
+
+
+// ---- compare two runs side by side ----
+async function renderCompare(v) {
+  const job = state.job;
+  const opts = [...$("#history").options].filter(o => o.value && o.value !== job).map(o => `<option value="${escH(o.value)}">${escH(o.textContent)}</option>`).join("");
+  v.innerHTML = `<div class="tb"><h3>Compare runs <small>what changed between this run and another: parts, connections, placement.</small></h3>
+    <div class="tb-sum"><select id="cmpSel" style="max-width:360px"><option value="">the run this one came from</option>${opts}</select><button id="cmpGo">Compare</button></div><div id="cmpOut"></div></div>`;
+  const tbl = (head, rows, cls) => rows.length ? `<table class="cmp-t"><tr>${head.map(h => `<th>${h}</th>`).join("")}</tr>${rows.map(r => `<tr class="${cls || ""}">${r.map(c => `<td>${escH(c ?? "")}</td>`).join("")}</tr>`).join("")}</table>` : "";
+  const go = async () => {
+    $("#cmpOut").innerHTML = `<p class="rs-dim">Comparing…</p>`;
+    const rec = await (await fetch(`/api/jobs/${job}/addons/gen.diff`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ other: $("#cmpSel").value }) })).json();
+    if (state.tab !== "compare" || state.job !== job) return;
+    const d = rec.data || {};
+    if (!d.other_id) { $("#cmpOut").innerHTML = `<p class="rs-dim">${escH(rec.summary || "Nothing to compare with.")} Pick a run from the list.</p>`; return; }
+    const img = (id, p, cap, sz) => `<figure><figcaption>${escH(cap)}${sz ? ` · ${sz[0].toFixed(0)} × ${sz[1].toFixed(0)} mm` : ""}</figcaption>${p ? `<img src="/jobs/${id}/${p}?t=${Date.now()}" alt="">` : `<div style="color:#555;padding:30px;text-align:center">no board image</div>`}</figure>`;
+    const none = !d.added.length && !d.removed.length && !d.changed.length && !d.rewired.length && !d.moved.length;
+    $("#cmpOut").innerHTML = `<div class="cmp">${img(d.other_id, d.images[0], "Before: " + d.other_id, d.size[0])}${img(job, d.images[1], "After: this run", d.size[1])}</div>`
+      + (none ? `<p class="rs-dim" style="margin-top:14px">No differences in parts, connections or placement.</p>` : "")
+      + (d.added.length ? `<h4>Added</h4>` + tbl(["Part", "Value"], d.added, "add") : "") + (d.removed.length ? `<h4>Removed</h4>` + tbl(["Part", "Value"], d.removed, "del") : "")
+      + (d.changed.length ? `<h4>Changed</h4>` + tbl(["Part", "Field", "Before", "After"], d.changed) : "")
+      + (d.rewired.length ? `<h4>Rewired pins</h4>` + tbl(["Pin", "Before", "After"], d.rewired) : "")
+      + (d.moved.length ? `<h4>Moved</h4>` + tbl(["Part", "Distance", "Rotation"], d.moved) : "");
+  };
+  $("#cmpGo").onclick = go; go();
+}
+
+// ---- sidebar: request / library and settings ----
+function sidePane(name) {
+  document.querySelectorAll(".sidetabs button").forEach(b => b.classList.toggle("on", b.dataset.pane === name));
+  document.querySelectorAll(".side .pane").forEach(p => p.hidden = p.dataset.pane !== name);
+  if (name === "req") setSummary();
+}
+function setSummary() {
+  const f = new FormData($("#form")), sel = n => { const el = document.querySelector(`[name="${n}"]`); return el && el.selectedOptions && el.selectedOptions[0] ? el.selectedOptions[0].textContent : (f.get(n) || ""); };
+  const flags = document.querySelectorAll("#flags input:checked").length, rules = ($("#rules").value || "").split("\n").filter(x => x.trim()).length;
+  $("#setSum").innerHTML = `Model: <b style="color:var(--silk)">${escH(String(sel("models") || sel("backend")).split(":")[0].slice(0, 44))}</b>, ${flags} checks on${rules ? `, ${rules} rule${rules > 1 ? "s" : ""}` : ""}. <u>Change</u>`;
+  const b = [];
+  if (f.get("layers")) b.push(f.get("layers") + " layers"); if (f.get("fab")) b.push(f.get("fab")); if (f.get("holes")) b.push("holes " + f.get("holes"));
+  if (f.get("shape")) b.push(f.get("shape")); if (f.get("width")) b.push(`${f.get("width")} × ${f.get("height") || "?"} mm`);
+  $("#brdSum").textContent = b.join(", ") || "auto";
+}
+document.querySelectorAll(".sidetabs button").forEach(b => b.onclick = () => sidePane(b.dataset.pane));
+$("#setSum").onclick = () => sidePane("set");
+$("#form").addEventListener("change", setSummary);
+new MutationObserver(setSummary).observe($("#flags"), { childList: true, subtree: true });
+setTimeout(setSummary, 600);
+
+
+// ---- before the design: questions and missing datasheets / library parts ----
+async function renderPreflight(v) {
+  const job = state.job;
+  v.className = "view dark";
+  const pf = await getJson(`/jobs/${job}/out/preflight.json`);
+  if (!pf) { v.innerHTML = `<div class="tb"><p class="rs-dim">Nothing to show.</p></div>`; return; }
+  const need = pf.parts.filter(p => (p.needs || []).length), fine = pf.parts.filter(p => !(p.needs || []).length);
+  const q = (x, i) => `<div class="pf-q"><b>${escH(x.q)}</b><div class="w">${escH(x.why || "")}</div>`
+    + (x.options || []).map((o, n) => `<label><input type="radio" name="pfq${i}" value="${escH(o)}" ${n === 0 ? "checked" : ""}> ${escH(o)}${n === 0 ? ' <span class="rs-dim">(what it would assume)</span>' : ""}</label>`).join("")
+    + `<input type="text" data-q="${i}" placeholder="or type your own answer"></div>`;
+  const sym = p => p.symbols.length ? `<span class="${p.symbol_exact ? "ok" : "no"}">${p.symbol_exact ? "Symbol" : "Closest symbol (check the variant)"}: ${escH(p.symbols.slice(0, 3).join(", "))}</span>` : "";
+  const part = (p, i) => `<div class="pf-p"><div class="n"><b>${escH(p.name)}</b><span>${escH(p.role || "")}${p.named ? "" : " · chosen by the model"}</span></div><div class="s">
+      ${p.record ? `<span class="ok">Datasheet record: ${escH(p.record)}</span>` : `<span class="no">No datasheet in the part database</span><input type="text" data-link="${i}" placeholder="direct link to the datasheet PDF">or a file: <input type="file" data-file data-part="${escH(p.name)}" accept=".pdf">`}
+      ${sym(p)}${p.symbols.length ? (p.footprint_ok ? `<span class="ok">Footprint: ${escH(p.footprint)}</span>` : `<span class="no">Its symbol names no usable footprint; the designer will pick one by package</span>`) : `<span class="no">No symbol in the KiCad libraries or your parts</span>`}
+      ${!p.symbols.length || !p.footprint_ok ? `Library zip from SnapEDA, Ultra Librarian or the maker (symbol, footprint, 3D model): <input type="file" data-file accept=".zip,.kicad_sym,.kicad_mod,.lib,.mod,.step,.stp">` : ""}
+      ${p.model3d === false ? `<span class="rs-dim">No 3D model for this footprint: the 3D view will show a gap. A vendor zip above can supply one.</span>` : ""}</div></div>`;
+  v.innerHTML = `<div class="tb"><h3>Before the design <small>asked once, by ${escH(pf.model || "the small model")}. Answer what you care about; anything left alone takes the first option.</small></h3>
+    ${pf.questions.length ? `<h4>Questions</h4>` + pf.questions.map(q).join("") : ""}
+    ${need.length ? `<h4>Parts the design will use that are missing something here</h4><p class="rs-dim" style="font-size:13px;margin:0 0 4px">Datasheets let the checks verify pin numbers, ratings and support parts. Without one, that part is designed from the model's memory. Skipping is allowed.</p>` + pf.parts.map((p, i) => (p.needs || []).length ? part(p, i) : "").join("") : ""}
+    ${fine.length ? `<p class="tb-foot" style="margin-top:12px">Already covered: ${fine.map(p => escH(p.name)).join(", ")}.</p>` : ""}
+    <div class="pf-go"><button class="go" id="pfGo">Continue to the design</button><span class="rs-dim" id="pfMsg" style="font-size:13px"></span></div></div>`;
+  $("#pfGo").onclick = async () => {
+    const fd = new FormData(), answers = {}, links = [];
+    pf.questions.forEach((x, i) => { const t = v.querySelector(`[data-q="${i}"]`).value.trim(), r = v.querySelector(`input[name="pfq${i}"]:checked`); answers[i] = t || (r ? r.value : ""); });
+    const fparts = [];
+    v.querySelectorAll("[data-link]").forEach(i => { if (i.value.trim()) links.push([i.value.trim(), pf.parts[+i.dataset.link].name]); });
+    v.querySelectorAll("[data-file]").forEach(i => [...i.files].forEach(f => { fd.append("files", f); fparts.push(i.dataset.part || ""); }));
+    fd.append("file_parts", JSON.stringify(fparts));
+    fd.append("answers", JSON.stringify(answers)); fd.append("links", JSON.stringify(links));
+    for (const k of ["backend", "models", "model", "local_model", "ollama_host", "api_key"]) { const el = $("#form").elements[k]; if (el && el.value) fd.append(k, el.value); }
+    $("#pfGo").disabled = true; $("#pfMsg").textContent = "Starting…";
+    const res = await fetch(`/api/jobs/${job}/continue`, { method: "POST", body: fd }); const j = await res.json();
+    if (!res.ok) { $("#pfGo").disabled = false; $("#pfMsg").textContent = j.error || "could not continue"; return; }
+    $("#run").disabled = true; $("#run").textContent = "Running…"; resetView(); state.job = job; follow(job);
+  };
+}
+
+loadEnv();
+</script>
+</body>
+</html>

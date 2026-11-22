@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 0 214 240" width="214" height="240">
+  <title>kipipe</title>
+  <defs>
+    <filter id="kp-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <linearGradient id="kp-au" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efce7e"/><stop offset=".6" stop-color="#d8b15a"/><stop offset="1" stop-color="#b8923f"/></linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#kp-au)" stroke-width="16" stroke-linejoin="round">
+      <path d="M80 82 H66 a14 14 0 0 1 -14 -14 V10"/>
+      <path d="M80 118 H42 a20 20 0 0 1 -20 -20 V10"/>
+      <path d="M140 82 H178 a20 20 0 0 1 20 20 V170"/>
+      <path d="M140 118 H154 a14 14 0 0 1 14 14 V170"/>
+    </g>
+    <rect x="80" y="62" width="60" height="76" fill="#0b4a28" stroke="#f2efe4" stroke-width="7"/>
+    <circle cx="93" cy="76" r="6" fill="#f2efe4"/>
+    <g fill="#fff4c2" filter="url(#kp-glow)">
+      <polygon points="160,178 176,178 168,200 180,200 158,236 164,210 152,210"/>
+      <polygon points="190,178 206,178 200,198 212,198 192,232 196,208 184,208"/>
+    </g>
+</svg>

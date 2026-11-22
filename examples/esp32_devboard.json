@@ -1,0 +1,178 @@
+{
+ "name": "esp32_test",
+ "description": "ESP32-WROOM-32 dev board: 5V header, AMS1117 3.3V, UART header, EN and BOOT buttons, power LED",
+ "board": {
+  "layers": 2,
+  "mounting_holes": "M3",
+  "fab": "jlcpcb"
+ },
+ "components": [
+  {
+   "ref": "U1",
+   "symbol": "RF_Module:ESP32-WROOM-32",
+   "footprint": "RF_Module:ESP32-WROOM-32",
+   "value": "ESP32-WROOM-32",
+   "edge": null
+  },
+  {
+   "ref": "U2",
+   "symbol": "Regulator_Linear:AMS1117-3.3",
+   "footprint": "Package_TO_SOT_SMD:SOT-223-3_TabPin2",
+   "value": "AMS1117-3.3",
+   "edge": null
+  },
+  {
+   "ref": "J1",
+   "symbol": "Connector_Generic:Conn_01x02",
+   "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
+   "value": "5V IN",
+   "edge": "left"
+  },
+  {
+   "ref": "J2",
+   "symbol": "Connector_Generic:Conn_01x04",
+   "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical",
+   "value": "UART",
+   "edge": "right"
+  },
+  {
+   "ref": "SW1",
+   "symbol": "Switch:SW_Push",
+   "footprint": "Button_Switch_SMD:SW_Push_1P1T_NO_6x6mm_H9.5mm",
+   "value": "EN",
+   "edge": "bottom"
+  },
+  {
+   "ref": "SW2",
+   "symbol": "Switch:SW_Push",
+   "footprint": "Button_Switch_SMD:SW_Push_1P1T_NO_6x6mm_H9.5mm",
+   "value": "BOOT",
+   "edge": "bottom"
+  },
+  {
+   "ref": "C1",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0805_2012Metric",
+   "value": "10u",
+   "edge": null
+  },
+  {
+   "ref": "C2",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0805_2012Metric",
+   "value": "10u",
+   "edge": null
+  },
+  {
+   "ref": "C3",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0805_2012Metric",
+   "value": "100n",
+   "edge": null
+  },
+  {
+   "ref": "C4",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0805_2012Metric",
+   "value": "1u",
+   "edge": null
+  },
+  {
+   "ref": "R1",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "10k",
+   "edge": null
+  },
+  {
+   "ref": "R2",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "10k",
+   "edge": null
+  },
+  {
+   "ref": "R3",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "1k",
+   "edge": null
+  },
+  {
+   "ref": "D1",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "GREEN",
+   "edge": null
+  }
+ ],
+ "nets": {
+  "+5V": [
+   "J1.1",
+   "U2.3",
+   "C1.1"
+  ],
+  "GND": [
+   "J1.2",
+   "U2.1",
+   "C1.2",
+   "C2.2",
+   "C3.2",
+   "C4.2",
+   "U1.1",
+   "U1.15",
+   "U1.38",
+   "J2.1",
+   "SW1.2",
+   "SW2.2",
+   "D1.1"
+  ],
+  "+3V3": [
+   "U2.2",
+   "C2.1",
+   "C3.1",
+   "U1.2",
+   "R1.1",
+   "R2.1",
+   "R3.1"
+  ],
+  "EN": [
+   "U1.3",
+   "R1.2",
+   "C4.1",
+   "SW1.1"
+  ],
+  "IO0": [
+   "U1.25",
+   "R2.2",
+   "SW2.1"
+  ],
+  "TXD": [
+   "U1.35",
+   "J2.2"
+  ],
+  "RXD": [
+   "U1.34",
+   "J2.3"
+  ],
+  "LED": [
+   "R3.2",
+   "D1.2"
+  ]
+ },
+ "no_connect": [
+  "J2.4"
+ ],
+ "netclasses": [
+  {
+   "name": "Power",
+   "track_mm": 0.5,
+   "current_a": 0.6,
+   "nets": [
+    "+5V",
+    "+3V3",
+    "GND"
+   ]
+  }
+ ]
+}

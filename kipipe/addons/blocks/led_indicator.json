@@ -1,0 +1,59 @@
+{
+ "id": "led_indicator",
+ "title": "Indicator LED",
+ "tags": [
+  "led"
+ ],
+ "summary": "One LED with its series resistor, from a rail or a logic pin to ground.",
+ "params": {
+  "r": {
+   "default": "1k",
+   "label": "Series resistor"
+  },
+  "color": {
+   "default": "GREEN",
+   "choices": [
+    "GREEN",
+    "RED",
+    "BLUE",
+    "YELLOW",
+    "WHITE"
+   ],
+   "label": "Colour"
+  }
+ },
+ "ports": {
+  "IN": "supply rail or driving pin (high = on)",
+  "GND": "ground"
+ },
+ "components": [
+  {
+   "ref": "R",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "{r}"
+  },
+  {
+   "ref": "D",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "{color}"
+  }
+ ],
+ "nets": {
+  "IN": [
+   "R.1"
+  ],
+  "_A": [
+   "R.2",
+   "D.@A"
+  ],
+  "GND": [
+   "D.@K"
+  ]
+ },
+ "notes": [
+  "Current is (V − Vf) / R: 1 kΩ gives about 1 mA at 3.3 V and 3 mA at 5 V with a green LED, plenty for a modern indicator."
+ ],
+ "source": "standard practice"
+}

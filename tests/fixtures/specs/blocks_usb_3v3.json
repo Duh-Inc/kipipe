@@ -1,0 +1,12 @@
+{"name": "usb_3v3_blocks", "description": "USB-C in, 3.3 V out, built from verified blocks.",
+ "board": {"layers": 2, "mounting_holes": "M3"},
+ "components": [
+  {"ref": "J1", "symbol": "Connector_Generic:Conn_01x03", "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical", "value": "OUT", "edge": "right"}],
+ "nets": {"+5V": ["J1.1"], "+3V3": ["J1.2"], "GND": ["J1.3"]},
+ "blocks": [
+  {"use": "usbc_power_sink", "name": "USB", "ports": {"VBUS": "+5V", "GND": "GND"}},
+  {"use": "ldo_ams1117", "name": "REG", "params": {"vout": "3.3"}, "ports": {"VIN": "+5V", "VOUT": "+3V3", "GND": "GND"}},
+  {"use": "led_indicator", "name": "PWR", "ports": {"IN": "+3V3", "GND": "GND"}}],
+ "assumptions": ["Assumed 5 V only from USB-C (no power delivery negotiation)."],
+ "requirements": [{"text": "USB-C power input", "met_by": ["J2"], "status": "met"}, {"text": "3.3 V output", "met_by": ["U1", "net +3V3"], "status": "met"}, {"text": "power switch", "met_by": [], "status": "not met", "note": "not requested size allowed none"}]
+}

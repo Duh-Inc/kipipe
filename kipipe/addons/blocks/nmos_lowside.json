@@ -1,0 +1,81 @@
+{
+ "id": "nmos_lowside",
+ "title": "Low-side MOSFET switch",
+ "tags": [
+  "driver",
+  "load"
+ ],
+ "summary": "Logic-level N-MOSFET switching a load to ground: gate resistor, gate pull-down, and a flyback diode for motors, relays and solenoids.",
+ "params": {
+  "fet": {
+   "default": "AO3400A",
+   "label": "MOSFET (SOT-23, G-S-D)"
+  }
+ },
+ "ports": {
+  "IN": "logic signal (high = on)",
+  "LOAD": "low side of the load",
+  "VLOAD": "load supply (the flyback diode returns here)",
+  "GND": "ground"
+ },
+ "components": [
+  {
+   "ref": "Q",
+   "symbol": [
+    "Transistor_FET:{fet}",
+    "Transistor_FET:AO3400A",
+    "Transistor_FET:Q_NMOS_GSD",
+    "Device:Q_NMOS_GSD"
+   ],
+   "footprint": "Package_TO_SOT_SMD:SOT-23",
+   "value": "{fet}",
+   "mpn": "{fet}"
+  },
+  {
+   "ref": "R_G",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "100R"
+  },
+  {
+   "ref": "R_PD",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "100k"
+  },
+  {
+   "ref": "D",
+   "symbol": "Device:D_Schottky",
+   "footprint": "Diode_SMD:D_SOD-123",
+   "value": "B5819W",
+   "mpn": "B5819W"
+  }
+ ],
+ "nets": {
+  "IN": [
+   "R_G.1"
+  ],
+  "_G": [
+   "R_G.2",
+   "Q.@G",
+   "R_PD.1"
+  ],
+  "GND": [
+   "Q.@S",
+   "R_PD.2"
+  ],
+  "LOAD": [
+   "Q.@D",
+   "D.@A"
+  ],
+  "VLOAD": [
+   "D.@K"
+  ]
+ },
+ "notes": [
+  "The pull-down keeps the load off while the microcontroller pin is still floating at power-up.",
+  "AO3400A is fully on at 2.5 V gate drive (about 5 A, 30 V). Check the load current against the FET you fit.",
+  "The diode is only needed for inductive loads but does no harm otherwise."
+ ],
+ "source": "standard practice"
+}

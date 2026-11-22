@@ -1,0 +1,763 @@
+{
+ "name": "led_matrix_8x8",
+ "description": "8x8 LED matrix test, two 74HC595",
+ "board": {
+  "layers": 2,
+  "mounting_holes": "M3",
+  "fab": "jlcpcb"
+ },
+ "components": [
+  {
+   "ref": "J1",
+   "symbol": "Connector_Generic:Conn_01x05",
+   "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical",
+   "value": "5V/DATA",
+   "edge": "left"
+  },
+  {
+   "ref": "U1",
+   "symbol": "74xx:74HC595",
+   "footprint": "Package_SO:SOIC-16_3.9x9.9mm_P1.27mm",
+   "value": "74HC595 rows"
+  },
+  {
+   "ref": "U2",
+   "symbol": "74xx:74HC595",
+   "footprint": "Package_SO:SOIC-16_3.9x9.9mm_P1.27mm",
+   "value": "74HC595 cols"
+  },
+  {
+   "ref": "C1",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0805_2012Metric",
+   "value": "100n"
+  },
+  {
+   "ref": "C2",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0805_2012Metric",
+   "value": "100n"
+  },
+  {
+   "ref": "C3",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0805_2012Metric",
+   "value": "10u"
+  },
+  {
+   "ref": "SW1",
+   "symbol": "Switch:SW_Push",
+   "footprint": "Button_Switch_SMD:SW_Push_1P1T_NO_6x6mm_H9.5mm",
+   "value": "MODE",
+   "edge": "bottom"
+  },
+  {
+   "ref": "SW2",
+   "symbol": "Switch:SW_Push",
+   "footprint": "Button_Switch_SMD:SW_Push_1P1T_NO_6x6mm_H9.5mm",
+   "value": "BRIGHT",
+   "edge": "bottom"
+  },
+  {
+   "ref": "R1",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "220"
+  },
+  {
+   "ref": "R2",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "220"
+  },
+  {
+   "ref": "R3",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "220"
+  },
+  {
+   "ref": "R4",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "220"
+  },
+  {
+   "ref": "R5",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "220"
+  },
+  {
+   "ref": "R6",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "220"
+  },
+  {
+   "ref": "R7",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "220"
+  },
+  {
+   "ref": "R8",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "220"
+  },
+  {
+   "ref": "D1",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D2",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D3",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D4",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D5",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D6",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D7",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D8",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D9",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D10",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D11",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D12",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D13",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D14",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D15",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D16",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D17",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D18",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D19",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D20",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D21",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D22",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D23",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D24",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D25",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D26",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D27",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D28",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D29",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D30",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D31",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D32",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D33",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D34",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D35",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D36",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D37",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D38",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D39",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D40",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D41",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D42",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D43",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D44",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D45",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D46",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D47",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D48",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D49",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D50",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D51",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D52",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D53",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D54",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D55",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D56",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D57",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D58",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D59",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D60",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D61",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D62",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D63",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  },
+  {
+   "ref": "D64",
+   "symbol": "Device:LED",
+   "footprint": "LED_SMD:LED_0805_2012Metric",
+   "value": "RED"
+  }
+ ],
+ "nets": {
+  "+5V": [
+   "J1.1",
+   "U1.16",
+   "U2.16",
+   "U1.10",
+   "U2.10",
+   "C1.1",
+   "C2.1",
+   "C3.1"
+  ],
+  "GND": [
+   "J1.2",
+   "U1.8",
+   "U2.8",
+   "U1.13",
+   "U2.13",
+   "C1.2",
+   "C2.2",
+   "C3.2",
+   "SW1.2",
+   "SW2.2"
+  ],
+  "SER": [
+   "J1.3",
+   "U1.14"
+  ],
+  "SRCLK": [
+   "J1.4",
+   "U1.11",
+   "U2.11"
+  ],
+  "RCLK": [
+   "J1.5",
+   "U1.12",
+   "U2.12"
+  ],
+  "CHAIN": [
+   "U1.9",
+   "U2.14"
+  ],
+  "BTN1": [
+   "SW1.1",
+   "U2.9"
+  ],
+  "QR0": [
+   "U1.15",
+   "R1.1"
+  ],
+  "ROW0": [
+   "R1.2",
+   "D1.2",
+   "D2.2",
+   "D3.2",
+   "D4.2",
+   "D5.2",
+   "D6.2",
+   "D7.2",
+   "D8.2"
+  ],
+  "COL0": [
+   "U2.15",
+   "D1.1",
+   "D9.1",
+   "D17.1",
+   "D25.1",
+   "D33.1",
+   "D41.1",
+   "D49.1",
+   "D57.1"
+  ],
+  "QR1": [
+   "U1.1",
+   "R2.1"
+  ],
+  "ROW1": [
+   "R2.2",
+   "D9.2",
+   "D10.2",
+   "D11.2",
+   "D12.2",
+   "D13.2",
+   "D14.2",
+   "D15.2",
+   "D16.2"
+  ],
+  "COL1": [
+   "U2.1",
+   "D2.1",
+   "D10.1",
+   "D18.1",
+   "D26.1",
+   "D34.1",
+   "D42.1",
+   "D50.1",
+   "D58.1"
+  ],
+  "QR2": [
+   "U1.2",
+   "R3.1"
+  ],
+  "ROW2": [
+   "R3.2",
+   "D17.2",
+   "D18.2",
+   "D19.2",
+   "D20.2",
+   "D21.2",
+   "D22.2",
+   "D23.2",
+   "D24.2"
+  ],
+  "COL2": [
+   "U2.2",
+   "D3.1",
+   "D11.1",
+   "D19.1",
+   "D27.1",
+   "D35.1",
+   "D43.1",
+   "D51.1",
+   "D59.1"
+  ],
+  "QR3": [
+   "U1.3",
+   "R4.1"
+  ],
+  "ROW3": [
+   "R4.2",
+   "D25.2",
+   "D26.2",
+   "D27.2",
+   "D28.2",
+   "D29.2",
+   "D30.2",
+   "D31.2",
+   "D32.2"
+  ],
+  "COL3": [
+   "U2.3",
+   "D4.1",
+   "D12.1",
+   "D20.1",
+   "D28.1",
+   "D36.1",
+   "D44.1",
+   "D52.1",
+   "D60.1"
+  ],
+  "QR4": [
+   "U1.4",
+   "R5.1"
+  ],
+  "ROW4": [
+   "R5.2",
+   "D33.2",
+   "D34.2",
+   "D35.2",
+   "D36.2",
+   "D37.2",
+   "D38.2",
+   "D39.2",
+   "D40.2"
+  ],
+  "COL4": [
+   "U2.4",
+   "D5.1",
+   "D13.1",
+   "D21.1",
+   "D29.1",
+   "D37.1",
+   "D45.1",
+   "D53.1",
+   "D61.1"
+  ],
+  "QR5": [
+   "U1.5",
+   "R6.1"
+  ],
+  "ROW5": [
+   "R6.2",
+   "D41.2",
+   "D42.2",
+   "D43.2",
+   "D44.2",
+   "D45.2",
+   "D46.2",
+   "D47.2",
+   "D48.2"
+  ],
+  "COL5": [
+   "U2.5",
+   "D6.1",
+   "D14.1",
+   "D22.1",
+   "D30.1",
+   "D38.1",
+   "D46.1",
+   "D54.1",
+   "D62.1"
+  ],
+  "QR6": [
+   "U1.6",
+   "R7.1"
+  ],
+  "ROW6": [
+   "R7.2",
+   "D49.2",
+   "D50.2",
+   "D51.2",
+   "D52.2",
+   "D53.2",
+   "D54.2",
+   "D55.2",
+   "D56.2"
+  ],
+  "COL6": [
+   "U2.6",
+   "D7.1",
+   "D15.1",
+   "D23.1",
+   "D31.1",
+   "D39.1",
+   "D47.1",
+   "D55.1",
+   "D63.1"
+  ],
+  "QR7": [
+   "U1.7",
+   "R8.1"
+  ],
+  "ROW7": [
+   "R8.2",
+   "D57.2",
+   "D58.2",
+   "D59.2",
+   "D60.2",
+   "D61.2",
+   "D62.2",
+   "D63.2",
+   "D64.2"
+  ],
+  "COL7": [
+   "U2.7",
+   "D8.1",
+   "D16.1",
+   "D24.1",
+   "D32.1",
+   "D40.1",
+   "D48.1",
+   "D56.1",
+   "D64.1"
+  ]
+ },
+ "no_connect": [
+  "SW2.1"
+ ],
+ "netclasses": [
+  {
+   "name": "Power",
+   "track_mm": 0.5,
+   "current_a": 0.5,
+   "nets": [
+    "+5V",
+    "GND"
+   ]
+  }
+ ],
+ "rf": []
+}
