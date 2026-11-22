@@ -65,7 +65,8 @@ class KiCadEnv:
     def python_cmd(self, pythonpath: str) -> tuple[list, dict]:
         """argv and extra env to run python with pcbnew and kipipe importable."""
         if self.flatpak:
-            return (["flatpak", "run", "--command=python3", *[f"--unset-env={v}" for v in ("APPDIR", "APPIMAGE", "LD_LIBRARY_PATH")],
+            return (["flatpak", "run", "--filesystem=/tmp", "--command=python3",
+                     *[f"--unset-env={v}" for v in ("APPDIR", "APPIMAGE", "LD_LIBRARY_PATH")],
                      f"--env=PYTHONPATH={pythonpath}",
                      "--env=PYTHONDONTWRITEBYTECODE=1", self.flatpak], {})
         return (list(self.py_base), {"PYTHONPATH": pythonpath})
@@ -188,7 +189,7 @@ def detect(cli: str | None = None, python: str | None = None) -> KiCadEnv:
         cli_cmd = [cli]
     elif _flatpak_installed(FLATPAK_ID):
         flatpak = FLATPAK_ID
-        cli_cmd = ["flatpak", "run", "--command=kicad-cli", "--unset-env=APPDIR", "--unset-env=APPIMAGE",
+        cli_cmd = ["flatpak", "run", "--filesystem=/tmp", "--command=kicad-cli", "--unset-env=APPDIR", "--unset-env=APPIMAGE",
                    "--unset-env=LD_LIBRARY_PATH", FLATPAK_ID]
     else:
         raise RuntimeError("KiCad not found: no kicad-cli on PATH and no org.kicad.KiCad flatpak "

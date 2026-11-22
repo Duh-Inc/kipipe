@@ -1266,7 +1266,11 @@ class WiredSchematic:
                 up = self.unit_pins.get(p)
                 if up:
                     types.append(up[1].etype)
-            if "power_in" in types and "power_out" not in types:
+            # a library power symbol (+5V, +3V3, GND...) adds its own power_in pin wherever
+            # it is drawn (place_power()), so a net that gets one needs a flag just as much
+            # as a net whose real component pins are power_in with no power_out driver.
+            has_power_in = "power_in" in types or self.is_power(net)
+            if has_power_in and "power_out" not in types:
                 out.append(net)
         return out
 
