@@ -101,6 +101,43 @@ def test_a_fix_that_shrinks_the_design_is_thrown_away(tmp_path, monkeypatch):
     assert '"J1"' in strong.last                                          # the stronger model was given the full design
 
 
+# ---- ERC ----
+def _erc_metrics(spec_dict, tmp_path):
+    from kipipe.pipeline import Pipeline, Options, StageError
+    f = tmp_path / "in.json"
+    f.write_text(json.dumps(spec_dict))
+    o = Options(spec_file=str(f), flags=set())
+    p = Pipeline(o, tmp_path / "job", log=lambda m: None)
+    p.get_spec()
+    p.schematic()
+    try:
+        p.erc()
+    except StageError:
+        pass                                                              # errors still stop the run; metrics are set first
+    return p.metrics["erc"]
+
+
+def test_orring_power_controllers_do_not_trip_erc(tmp_path):
+    """Two LM66100 ideal-diode controllers with their VOUT tied to one net is a deliberate power-OR, not a
+    conflict: KiCad's ERC otherwise reports any two power_out pins on a net as two drivers fighting over it."""
+    s = {"name": "or_ok", "board": {"mounting_holes": "none"}, "components": [
+        {"ref": "U1", "symbol": "Power_Management:LM66100DCK", "footprint": "Package_TO_SOT_SMD:SOT-363_SC-70-6", "value": "LM66100DCKR", "mpn": "LM66100DCKR"},
+        {"ref": "U2", "symbol": "Power_Management:LM66100DCK", "footprint": "Package_TO_SOT_SMD:SOT-363_SC-70-6", "value": "LM66100DCKR", "mpn": "LM66100DCKR"}],
+        "nets": {"VIN_A": ["U1.1"], "VIN_B": ["U2.1"], "+5V": ["U1.6", "U2.6"], "GND": ["U1.2", "U2.2"]},
+        "no_connect": ["U1.3", "U1.4", "U1.5", "U2.3", "U2.4", "U2.5"]}
+    assert _erc_metrics(s, tmp_path)["errors"] == 0
+
+
+def test_two_real_regulators_tied_together_still_fails_erc(tmp_path):
+    """The same net-level pattern (two power_out pins on one net) with ordinary regulators, not a recognised
+    OR-ing part, must still stop the run: this is the real two-driver conflict the ERC rule exists to catch."""
+    s = {"name": "or_bad", "board": {"mounting_holes": "none"}, "components": [
+        {"ref": "U1", "symbol": "Regulator_Linear:L7805", "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical", "value": "L7805", "mpn": "L7805CV"},
+        {"ref": "U2", "symbol": "Regulator_Linear:L7805", "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical", "value": "L7805", "mpn": "L7805CV"}],
+        "nets": {"VIN_A": ["U1.1"], "VIN_B": ["U2.1"], "+5V": ["U1.3", "U2.3"], "GND": ["U1.2", "U2.2"]}}
+    assert _erc_metrics(s, tmp_path)["errors"] == 1
+
+
 # ---- design checks ----
 def test_rule_checks_catch_the_planted_mistakes(tmp_path):
     titles = " | ".join(t for _, _, t in _findings(spec("rules_bad.json"), tmp_path))

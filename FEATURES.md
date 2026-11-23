@@ -24,7 +24,7 @@ Status words:
 | MPN and datasheet fields on symbols | built | only when the spec has them |
 | Datasheet-style drawing of application circuits | works | `dsdraw.py` |
 | Netlist cross-check (schematic matches spec) | works | |
-| ERC with explained messages | works | power-flag fix confirmed on KiCad 10, 2026-11-22 (was failing: see HANDOFF #4) |
+| ERC with explained messages | works | power-flag fix confirmed on KiCad 10, 2026-11-22 (was failing: see HANDOFF #4). 2026-11-23: added a `POWER_OR_PARTS` allow-list so a diode-OR of recognised power-path ICs (LM66100 and similar) isn't flagged as a driver conflict; two real regulators tied together still fail |
 | Board outline shapes (rect, rounded, circle, plus, hex, octagon, polygon) | works | |
 | Placer (floorplan regions, edge connectors, annealing) | works | |
 | Floorplan review by the model (flag `review`) | works | 1 model call |

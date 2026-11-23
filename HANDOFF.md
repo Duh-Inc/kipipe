@@ -8,9 +8,17 @@ already made so they are not re-litigated. Read section 1 and 2 before changing 
 
 ## 0. KiCad 10 testing
 
-The workspace cannot install KiCad 10 (no PPA, Flathub or Docker Hub access; Ubuntu 24.04 ships 7.0). Two routes:
-1. `.github/workflows/tests.yml` runs the suite in `kicad/kicad:10.0` and `9.0` on every push once the repo is on GitHub. If Ben adds the repo to the session, results can be read with `gh run list` / `gh run view --log-failed`.
+Original situation (2026-11-14): the dev workspace could not install KiCad 10 (no PPA, Flathub or Docker Hub
+access; Ubuntu 24.04 ships 7.0). Two routes were planned:
+1. `.github/workflows/tests.yml` runs the suite in `kicad/kicad:10.0` and `9.0` on every push once the repo is on GitHub. If Ben adds the repo to the session, results can be read with `gh run list` / `gh run view --log-failed`. Still not run: the repo is not on GitHub yet.
 2. Link the session to Ben's computer (desktop app) and run commands there through the device shell.
+
+**As of 2026-11-22/23 this is moot for direct testing**: whoever is reading this is very likely already running
+*on* Ben's machine (Linux Mint, KiCad 10.0.8 Flatpak, Claude Code CLI) - check with `kicad-cli version` and
+`git log` before assuming otherwise. `git init` plus the first commit happened 2026-11-22 (there was no git
+history before that); `doctor` and `pytest tests -q` are green on real KiCad 10 as of this writing. Route 1 (CI
+on GitHub) is still worth setting up for *regression* coverage once the repo has a remote, but is no longer the
+only way to get a real KiCad 10 result.
 
 ## 1. Ground rules
 
@@ -88,13 +96,31 @@ Data lives in `~/.local/share/kipipe` (`KIPIPE_HOME` overrides): `jobs/`, `partd
 | Preflight (questions, missing parts) | yes | one run: questions and uploads worked |
 | Stacked pin numbers `[1,15,38,39]` | hand-made symbol only | hand-made symbol only (2026-11-22; real stacked-pin part still unseen) |
 | Relocated symbols (`Device:Q_NMOS_GSD`) | by analogy only | **yes**, 2026-11-22: `Device:Q_NMOS_GSD` resolves to `Transistor_FET:Q_NMOS_GSD` against the real KiCad 10 libraries |
-| Correction guard | fake backend | fake backend, real KiCad 10 validation (2026-11-22); first live-model correction round pending the logger rerun |
+| Correction guard | fake backend | fake backend, real KiCad 10 validation (2026-11-22); logger run 4 reached the model with 0 correction rounds needed, so a real round is still unseen |
 | Power-flag global label fix | cannot run ERC here | **fixed 2026-11-22**, see problem 4 below |
 | Blocks with pins by name | yes | **yes**, 2026-11-22: `blocks_usb_3v3.json` ran end to end (ERC 0 errors, DRC 0 errors) |
 | Derive / stacking, `flip_fp` | yes | **yes**, 2026-11-22: `stack_base.json` + `stack_top_header.json` in one project, mirrored mate under the board, ERC/DRC clean |
 
-**First job for whoever continues: get Ben to rerun the logger request** (it is in the chat history and below) and
-read the log. Three runs of it have failed for three different reasons; each fix above is aimed at one of them.
+**Logger request, run 4 (2026-11-23):** ran end to end through the model (Opus, ~$1.76, 395 s, 29 library lookups
+in the design step) and stopped at ERC with 2 errors. Both were "Pins of type Power output and Power output are
+connected" between three `LM66100DCK` ideal-diode power-path controllers the model added (to OR the USB, buck and
+boost 5 V sources onto one `+5V` net, answering the "what powers 3.3 V from the LiPo alone" preflight question).
+That circuit is correct: each ideal diode independently blocks reverse current, so tying their `power_out` pins
+together is how a diode-OR is built, not two drivers fighting over a net. KiCad's ERC default treats any two
+`power_out` pins on a net as a conflict and does not know the difference. **Fixed 2026-11-23** in `pipeline.erc()`:
+a `POWER_OR_PARTS` allow-list (`LM66100`, `LM74610`/`LM74700`, `TPS211x`/`TPS2663`, `AP22814`, `SGM2576`) downgrades
+this specific conflict to a warning only when every pin in it belongs to a recognised part, so two real regulators
+mistakenly tied together still fail. Covered by `test_orring_power_controllers_do_not_trip_erc` and
+`test_two_real_regulators_tied_together_still_fails_erc` in `tests/test_core.py`; verified directly against two
+minimal fixtures (not yet against this exact run, which cost real money - see below). Part data also reconfirmed
+known problem 1 (ESP32 pin table): `U8 ESP32-WROOM-32E-N4` got "wrong variant" against the `ESP32-WROOM` record.
+
+**Next job for whoever continues: rerun the logger request end to end** now that the ERC fix is in, and read the
+log for whatever surfaces next. The run's `spec.json` was not kept (it lived under `/tmp`, which this machine
+clears), so confirming the fix against this exact design needs a fresh model call (~$1.76 for the design step
+alone going by run 4, plus `inspect`/`review`/`video` if left at their defaults - say $2-3 total). Cheaper option:
+drop `inspect,review,video,render3d` for the rerun (`--flags ask,checks,ipc,pour`) to isolate the ERC/DRC result
+first, then do one full-flags run once that is clean.
 
 ```
 Battery-powered environmental logger. Power: USB-C (5 V sink, power only) and a single-cell LiPo on a JST-PH
@@ -264,7 +290,7 @@ Worth doing, but aimed at the right stage. The model writes the spec (parts and 
 ### 5.8 Build video with real part models (built, tested here with 6 downloaded STEP files)
 
 `meshvideo.py`: reads each footprint's `(model ...)` from the finished .kicad_pcb, finds the .step next to the named .wrl in the KiCad 3D library (`model_dirs()`: KICADn_3DMODEL_DIR, next to the footprint libs, flatpak runtimes, KIPIPE_MODEL_DIR), loads it with trimesh + cascadio, caches it as .glb in ~/.cache/kipipe/meshes, and renders with pyrender (EGL by default; PYOPENGL_PLATFORM=osmesa for software). Parts without a model become boxes. Falls back to the box renderer if anything is missing. `--no-models` turns it off.
-- Ben must install: `pip install pyrender cascadio shapely mapbox-earcut "PyOpenGL>=3.1.7"` (pyrender pins PyOpenGL 3.1.0, which breaks; override it).
+- Ben must install: `pip install pyrender cascadio shapely mapbox-earcut "PyOpenGL>=3.1.7"` (pyrender pins PyOpenGL 3.1.0, which breaks; override it). Also missing on his venv as of 2026-11-23: plain `numpy` (the fallback box-style video still rendered fine without it; only the real-models path needs it, same as the rest of this list). None of these are installed yet, so the real-STEP-model path still has not run on Ben's machine.
 - Untested: Ben's flatpak 3D library path, bottom-side parts (`_R("y",180)` flip), model `rotate` sign (KiCad applies negative angles; most library models have 0), EGL on his AMD card. Colours from some STEP files come out pale.
 - Speed here (CPU, llvmpipe): 32 s for a 15-part board. First run per model pays the STEP parse (seconds each), then cached.
 - Next: hide the kicad-cli turntable when models were used (it is only used by the box style now); silkscreen texture on the board top from pcb_top.svg.
@@ -303,7 +329,8 @@ independently, and the code tolerates their absence.
 - Preflight: about $0.003 and 25 s per run (Haiku).
 - Walkthrough, ask, approaches: about $0.002 to $0.004 each.
 - One Opus design of the logger: about $1.30, plus $1.20 to $2.50 per Opus correction round. Correction rounds are
-  where the money goes; every library error fixed in code saves one.
+  where the money goes; every library error fixed in code saves one. Run 4 (2026-11-23, on Ben's machine): $1.756,
+  395 s, 29 library lookups, 0 correction rounds - the design was valid first try, it just failed ERC afterward.
 - Fable: a one-word test call cost about $0.20. The `fable` plan was never run end to end.
 
 ## 8. Context from the planning chat (Nov 14 to 22) not recorded elsewhere
@@ -323,6 +350,6 @@ independently, and the code tolerates their absence.
 
 **FPGA (discussed, not built)**: small FPGAs are in reach: Lattice iCE40 (UP5K QFN-48, HX TQFP-144), Gowin GW1N LQFP, MachXO2 TQFP. Needs a block per family (rails, SPI config flash, oscillator, config pull-ups), a `check.fpga` (bank VCCIO against attached parts, CRESET/CDONE, PLL supply filter, power order) and datasheet records. Best feature: `.pcf` / `.xdc` pin constraints generated from the netlist like `gen.firmware`, later pin swapping within a bank to untangle routing. BGA FPGAs wait for Router v2 plus a fanout generator. iCEBreaker and UPduino are open designs to use as references and tests.
 
-**Waiting on Ben**: Mouser API key (5.1), answers to the shared-database questions (5.2), the logger rerun log, the LT1175 read time on the GPU.
+**Waiting on Ben**: Mouser API key (5.1), answers to the shared-database questions (5.2), the LT1175 read time on the GPU, whether to spend ~$2-3 on a full clean logger rerun now that the ERC fix is in (section 3).
 
 **Writing for Ben** (docs, logs, UI text): no em dashes; plain words over stiff ones; no filler openers or closers; sentence-case headings; minimal bold; concrete facts over praise.

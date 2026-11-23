@@ -43,6 +43,12 @@ ALL_FLAGS = {
 }
 DEFAULT_FLAGS = {"ipc", "rf", "pour", "review", "inspect", "video", "render3d", "checks", "ask"}
 
+# ideal-diode / power-path "OR"-ing controllers: parts meant to have their power_out pin tied to other
+# instances of the same kind (each blocks reverse current independently, combining several sources onto one
+# net). KiCad's ERC otherwise reports any two power_out pins on a net as a driver conflict. Match by symbol,
+# mpn or value; extend this list rather than widening erc()'s check to "any power_out pin".
+POWER_OR_PARTS = re.compile(r"LM66100|LM74610|LM74700|TPS2121|TPS2113|TPS2115|TPS2116|TPS2663|AP22814|SGM2576", re.I)
+
 
 @dataclass
 class Options:
@@ -362,6 +368,7 @@ class Pipeline:
         data = json.loads(out.read_text())
         viol = [v for s in data.get("sheets", []) for v in s.get("violations", [])]
         wired = {p for pins in (self.spec.get("nets") or {}).values() for p in pins}
+        by_ref = {c["ref"]: c for c in self.spec.get("components", [])}
 
         def bookkeeping(v):
             """An undriven power pin on a net that IS wired is a missing PWR_FLAG in the drawing, not a circuit fault.
@@ -373,13 +380,34 @@ class Pipeline:
                 if m and f"{m.group(1)}.{m.group(2)}" not in wired:
                     return False
             return True
-        errs = [v for v in viol if v.get("severity") == "error" and not bookkeeping(v)]
-        warns = [v for v in viol if v.get("severity") != "error" or bookkeeping(v)]
+
+        def or_topology(v):
+            """Two or more power_out pins sharing a net is usually two drivers fighting over it, a real error. It
+            is also exactly how ideal-diode / power-path 'OR'-ing controllers combine several sources: each one
+            independently blocks reverse current, so several of their outputs on one net is the intended way to
+            build a diode-OR, not a conflict. Downgrade only when every pin in the conflict belongs to a recognised
+            part of that kind, so two real regulators mistakenly tied together still stop the run."""
+            desc = str(v.get("description", ""))
+            if "Power output" not in desc or "connected" not in desc:
+                return False
+            for it in v.get("items", []):
+                m = re.search(r"Symbol (\S+) Pin", str(it.get("description", "")))
+                c = by_ref.get(m.group(1)) if m else None
+                if not c or not POWER_OR_PARTS.search(" ".join(str(c.get(k, "")) for k in ("symbol", "mpn", "value"))):
+                    return False
+            return True
+
+        def downgrade(v):
+            return bookkeeping(v) or or_topology(v)
+        errs = [v for v in viol if v.get("severity") == "error" and not downgrade(v)]
+        warns = [v for v in viol if v.get("severity") != "error" or downgrade(v)]
         for v in viol[:25]:
             where = ", ".join(str(i.get("description", "")) for i in v.get("items", [])[:2])
-            self.log(f"  {'warning' if bookkeeping(v) else v.get('severity')}: {v.get('description')}" + (f" ({where})" if where else ""))
+            self.log(f"  {'warning' if downgrade(v) else v.get('severity')}: {v.get('description')}" + (f" ({where})" if where else ""))
         if any(bookkeeping(v) for v in viol):
             self.log("  (an undriven power pin on a wired net means the drawing lacks a PWR_FLAG there; the circuit is unaffected, so it does not stop the run)")
+        if any(or_topology(v) for v in viol):
+            self.log("  (power outputs tied together on a recognised ideal-diode/power-path part are an intentional OR, not a conflict)")
         self.files["erc"] = "out/erc.json"
         self.metrics["erc"] = {"errors": len(errs), "warnings": len(warns)}
         if errs and "force" not in self.o.flags:
