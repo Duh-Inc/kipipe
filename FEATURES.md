@@ -16,14 +16,15 @@ Status words:
 | Text or image request to a design spec (model) | works | `kipipe run`, web app |
 | Pre-design step: questions, planned parts, missing datasheet/symbol/footprint/STEP | works | one KiCad 10 run; all levels |
 | Spec validation against your installed KiCad libraries | works | |
-| Correction loop with guard (rejects fixes that shrink the design) | built | not seen on KiCad 10 yet |
-| Relocated symbols, KiCad 10 stacked pin numbers | built | **needs a KiCad 10 run** |
+| Correction loop with guard (rejects fixes that shrink the design) | built | fake-backend test now runs against real KiCad 10 validation (2026-11-22); no live-model correction round confirmed yet |
+| Relocated symbols (e.g. `Device:Q_NMOS_GSD`) | works | confirmed against the real KiCad 10 libraries, 2026-11-22 |
+| KiCad 10 stacked pin numbers | built | still only a hand-made fixture symbol (`tests/fixtures/libs/k10test.kicad_sym`); no real stacked-pin part seen yet |
 | Wired schematic generator (symbols placed, wires routed, labels) | works | |
 | Long wires drawn as net labels (`schematic.max_wire_mm`, default 50) | built | |
 | MPN and datasheet fields on symbols | built | only when the spec has them |
 | Datasheet-style drawing of application circuits | works | `dsdraw.py` |
 | Netlist cross-check (schematic matches spec) | works | |
-| ERC with explained messages | works | power-flag fix **needs a KiCad 10 run** |
+| ERC with explained messages | works | power-flag fix confirmed on KiCad 10, 2026-11-22 (was failing: see HANDOFF #4) |
 | Board outline shapes (rect, rounded, circle, plus, hex, octagon, polygon) | works | |
 | Placer (floorplan regions, edge connectors, annealing) | works | |
 | Floorplan review by the model (flag `review`) | works | 1 model call |
@@ -36,12 +37,12 @@ Status words:
 | openEMS S-parameters via gerber2ems (flag `openems`) | beta | slow, off by default |
 | KiCad 3D render still (flag `render3d`) | works | KiCad 9+ |
 | Design checks during the run (flag `checks`) | works | |
-| Verified blocks expanded into the design (flag `blocks`) | built | off by default; **needs a KiCad 10 run** |
+| Verified blocks expanded into the design (flag `blocks`) | works | off by default; confirmed end to end on KiCad 10, 2026-11-22 (0 ERC/DRC errors) |
 | Questions before designing (flag `ask`) | works | |
 | Expert review gate (pause before layout) | built | Expert level |
 | Reroute after moving parts | works | `kipipe reroute` |
 | Revise a finished design from a description | works | `kipipe revise` |
-| Derive a board from another in the project (same outline, stacking connectors) | built | mirrored mate tested; **needs a KiCad 10 run** |
+| Derive a board from another in the project (same outline, stacking connectors) | works | mirrored mate (`flip_fp`) confirmed end to end on KiCad 10, 2026-11-22 (0 ERC/DRC errors) |
 
 ## 1b. Same input, same board
 
@@ -52,7 +53,7 @@ Status words:
 | Routing cache: an identical board reuses its routing | built | Freerouting differs run to run even single-threaded (measured), so the first result is kept |
 | Fixed UUIDs in schematic and board files | built | byte-identical files on reruns, clean git diffs |
 | Cache management | built | `kipipe cache` (show / clear) |
-| Proof test: one spec run twice gives byte-identical .kicad_pcb and .kicad_sch | built | `tests/test_determinism.py` |
+| Proof test: one spec run twice gives byte-identical .kicad_pcb and .kicad_sch | works | `tests/test_determinism.py`, all 3 tests pass on KiCad 10 with real Freerouting, 2026-11-22 |
 | CI on KiCad 10 and 9 (GitHub Actions in KiCad's Docker images) | built | `.github/workflows/tests.yml`; runs once the repo is on GitHub, **not run yet** |
 | Fab stackup presets for impedance (JLC 7628 4-layer, 2-layer FR4) | works | `physics.py`; more fabs planned |
 

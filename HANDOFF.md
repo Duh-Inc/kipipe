@@ -86,12 +86,12 @@ Data lives in `~/.local/share/kipipe` (`KIPIPE_HOME` overrides): `jobs/`, `partd
 | Datasheet checks (phase 3) | yes, 3 records | no |
 | Levels, projects, guide, compare, UI rework | yes, headless browser | not reported |
 | Preflight (questions, missing parts) | yes | one run: questions and uploads worked |
-| Stacked pin numbers `[1,15,38,39]` | hand-made symbol only | **no** |
-| Relocated symbols (`Device:Q_NMOS_GSD`) | by analogy only | **no** |
-| Correction guard | fake backend | **no** |
-| Power-flag global label fix | cannot run ERC here | **no** |
-| Blocks with pins by name | yes | **no** (the first version failed there) |
-| Derive / stacking, `flip_fp` | yes | **no** (the Flip call differs by version) |
+| Stacked pin numbers `[1,15,38,39]` | hand-made symbol only | hand-made symbol only (2026-11-22; real stacked-pin part still unseen) |
+| Relocated symbols (`Device:Q_NMOS_GSD`) | by analogy only | **yes**, 2026-11-22: `Device:Q_NMOS_GSD` resolves to `Transistor_FET:Q_NMOS_GSD` against the real KiCad 10 libraries |
+| Correction guard | fake backend | fake backend, real KiCad 10 validation (2026-11-22); first live-model correction round pending the logger rerun |
+| Power-flag global label fix | cannot run ERC here | **fixed 2026-11-22**, see problem 4 below |
+| Blocks with pins by name | yes | **yes**, 2026-11-22: `blocks_usb_3v3.json` ran end to end (ERC 0 errors, DRC 0 errors) |
+| Derive / stacking, `flip_fp` | yes | **yes**, 2026-11-22: `stack_base.json` + `stack_top_header.json` in one project, mirrored mate under the board, ERC/DRC clean |
 
 **First job for whoever continues: get Ben to rerun the logger request** (it is in the chat history and below) and
 read the log. Three runs of it have failed for three different reasons; each fix above is aimed at one of them.
@@ -108,7 +108,18 @@ terminals on the right edge. Power LED per rail, one user LED. Four M3 mounting 
 
 ## 4. Known problems, most important first
 
-Each has where to look and what I would try. None of these are fixed.
+Each has where to look and what I would try. Two are now fixed (marked below); the rest are not.
+
+0. **FIXED 2026-11-22: KiCad's Flatpak sandbox has no access to `/tmp`.** `flatpak info --show-permissions
+   org.kicad.KiCad` shows `filesystems=home;/media;/run/media` only; `TMPDIR=/var/tmp` is set but that is a hint,
+   not a grant, and does not help either. Any kicad-cli or pcbnew call on a file under `/tmp` failed with
+   "Schematic file does not exist or is not accessible" even though the file was right there. This broke two
+   tests (`tests/test_core.py::test_long_wires_become_labels_and_netlist_still_matches`,
+   `tests/test_determinism.py::test_same_spec_gives_the_same_board`, both use pytest's `tmp_path` under `/tmp`)
+   and would have broken the testing recipe above (`-o /tmp/x`) on Ben's machine specifically, since the workspace
+   here has no KiCad 10 Flatpak to hit this. Fixed by adding `--filesystem=/tmp` to the `flatpak run` invocations
+   in `kicad_lib.py` (both `cli_cmd` and `python_cmd`). This is a per-invocation override, not a persistent
+   `flatpak override`, so it does not touch the user's system-wide Flatpak permissions.
 
 1. **ESP32 module datasheet: 21 of 38 pins read.** The record then counts as another variant and every datasheet
    check skips the part. Look at `docparse.pins_from` with that PDF's Docling JSON: likely a pin table continued
@@ -122,9 +133,13 @@ Each has where to look and what I would try. None of these are fixed.
 3. **Pinout from page images returned 0 pins (AMS1117) under the Igor plan.** The `extract` role goes to the local
    model, which may not read images. Route image reads to a model that can (`ClaudeCode.ask(..., tools=["Read"])`)
    regardless of plan, or detect a non-vision local model once and remember it.
-4. **"Input Power pin not driven" ERC stop: root cause unconfirmed.** One real bug was fixed (flag attached with a
-   local label on a net named by global labels). The log now prints the pin. If it recurs on a wired pin, look at
-   `schwire.flag_nets`; if on an unwired pin, it is a real unconnected supply and `check.nets` should also show it.
+4. **FIXED 2026-11-22: "Input Power pin not driven" ERC stop.** Root cause: `schwire.flag_nets()` decided whether
+   a net needs a `PWR_FLAG` by looking only at the electrical types of real component pins. It never accounted for
+   `place_power()` attaching a library power symbol (`+5V`, `+3V3`, `GND`...) to that net, whose own single pin is
+   `power_in` in every KiCad power symbol. A net with only passive/unspecified component pins (a bare connector,
+   say) but a power-symbol label therefore got an implicit undriven `power_in` with no flag to satisfy ERC.
+   `flag_nets()` now also flags a net when `is_power(net)` is true. Confirmed on KiCad 10:
+   `tests/fixtures/specs/stack_base.json` (ERC was 3 errors, now 0) and the LT1175 and blocks fixtures (0 errors).
 5. **Local model quality (qwen 9b).** It can no longer wreck a design, but it still wastes rounds. Cheap wins, all
    in code and before any model: when exactly one close footprint match exists, substitute it (like
    `spec._relocated` does for symbols); when a net references a pin number that does not exist but the name is
