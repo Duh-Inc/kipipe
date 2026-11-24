@@ -1,0 +1,88 @@
+{
+ "id": "usbc_power_sink",
+ "title": "USB-C socket as a 5 V input",
+ "tags": [
+  "usb",
+  "power",
+  "connector"
+ ],
+ "summary": "USB-C receptacle wired as a power sink: its own 5.1 kΩ on each CC pin, both data pairs joined, shield to ground.",
+ "params": {},
+ "ports": {
+  "VBUS": "5 V from the cable",
+  "GND": "ground",
+  "DP": "USB D+ (leave unmapped if only power is used)",
+  "DM": "USB D−"
+ },
+ "components": [
+  {
+   "ref": "J",
+   "symbol": "Connector:USB_C_Receptacle_USB2.0_16P",
+   "footprint": [
+    "Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12",
+    "Connector_USB:USB_C_Receptacle_HCTL_HC-TYPE-C-16P-01A",
+    "Connector_USB:USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt_Horizontal"
+   ],
+   "value": "USB-C",
+   "edge": "left"
+  },
+  {
+   "ref": "R_CC1",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "5.1k"
+  },
+  {
+   "ref": "R_CC2",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "5.1k"
+  }
+ ],
+ "nets": {
+  "VBUS": [
+   "J.@VBUS"
+  ],
+  "GND": [
+   "J.@GND",
+   "J.@SHIELD",
+   "R_CC1.2",
+   "R_CC2.2"
+  ],
+  "_CC1": [
+   "J.@CC1",
+   "R_CC1.1"
+  ],
+  "_CC2": [
+   "J.@CC2",
+   "R_CC2.1"
+  ],
+  "DP": [
+   "J.@D+"
+  ],
+  "DM": [
+   "J.@D-"
+  ]
+ },
+ "no_connect": [
+  "J.@SBU1",
+  "J.@SBU2"
+ ],
+ "near": [
+  {
+   "ref": "R_CC1",
+   "to": "J.@CC1",
+   "max_mm": 8
+  },
+  {
+   "ref": "R_CC2",
+   "to": "J.@CC2",
+   "max_mm": 8
+  }
+ ],
+ "notes": [
+  "Two separate 5.1 kΩ resistors: one shared resistor breaks C-to-C cables.",
+  "This asks for the default 5 V only (up to 3 A from a capable source). Higher voltages need a PD controller."
+ ],
+ "source": "USB Type-C specification, sink configuration"
+}

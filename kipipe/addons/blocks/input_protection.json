@@ -1,0 +1,51 @@
+{
+ "id": "input_protection",
+ "title": "Reverse-polarity protected input",
+ "tags": [
+  "power",
+  "protection"
+ ],
+ "summary": "Series Schottky diode and bulk capacitor behind a power input, so a reversed supply does nothing.",
+ "params": {
+  "diode": {
+   "default": "SS14",
+   "label": "Diode (SMA)"
+  }
+ },
+ "ports": {
+  "VIN": "from the input connector",
+  "VOUT": "protected supply",
+  "GND": "ground"
+ },
+ "components": [
+  {
+   "ref": "D",
+   "symbol": "Device:D_Schottky",
+   "footprint": "Diode_SMD:D_SMA",
+   "value": "{diode}",
+   "mpn": "{diode}"
+  },
+  {
+   "ref": "C",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_1206_3216Metric",
+   "value": "10u 25V"
+  }
+ ],
+ "nets": {
+  "VIN": [
+   "D.@A"
+  ],
+  "VOUT": [
+   "D.@K",
+   "C.1"
+  ],
+  "GND": [
+   "C.2"
+  ]
+ },
+ "notes": [
+  "Costs about 0.4 V at 1 A (SS14: 1 A, 40 V). For low-voltage or high-current inputs a P-MOSFET loses less."
+ ],
+ "source": "standard practice"
+}

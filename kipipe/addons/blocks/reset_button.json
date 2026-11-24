@@ -1,0 +1,66 @@
+{
+ "id": "reset_button",
+ "title": "Reset or enable button",
+ "tags": [
+  "mcu",
+  "button"
+ ],
+ "summary": "Push button to ground with a pull-up and a capacitor: debounced reset or enable for a microcontroller.",
+ "params": {
+  "r": {
+   "default": "10k",
+   "label": "Pull-up"
+  },
+  "c": {
+   "default": "100n",
+   "choices": [
+    "100n",
+    "1u"
+   ],
+   "label": "Capacitor (1u for ESP32 EN)"
+  }
+ },
+ "ports": {
+  "SIG": "the reset or enable pin",
+  "VCC": "logic supply",
+  "GND": "ground"
+ },
+ "components": [
+  {
+   "ref": "SW",
+   "symbol": "Switch:SW_Push",
+   "footprint": "Button_Switch_SMD:SW_SPST_TL3342",
+   "value": "RESET"
+  },
+  {
+   "ref": "R",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "{r}"
+  },
+  {
+   "ref": "C",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0805_2012Metric",
+   "value": "{c}"
+  }
+ ],
+ "nets": {
+  "SIG": [
+   "SW.1",
+   "R.2",
+   "C.1"
+  ],
+  "VCC": [
+   "R.1"
+  ],
+  "GND": [
+   "SW.2",
+   "C.2"
+  ]
+ },
+ "notes": [
+  "ESP32 EN: 10 kΩ and 1 µF. STM32 NRST: 100 nF and no external pull-up needed. AVR RESET: 10 kΩ and 100 nF."
+ ],
+ "source": "vendor hardware design guides"
+}

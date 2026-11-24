@@ -1,0 +1,2478 @@
+{
+ "schema": 1,
+ "identity": {
+  "mpn": "TCA9548A",
+  "aliases": [
+   "TCA9548AMRGER",
+   "TCA9548APWR",
+   "TCA9548ARGER"
+  ],
+  "manufacturer": "Texas Instruments",
+  "description": "Low-Voltage 8-Channel I 2 C Switch with Reset",
+  "category": "",
+  "revision": "SCPS207F",
+  "packages": [
+   "TSSOP",
+   "VQFN"
+  ]
+ },
+ "pins": [
+  {
+   "name": "A0",
+   "numbers": {
+    "TSSOP (PW)": "1",
+    "QFN (RGE)": "22"
+   },
+   "type": "input",
+   "functions": [],
+   "description": "Address input 0. Connect directly to VCC or ground",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "A1",
+   "numbers": {
+    "TSSOP (PW)": "2",
+    "QFN (RGE)": "23"
+   },
+   "type": "input",
+   "functions": [],
+   "description": "Address input 1. Connect directly to VCC or ground",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "A2",
+   "numbers": {
+    "TSSOP (PW)": "21",
+    "QFN (RGE)": "18"
+   },
+   "type": "input",
+   "functions": [],
+   "description": "Address input 2. Connect directly to VCC or ground",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "GND",
+   "numbers": {
+    "TSSOP (PW)": "12",
+    "QFN (RGE)": "9"
+   },
+   "type": "ground",
+   "functions": [],
+   "description": "Ground",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "RESET",
+   "numbers": {
+    "TSSOP (PW)": "3",
+    "QFN (RGE)": "24"
+   },
+   "type": "input",
+   "functions": [],
+   "description": "Active-low reset input. Connect to VCC or VDPUM through a pull-up resistor, if not used",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SD0",
+   "numbers": {
+    "TSSOP (PW)": "4",
+    "QFN (RGE)": "1"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial data 0. Connect to VDPU0 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SC0",
+   "numbers": {
+    "TSSOP (PW)": "5",
+    "QFN (RGE)": "2"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial clock 0. Connect to VDPU0 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SD1",
+   "numbers": {
+    "TSSOP (PW)": "6",
+    "QFN (RGE)": "3"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial data 1. Connect to VDPU1 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SC1",
+   "numbers": {
+    "TSSOP (PW)": "7",
+    "QFN (RGE)": "4"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial clock 1. Connect to VDPU1 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SD2",
+   "numbers": {
+    "TSSOP (PW)": "8",
+    "QFN (RGE)": "5"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial data 2. Connect to VDPU2 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SC2",
+   "numbers": {
+    "TSSOP (PW)": "9",
+    "QFN (RGE)": "6"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial clock 2. Connect to VDPU2 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SD3",
+   "numbers": {
+    "TSSOP (PW)": "10",
+    "QFN (RGE)": "7"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial data 3. Connect to VDPU3 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SC3",
+   "numbers": {
+    "TSSOP (PW)": "11",
+    "QFN (RGE)": "8"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial clock 3. Connect to VDPU3 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SD4",
+   "numbers": {
+    "TSSOP (PW)": "13",
+    "QFN (RGE)": "10"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial data 4. Connect to VDPU4 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SC4",
+   "numbers": {
+    "TSSOP (PW)": "14",
+    "QFN (RGE)": "11"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial clock 4. Connect to VDPU4 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SD5",
+   "numbers": {
+    "TSSOP (PW)": "15",
+    "QFN (RGE)": "12"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial data 5. Connect to VDPU5 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SC5",
+   "numbers": {
+    "TSSOP (PW)": "16",
+    "QFN (RGE)": "13"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial clock 5. Connect to VDPU5 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SD6",
+   "numbers": {
+    "TSSOP (PW)": "17",
+    "QFN (RGE)": "14"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial data 6. Connect to VDPU6 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SC6",
+   "numbers": {
+    "TSSOP (PW)": "18",
+    "QFN (RGE)": "15"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial clock 6. Connect to VDPU6 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SD7",
+   "numbers": {
+    "TSSOP (PW)": "19",
+    "QFN (RGE)": "16"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial data 7. Connect to VDPU7 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SC7",
+   "numbers": {
+    "TSSOP (PW)": "20",
+    "QFN (RGE)": "17"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial clock 7. Connect to VDPU7 through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SCL",
+   "numbers": {
+    "TSSOP (PW)": "22",
+    "QFN (RGE)": "19"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial clock bus. Connect to VDPUM through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "SDA",
+   "numbers": {
+    "TSSOP (PW)": "23",
+    "QFN (RGE)": "20"
+   },
+   "type": "bidirectional",
+   "functions": [],
+   "description": "Serial data bus. Connect to VDPUM through a pull-up resistor",
+   "page": 3,
+   "chk": "parsed"
+  },
+  {
+   "name": "VCC",
+   "numbers": {
+    "TSSOP (PW)": "24",
+    "QFN (RGE)": "21"
+   },
+   "type": "power",
+   "functions": [],
+   "description": "Supply voltage",
+   "page": 3,
+   "chk": "parsed"
+  }
+ ],
+ "ratings": [
+  {
+   "kind": "abs_max",
+   "param": "Supply voltage",
+   "symbol": "VCC",
+   "min": -0.5,
+   "typ": null,
+   "max": 7.0,
+   "unit": "V",
+   "conditions": "",
+   "page": 4,
+   "chk": "parsed",
+   "table_conditions": "over operating free-air temperature range (unless otherwise noted)"
+  },
+  {
+   "kind": "abs_max",
+   "param": "Input voltage",
+   "symbol": "VI",
+   "min": -0.5,
+   "typ": null,
+   "max": 7.0,
+   "unit": "V",
+   "conditions": "",
+   "page": 4,
+   "chk": "parsed",
+   "table_conditions": "over operating free-air temperature range (unless otherwise noted)"
+  },
+  {
+   "kind": "abs_max",
+   "param": "Input current",
+   "symbol": "II",
+   "min": -20.0,
+   "typ": null,
+   "max": 20.0,
+   "unit": "mA",
+   "conditions": "",
+   "page": 4,
+   "chk": "parsed",
+   "table_conditions": "over operating free-air temperature range (unless otherwise noted)"
+  },
+  {
+   "kind": "abs_max",
+   "param": "Output current",
+   "symbol": "IO",
+   "min": -25.0,
+   "typ": null,
+   "max": null,
+   "unit": "mA",
+   "conditions": "",
+   "page": 4,
+   "chk": "parsed",
+   "table_conditions": "over operating free-air temperature range (unless otherwise noted)"
+  },
+  {
+   "kind": "abs_max",
+   "param": "Supply current",
+   "symbol": "ICC",
+   "min": -100.0,
+   "typ": null,
+   "max": 100.0,
+   "unit": "mA",
+   "conditions": "",
+   "page": 4,
+   "chk": "parsed",
+   "table_conditions": "over operating free-air temperature range (unless otherwise noted)"
+  },
+  {
+   "kind": "abs_max",
+   "param": "Storage temperature",
+   "symbol": "Tstg",
+   "min": -65.0,
+   "typ": null,
+   "max": 150.0,
+   "unit": "°C",
+   "conditions": "",
+   "page": 4,
+   "chk": "parsed",
+   "table_conditions": "over operating free-air temperature range (unless otherwise noted)"
+  },
+  {
+   "kind": "recommended",
+   "param": "Supply voltage",
+   "symbol": "VCC",
+   "min": 1.65,
+   "typ": null,
+   "max": 5.5,
+   "unit": "V",
+   "conditions": "",
+   "page": 4,
+   "chk": "parsed"
+  },
+  {
+   "kind": "recommended",
+   "param": "input voltage",
+   "symbol": "VIH",
+   "min": null,
+   "typ": null,
+   "max": 6.0,
+   "unit": "V",
+   "conditions": "Supply voltage, SCL, SDA",
+   "page": 4,
+   "chk": "parsed",
+   "min_expr": "0.7 * VCC"
+  },
+  {
+   "kind": "recommended",
+   "param": "input voltage",
+   "symbol": "VIH",
+   "min": null,
+   "typ": null,
+   "max": null,
+   "unit": "V",
+   "conditions": "High-level, A2-A0, RESET",
+   "page": 4,
+   "chk": "parsed",
+   "min_expr": "0.7 * VCC",
+   "max_expr": "VCC + 0.5"
+  },
+  {
+   "kind": "recommended",
+   "param": "Low-level input voltage",
+   "symbol": "VIL",
+   "min": -0.5,
+   "typ": null,
+   "max": null,
+   "unit": "V",
+   "conditions": "High-level, SCL, SDA",
+   "page": 4,
+   "chk": "parsed",
+   "max_expr": "0.3 * VCC"
+  },
+  {
+   "kind": "recommended",
+   "param": "Low-level input voltage",
+   "symbol": "VIL",
+   "min": -0.5,
+   "typ": null,
+   "max": null,
+   "unit": "V",
+   "conditions": "High-level, A2-A0, RESET",
+   "page": 4,
+   "chk": "parsed",
+   "max_expr": "0.3 * VCC"
+  },
+  {
+   "kind": "recommended",
+   "param": "Operating free-air temperature",
+   "symbol": "TA",
+   "min": -40.0,
+   "typ": null,
+   "max": 85.0,
+   "unit": "°C",
+   "conditions": "",
+   "page": 4,
+   "chk": "parsed"
+  },
+  {
+   "kind": "thermal",
+   "param": "Junction-to-ambient thermal resistance",
+   "symbol": "RθJA",
+   "min": null,
+   "typ": 108.8,
+   "max": null,
+   "unit": "°C/W",
+   "conditions": "TCA9548A PW (TSSOP)",
+   "page": 4,
+   "chk": "parsed"
+  },
+  {
+   "kind": "thermal",
+   "param": "Junction-to-ambient thermal resistance",
+   "symbol": "RθJA",
+   "min": null,
+   "typ": 57.2,
+   "max": null,
+   "unit": "°C/W",
+   "conditions": "TCA9548A RGE (VQFN)",
+   "page": 4,
+   "chk": "parsed"
+  },
+  {
+   "kind": "thermal",
+   "param": "Junction-to-case (top) thermal resistance",
+   "symbol": "RθJC(top)",
+   "min": null,
+   "typ": 54.1,
+   "max": null,
+   "unit": "°C/W",
+   "conditions": "TCA9548A PW (TSSOP)",
+   "page": 4,
+   "chk": "parsed"
+  },
+  {
+   "kind": "thermal",
+   "param": "Junction-to-case (top) thermal resistance",
+   "symbol": "RθJC(top)",
+   "min": null,
+   "typ": 62.5,
+   "max": null,
+   "unit": "°C/W",
+   "conditions": "TCA9548A RGE (VQFN)",
+   "page": 4,
+   "chk": "parsed"
+  },
+  {
+   "kind": "thermal",
+   "param": "Junction-to-board thermal resistance",
+   "symbol": "RθJB",
+   "min": null,
+   "typ": 62.7,
+   "max": null,
+   "unit": "°C/W",
+   "conditions": "TCA9548A PW (TSSOP)",
+   "page": 4,
+   "chk": "parsed"
+  },
+  {
+   "kind": "thermal",
+   "param": "Junction-to-board thermal resistance",
+   "symbol": "RθJB",
+   "min": null,
+   "typ": 34.4,
+   "max": null,
+   "unit": "°C/W",
+   "conditions": "TCA9548A RGE (VQFN)",
+   "page": 4,
+   "chk": "parsed"
+  },
+  {
+   "kind": "thermal",
+   "param": "Junction-to-top characterization parameter",
+   "symbol": "ψJT",
+   "min": null,
+   "typ": 10.9,
+   "max": null,
+   "unit": "°C/W",
+   "conditions": "TCA9548A PW (TSSOP)",
+   "page": 4,
+   "chk": "parsed"
+  },
+  {
+   "kind": "thermal",
+   "param": "Junction-to-top characterization parameter",
+   "symbol": "ψJT",
+   "min": null,
+   "typ": 3.8,
+   "max": null,
+   "unit": "°C/W",
+   "conditions": "TCA9548A RGE (VQFN)",
+   "page": 4,
+   "chk": "parsed"
+  },
+  {
+   "kind": "thermal",
+   "param": "Junction-to-board characterization parameter",
+   "symbol": "ψJB",
+   "min": null,
+   "typ": 62.3,
+   "max": null,
+   "unit": "°C/W",
+   "conditions": "TCA9548A PW (TSSOP)",
+   "page": 4,
+   "chk": "parsed"
+  },
+  {
+   "kind": "thermal",
+   "param": "Junction-to-board characterization parameter",
+   "symbol": "ψJB",
+   "min": null,
+   "typ": 34.4,
+   "max": null,
+   "unit": "°C/W",
+   "conditions": "TCA9548A RGE (VQFN)",
+   "page": 4,
+   "chk": "parsed"
+  },
+  {
+   "kind": "thermal",
+   "param": "Junction-to-case (bottom) thermal resistance",
+   "symbol": "RθJC(bot)",
+   "min": null,
+   "typ": 15.5,
+   "max": null,
+   "unit": "°C/W",
+   "conditions": "TCA9548A RGE (VQFN)",
+   "page": 4,
+   "chk": "parsed"
+  },
+  {
+   "kind": "electrical",
+   "param": "RON",
+   "symbol": "RON",
+   "min": 4.0,
+   "typ": 10.0,
+   "max": 20.0,
+   "unit": "Ω",
+   "conditions": "VO = 0.4 V, IO = 15 mA, 4.5 V to 5.5 V",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)"
+  },
+  {
+   "kind": "electrical",
+   "param": "RON",
+   "symbol": "RON",
+   "min": 5.0,
+   "typ": 12.0,
+   "max": 30.0,
+   "unit": "Ω",
+   "conditions": "VO = 0.4 V, IO = 15 mA, 3 V to 3.6 V",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)"
+  },
+  {
+   "kind": "electrical",
+   "param": "RON",
+   "symbol": "RON",
+   "min": 7.0,
+   "typ": 15.0,
+   "max": 45.0,
+   "unit": "Ω",
+   "conditions": "= 0.4 V, = 10 mA, 2.3 V to 2.7 V",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)"
+  },
+  {
+   "kind": "electrical",
+   "param": "VO IO",
+   "symbol": "RON",
+   "min": 10.0,
+   "typ": 25.0,
+   "max": 70.0,
+   "unit": "Ω",
+   "conditions": "1.65 V to 1.95 V",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C clock frequency",
+   "symbol": "fscl",
+   "min": 0.0,
+   "typ": null,
+   "max": 100.0,
+   "unit": "kHz",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C clock high time",
+   "symbol": "tsch",
+   "min": 4.0,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C clock low time",
+   "symbol": "tscl",
+   "min": 4.7,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C spike time",
+   "symbol": "tsp",
+   "min": null,
+   "typ": null,
+   "max": 50.0,
+   "unit": "ns",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C serial-data setup time",
+   "symbol": "tsds",
+   "min": 250.0,
+   "typ": null,
+   "max": null,
+   "unit": "ns",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C serial-data hold time",
+   "symbol": "tsdh",
+   "min": 0.0,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C input rise time",
+   "symbol": "ticr",
+   "min": null,
+   "typ": null,
+   "max": 1000.0,
+   "unit": "ns",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C input fall time",
+   "symbol": "ticf",
+   "min": null,
+   "typ": null,
+   "max": 300.0,
+   "unit": "ns",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C output (SDn) fall time (10-pF to 400-pF bus)",
+   "symbol": "tocf",
+   "min": null,
+   "typ": null,
+   "max": 300.0,
+   "unit": "ns",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C bus free time between stop and start",
+   "symbol": "tbuf",
+   "min": 4.7,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C start or repeated start condition setup",
+   "symbol": "tsts",
+   "min": 4.7,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C start or repeated start condition hold",
+   "symbol": "tsth",
+   "min": 4.0,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C stop condition setup",
+   "symbol": "tsps",
+   "min": 4.0,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "Valid-data time (high to low) SCL low to SDA",
+   "symbol": "tvdL(Data)",
+   "min": null,
+   "typ": null,
+   "max": 1.0,
+   "unit": "μs",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "Valid-data time (low to high) SCL low to SDA",
+   "symbol": "tvdH(Data)",
+   "min": null,
+   "typ": null,
+   "max": 0.6,
+   "unit": "μs",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "tvd(ack)",
+   "symbol": "",
+   "min": null,
+   "typ": null,
+   "max": 1.0,
+   "unit": "μs",
+   "conditions": "Standard mode, Valid-data time of ACK condition ACK signal from to SDA output",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C bus capacitive load",
+   "symbol": "Cb",
+   "min": null,
+   "typ": null,
+   "max": 400.0,
+   "unit": "pF",
+   "conditions": "Standard mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C clock frequency",
+   "symbol": "fscl",
+   "min": 0.0,
+   "typ": null,
+   "max": 400.0,
+   "unit": "kHz",
+   "conditions": "Fast mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C clock high time",
+   "symbol": "tsch",
+   "min": 0.6,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Fast mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C clock low time",
+   "symbol": "tscl",
+   "min": 1.3,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Fast mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C spike time",
+   "symbol": "tsp",
+   "min": null,
+   "typ": null,
+   "max": 50.0,
+   "unit": "ns",
+   "conditions": "Fast mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C serial-data setup time",
+   "symbol": "tsds",
+   "min": 100.0,
+   "typ": null,
+   "max": null,
+   "unit": "ns",
+   "conditions": "Fast mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C serial-data hold time",
+   "symbol": "tsdh",
+   "min": 0.0,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Fast mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C input rise time",
+   "symbol": "ticr",
+   "min": null,
+   "typ": null,
+   "max": 300.0,
+   "unit": "ns",
+   "conditions": "Fast mode",
+   "page": 6,
+   "chk": "parsed",
+   "min_expr": "20 + 0.1Cb",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C input fall time",
+   "symbol": "ticf",
+   "min": null,
+   "typ": null,
+   "max": 300.0,
+   "unit": "ns",
+   "conditions": "Fast mode",
+   "page": 6,
+   "chk": "parsed",
+   "min_expr": "20 + 0.1Cb",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C output (SDn) fall time (10-pF to 400-pF bus)",
+   "symbol": "tocf",
+   "min": null,
+   "typ": null,
+   "max": 300.0,
+   "unit": "ns",
+   "conditions": "Fast mode",
+   "page": 6,
+   "chk": "parsed",
+   "min_expr": "20 + 0.1Cb",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C bus free time between stop and start",
+   "symbol": "tbuf",
+   "min": 1.3,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Fast mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C start or repeated start condition setup",
+   "symbol": "tsts",
+   "min": 0.6,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Fast mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C start or repeated start condition hold",
+   "symbol": "tsth",
+   "min": 0.6,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Fast mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C stop condition setup",
+   "symbol": "tsps",
+   "min": 0.6,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Fast mode",
+   "page": 6,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "Valid-data time (high to low)",
+   "symbol": "tvdL(Data)",
+   "min": null,
+   "typ": null,
+   "max": 1.0,
+   "unit": "μs",
+   "conditions": "SCL low to SDA output low valid",
+   "page": 7,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "Valid-data time (low to high)",
+   "symbol": "tvdH(Data)",
+   "min": null,
+   "typ": null,
+   "max": 0.6,
+   "unit": "μs",
+   "conditions": "SCL low to SDA output high valid",
+   "page": 7,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "tvd(ack)",
+   "symbol": "",
+   "min": null,
+   "typ": null,
+   "max": 1.0,
+   "unit": "μs",
+   "conditions": "Valid-data time of ACK condition, ACK signal from SCL low to SDA output low",
+   "page": 7,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "I 2 C bus capacitive load",
+   "symbol": "Cb",
+   "min": null,
+   "typ": null,
+   "max": 400.0,
+   "unit": "pF",
+   "conditions": "ACK signal from SCL low to SDA output low",
+   "page": 7,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "Pulse duration, RESET low",
+   "symbol": "tW(L)",
+   "min": 6.0,
+   "typ": null,
+   "max": null,
+   "unit": "ns",
+   "conditions": "",
+   "page": 7,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted)"
+  },
+  {
+   "kind": "timing",
+   "param": "Recovery time from RESET to start",
+   "symbol": "tREC(STA)",
+   "min": 0.0,
+   "typ": null,
+   "max": null,
+   "unit": "ns",
+   "conditions": "",
+   "page": 7,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range (unless otherwise noted)"
+  },
+  {
+   "kind": "timing",
+   "param": "Propagation delay time",
+   "symbol": "tpd",
+   "min": null,
+   "typ": null,
+   "max": 0.3,
+   "unit": "ns",
+   "conditions": "RON = 20 Ω, CL = 15 pF, SDA or SCL, SDn or SCn",
+   "page": 7,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range, CL ≤ 100 pF (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "Propagation delay time",
+   "symbol": "tpd",
+   "min": 1.0,
+   "typ": null,
+   "max": 0.3,
+   "unit": "ns",
+   "conditions": "RON = 20 Ω, CL = 50 pF, SDA or SCL, SDn or SCn",
+   "page": 7,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range, CL ≤ 100 pF (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "timing",
+   "param": "RESET time (SDA clear)",
+   "symbol": "trst",
+   "min": null,
+   "typ": null,
+   "max": 500.0,
+   "unit": "ns",
+   "conditions": "RESET, SDA",
+   "page": 7,
+   "chk": "parsed",
+   "table_conditions": "over recommended operating free-air temperature range, CL ≤ 100 pF (unless otherwise noted) (see Figure 5)"
+  },
+  {
+   "kind": "recommended",
+   "param": "Fall time",
+   "symbol": "VCC_FT",
+   "min": 1.0,
+   "typ": null,
+   "max": 1.0,
+   "unit": "ms",
+   "conditions": "See Figure 17",
+   "page": 23,
+   "chk": "parsed"
+  },
+  {
+   "kind": "recommended",
+   "param": "Rise time",
+   "symbol": "VCC_RT",
+   "min": 0.1,
+   "typ": null,
+   "max": 0.1,
+   "unit": "ms",
+   "conditions": "See Figure 17",
+   "page": 23,
+   "chk": "parsed"
+  },
+  {
+   "kind": "recommended",
+   "param": "Time to re-ramp (when VCC drops below VPORF(min) - 50 mV or when VCC drops to GND)",
+   "symbol": "VCC_TRR",
+   "min": 40.0,
+   "typ": null,
+   "max": 40.0,
+   "unit": "μs",
+   "conditions": "See Figure 17",
+   "page": 23,
+   "chk": "parsed"
+  },
+  {
+   "kind": "recommended",
+   "param": "VCC_GH",
+   "symbol": "VCC_GH",
+   "min": 1.2,
+   "typ": null,
+   "max": 1.2,
+   "unit": "V",
+   "conditions": "Level that VCC can glitch down to, but not cause a functional disruption when VCC_GW = 1 μs, See Figure 18",
+   "page": 23,
+   "chk": "parsed"
+  },
+  {
+   "kind": "recommended",
+   "param": "VCC_GW",
+   "symbol": "VCC_GW",
+   "min": null,
+   "typ": null,
+   "max": null,
+   "unit": "μs",
+   "conditions": "Glitch width that does not cause a functional disruption when VCC_GH = 0.5 × VCC, See Figure 18",
+   "page": 23,
+   "chk": "parsed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Power-on reset voltage, VCC rising",
+   "symbol": "VPORR",
+   "min": null,
+   "typ": 1.2,
+   "max": 1.5,
+   "unit": "V",
+   "conditions": "No load, VI = VCC or GND; VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range",
+   "rows": [
+    "r1"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Power-on reset voltage, VCC falling",
+   "symbol": "VPORF",
+   "min": 0.8,
+   "typ": 1,
+   "max": null,
+   "unit": "V",
+   "conditions": "No load, VI = VCC or GND; VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range",
+   "rows": [
+    "r2"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Switch output voltage",
+   "symbol": "Vo(sw)",
+   "min": null,
+   "typ": 3.6,
+   "max": null,
+   "unit": "V",
+   "conditions": "Vi(sw) = VCC, ISWout = -100 μA; VCC = 5 V",
+   "rows": [
+    "r3"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Switch output voltage",
+   "symbol": "Vo(sw)",
+   "min": 2.6,
+   "typ": null,
+   "max": 4.5,
+   "unit": "V",
+   "conditions": "Vi(sw) = VCC, ISWout = -100 μA; VCC = 4.5 V to 5.5 V",
+   "rows": [
+    "r4"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Switch output voltage",
+   "symbol": "Vo(sw)",
+   "min": null,
+   "typ": 1.9,
+   "max": null,
+   "unit": "V",
+   "conditions": "Vi(sw) = VCC, ISWout = -100 μA; VCC = 3.3 V",
+   "rows": [
+    "r5"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Switch output voltage",
+   "symbol": "Vo(sw)",
+   "min": 1.6,
+   "typ": null,
+   "max": 2.8,
+   "unit": "V",
+   "conditions": "Vi(sw) = VCC, ISWout = -100 μA; VCC = 3 V to 3.6 V",
+   "rows": [
+    "r6"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Switch output voltage",
+   "symbol": "Vo(sw)",
+   "min": null,
+   "typ": 1.5,
+   "max": null,
+   "unit": "V",
+   "conditions": "Vi(sw) = VCC, ISWout = -100 μA; VCC = 2.5 V",
+   "rows": [
+    "r7"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Switch output voltage",
+   "symbol": "Vo(sw)",
+   "min": 1.1,
+   "typ": null,
+   "max": 2,
+   "unit": "V",
+   "conditions": "Vi(sw) = VCC, ISWout = -100 μA; VCC = 2.3 V to 2.7 V",
+   "rows": [
+    "r8"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Switch output voltage",
+   "symbol": "Vo(sw)",
+   "min": null,
+   "typ": 1.1,
+   "max": null,
+   "unit": "V",
+   "conditions": "Vi(sw) = VCC, ISWout = -100 μA; VCC = 1.8 V",
+   "rows": [
+    "r9"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Switch output voltage",
+   "symbol": "Vo(sw)",
+   "min": 0.9,
+   "typ": null,
+   "max": 1.25,
+   "unit": "V",
+   "conditions": "Vi(sw) = VCC, ISWout = -100 μA; VCC = 1.65 V to 1.95 V",
+   "rows": [
+    "r10"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "SDA",
+   "symbol": "IOL",
+   "min": 3,
+   "typ": 6,
+   "max": null,
+   "unit": "mA",
+   "conditions": "VOL = 0.4 V; VCC = 1.65 V to 5.5 V",
+   "rows": [
+    "r11"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "SDA",
+   "symbol": "IOL",
+   "min": 6,
+   "typ": 9,
+   "max": null,
+   "unit": "mA",
+   "conditions": "VOL = 0.6 V; VCC = 1.65 V to 5.5 V",
+   "rows": [
+    "r12"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "SCL, SDA",
+   "symbol": "II",
+   "min": -1,
+   "typ": null,
+   "max": 1,
+   "unit": "μA",
+   "conditions": "VI = VCC or GND; VCC = 1.65 V to 5.5 V",
+   "rows": [
+    "r13"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "SC7-SC0, SD7-SD0",
+   "symbol": "II",
+   "min": -1,
+   "typ": null,
+   "max": 1,
+   "unit": "μA",
+   "conditions": "VI = VCC or GND; VCC = 1.65 V to 5.5 V",
+   "rows": [
+    "r14"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "A2-A0",
+   "symbol": "II",
+   "min": -1,
+   "typ": null,
+   "max": 1,
+   "unit": "μA",
+   "conditions": "VI = VCC or GND; VCC = 1.65 V to 5.5 V",
+   "rows": [
+    "r15"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "RESET",
+   "symbol": "II",
+   "min": -1,
+   "typ": null,
+   "max": 1,
+   "unit": "μA",
+   "conditions": "VI = VCC or GND; VCC = 1.65 V to 5.5 V",
+   "rows": [
+    "r16"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Operating mode",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 50,
+   "max": 80,
+   "unit": "μA",
+   "conditions": "fSCL = 400 kHz; VI = VCC or GND; IO = 0; VCC = 5.5 V",
+   "rows": [
+    "r17"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Operating mode",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 20,
+   "max": 35,
+   "unit": "μA",
+   "conditions": "fSCL = 400 kHz; VI = VCC or GND; IO = 0; VCC = 3.6 V",
+   "rows": [
+    "r18"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Operating mode",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 11,
+   "max": 20,
+   "unit": "μA",
+   "conditions": "fSCL = 400 kHz; VI = VCC or GND; IO = 0; VCC = 2.7 V",
+   "rows": [
+    "r19",
+    "r20"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Operating mode",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 6,
+   "max": 10,
+   "unit": "μA",
+   "conditions": "fSCL = 400 kHz; VI = VCC or GND; IO = 0; VCC = 1.65 V",
+   "rows": [
+    "r21"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Operating mode",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 9,
+   "max": 30,
+   "unit": "μA",
+   "conditions": "fSCL = 100 kHz; VI = VCC or GND; IO = 0; VCC = 5.5 V",
+   "rows": [
+    "r22"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Operating mode",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 6,
+   "max": 15,
+   "unit": "μA",
+   "conditions": "fSCL = 100 kHz; VI = VCC or GND; IO = 0; VCC = 3.6 V",
+   "rows": [
+    "r23"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Operating mode",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 4,
+   "max": 8,
+   "unit": "μA",
+   "conditions": "fSCL = 100 kHz; VI = VCC or GND; IO = 0; VCC = 2.7 V",
+   "rows": [
+    "r24"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Operating mode",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 2,
+   "max": 4,
+   "unit": "μA",
+   "conditions": "fSCL = 100 kHz; VI = VCC or GND; IO = 0; VCC = 1.65 V",
+   "rows": [
+    "r25"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Standby mode (low inputs)",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 0.2,
+   "max": 2,
+   "unit": "μA",
+   "conditions": "VI = GND; IO = 0; VCC = 5.5 V",
+   "rows": [
+    "r26"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Standby mode (low inputs)",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 0.1,
+   "max": 2,
+   "unit": "μA",
+   "conditions": "VI = GND; IO = 0; VCC = 3.6 V",
+   "rows": [
+    "r27"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Standby mode (low inputs)",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 0.1,
+   "max": 1,
+   "unit": "μA",
+   "conditions": "VI = GND; IO = 0; VCC = 2.7 V",
+   "rows": [
+    "r28"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Standby mode (low inputs)",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 0.1,
+   "max": 1,
+   "unit": "μA",
+   "conditions": "VI = GND; IO = 0; VCC = 1.65 V",
+   "rows": [
+    "r29"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Standby mode (high inputs)",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 0.2,
+   "max": 2,
+   "unit": "μA",
+   "conditions": "VI = VCC; IO = 0; VCC = 5.5 V",
+   "rows": [
+    "r30"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Standby mode (high inputs)",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 0.1,
+   "max": 2,
+   "unit": "μA",
+   "conditions": "VI = VCC; IO = 0; VCC = 3.6 V",
+   "rows": [
+    "r31"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Standby mode (high inputs)",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 0.1,
+   "max": 1,
+   "unit": "μA",
+   "conditions": "VI = VCC; IO = 0; VCC = 2.7 V",
+   "rows": [
+    "r32"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Standby mode (high inputs)",
+   "symbol": "ICC",
+   "min": null,
+   "typ": 0.1,
+   "max": 1,
+   "unit": "μA",
+   "conditions": "VI = VCC; IO = 0; VCC = 1.65 V",
+   "rows": [
+    "r33"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Supply-current change (SCL, SDA)",
+   "symbol": "ΔICC",
+   "min": null,
+   "typ": 3,
+   "max": 20,
+   "unit": "μA",
+   "conditions": "SCL or SDA input at 0.6 V, Other inputs at VCC or GND; VCC = 1.65 V to 5.5 V",
+   "rows": [
+    "r34"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Supply-current change (SCL, SDA)",
+   "symbol": "ΔICC",
+   "min": null,
+   "typ": 3,
+   "max": 20,
+   "unit": "μA",
+   "conditions": "SCL or SDA input at VCC - 0.6 V, Other inputs at VCC or GND; VCC = 1.65 V to 5.5 V",
+   "rows": [
+    "r35"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "A2-A0",
+   "symbol": "Ci",
+   "min": null,
+   "typ": 4,
+   "max": 5,
+   "unit": "pF",
+   "conditions": "VI = VCC or GND; VCC = 1.65 V to 5.5 V",
+   "rows": [
+    "r36"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "RESET",
+   "symbol": "Ci",
+   "min": null,
+   "typ": 4,
+   "max": 5,
+   "unit": "pF",
+   "conditions": "VI = VCC or GND; VCC = 1.65 V to 5.5 V",
+   "rows": [
+    "r36"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "SCL",
+   "symbol": "Ci",
+   "min": null,
+   "typ": 20,
+   "max": 28,
+   "unit": "pF",
+   "conditions": "VI = VCC or GND, Switch OFF; VCC = 1.65 V to 5.5 V",
+   "rows": [
+    "r37"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "SDA",
+   "symbol": "Cio(off)",
+   "min": null,
+   "typ": 20,
+   "max": 28,
+   "unit": "pF",
+   "conditions": "VI = VCC or GND, Switch OFF; VCC = 1.65 V to 5.5 V",
+   "rows": [
+    "r38"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "SC7-SC0, SD7-SD0",
+   "symbol": "Cio(off)",
+   "min": null,
+   "typ": 5.5,
+   "max": 7.5,
+   "unit": "pF",
+   "conditions": "VI = VCC or GND, Switch OFF; VCC = 1.65 V to 5.5 V",
+   "rows": [
+    "r39"
+   ],
+   "page": 5,
+   "table_conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+   "chk": "agreed"
+  }
+ ],
+ "equations": [
+  {
+   "name": "Rpmin",
+   "expr": "Rpmin = ((VDPUX - VOLmax)/(IOL))",
+   "vars": {
+    "Rpmin": {
+     "from": "result",
+     "unit": ""
+    },
+    "IOL": {
+     "from": "rating",
+     "symbol": "IOL",
+     "unit": ""
+    },
+    "VDPUX": {
+     "from": "input",
+     "unit": ""
+    },
+    "VOLmax": {
+     "from": "input",
+     "unit": ""
+    }
+   },
+   "latex": "R _ { p ( \\min ) } = \\frac { V _ { \\text {DPUX} } - V _ { \\text {OL} ( \\max ) } } { | _ { \\text {OL} } }",
+   "chk": "corrected",
+   "notes": "read '|OL' as 'IOL' (OCR slip; IOL is in the datasheet's tables)",
+   "page": 21
+  },
+  {
+   "name": "Rpmax",
+   "expr": "Rpmax = ((tr)/(0.8473 * Cb))",
+   "vars": {
+    "Rpmax": {
+     "from": "result",
+     "unit": ""
+    },
+    "Cb": {
+     "from": "rating",
+     "symbol": "Cb",
+     "unit": ""
+    },
+    "tr": {
+     "from": "input",
+     "unit": ""
+    }
+   },
+   "latex": "R _ { p ( \\max ) } = \\frac { t _ { r } } { 0 . 8 4 7 3 \\times C _ { b } }",
+   "chk": "parsed",
+   "page": 21
+  }
+ ],
+ "support_parts": [
+  {
+   "what": "pull-up resistor on master SDA line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SDA",
+    "VDPUM"
+   ],
+   "required": true,
+   "why": "I2C bus data line needs a pull-up to VDPUM (master-side pull-up voltage)",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on master SCL line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SCL",
+    "VDPUM"
+   ],
+   "required": true,
+   "why": "I2C bus clock line needs a pull-up to VDPUM (master-side pull-up voltage)",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on RESET line",
+   "kind": "R",
+   "value": "not stated in text",
+   "between": [
+    "RESET",
+    "VDPUM"
+   ],
+   "required": false,
+   "why": "shown in Figure 13 on the RESET input; the text does not state a requirement for it",
+   "page": 20,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 0 SD0 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SD0",
+    "VDPU0"
+   ],
+   "required": true,
+   "why": "downstream channel data line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 0 SC0 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SC0",
+    "VDPU0"
+   ],
+   "required": true,
+   "why": "downstream channel clock line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 1 SD1 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SD1",
+    "VDPU1"
+   ],
+   "required": true,
+   "why": "downstream channel data line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 1 SC1 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SC1",
+    "VDPU1"
+   ],
+   "required": true,
+   "why": "downstream channel clock line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 2 SD2 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SD2",
+    "VDPU2"
+   ],
+   "required": true,
+   "why": "downstream channel data line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 2 SC2 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SC2",
+    "VDPU2"
+   ],
+   "required": true,
+   "why": "downstream channel clock line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 3 SD3 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SD3",
+    "VDPU3"
+   ],
+   "required": true,
+   "why": "downstream channel data line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 3 SC3 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SC3",
+    "VDPU3"
+   ],
+   "required": true,
+   "why": "downstream channel clock line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 4 SD4 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SD4",
+    "VDPU4"
+   ],
+   "required": true,
+   "why": "downstream channel data line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 4 SC4 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SC4",
+    "VDPU4"
+   ],
+   "required": true,
+   "why": "downstream channel clock line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 5 SD5 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SD5",
+    "VDPU5"
+   ],
+   "required": true,
+   "why": "downstream channel data line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 5 SC5 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SC5",
+    "VDPU5"
+   ],
+   "required": true,
+   "why": "downstream channel clock line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 6 SD6 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SD6",
+    "VDPU6"
+   ],
+   "required": true,
+   "why": "downstream channel data line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 6 SC6 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SC6",
+    "VDPU6"
+   ],
+   "required": true,
+   "why": "downstream channel clock line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 7 SD7 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SD7",
+    "VDPU7"
+   ],
+   "required": true,
+   "why": "downstream channel data line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "pull-up resistor on channel 7 SC7 line",
+   "kind": "R",
+   "value": "not stated in text; sized by Rp(min)/Rp(max) equations",
+   "between": [
+    "SC7",
+    "VDPU7"
+   ],
+   "required": true,
+   "why": "downstream channel clock line needs a pull-up to its own VDPUn",
+   "page": 21,
+   "chk": "agreed"
+  },
+  {
+   "what": "bypass/decoupling capacitor on VCC",
+   "kind": "C",
+   "value": "not stated in text",
+   "between": [
+    "VCC",
+    "GND"
+   ],
+   "required": false,
+   "why": "text says bypass/decoupling capacitors are commonly used; larger one for supply glitches, smaller one for high-frequency ripple",
+   "page": 25,
+   "chk": "agreed"
+  }
+ ],
+ "application_circuit": {
+  "title": "Typical Application Schematic",
+  "page": 20,
+  "ic_ref": null,
+  "components": [
+   {
+    "ref": "R_mSDA",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_mSCL",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_mRST",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch0_SD",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch0_SC",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch1_SD",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch1_SC",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch2_SD",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch2_SC",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch3_SD",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch3_SC",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch4_SD",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch4_SC",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch5_SD",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch5_SC",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch6_SD",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch6_SC",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch7_SD",
+    "kind": "R",
+    "value": null
+   },
+   {
+    "ref": "R_ch7_SC",
+    "kind": "R",
+    "value": null
+   }
+  ],
+  "nets": {
+   "VDPUM": [
+    "R_mSDA.1",
+    "R_mSCL.1",
+    "R_mRST.1"
+   ],
+   "VCC": [
+    "TCA9548A.VCC"
+   ],
+   "SDA": [
+    "I2C_Master.SDA",
+    "TCA9548A.SDA",
+    "R_mSDA.2"
+   ],
+   "SCL": [
+    "I2C_Master.SCL",
+    "TCA9548A.SCL",
+    "R_mSCL.2"
+   ],
+   "RESET": [
+    "I2C_Master.RESET",
+    "TCA9548A.RESET",
+    "R_mRST.2"
+   ],
+   "GND": [
+    "TCA9548A.GND",
+    "TCA9548A.A0",
+    "TCA9548A.A1",
+    "TCA9548A.A2"
+   ],
+   "VDPU0": [
+    "R_ch0_SD.1",
+    "R_ch0_SC.1"
+   ],
+   "SD0": [
+    "TCA9548A.SD0",
+    "R_ch0_SD.2"
+   ],
+   "SC0": [
+    "TCA9548A.SC0",
+    "R_ch0_SC.2"
+   ],
+   "VDPU1": [
+    "R_ch1_SD.1",
+    "R_ch1_SC.1"
+   ],
+   "SD1": [
+    "TCA9548A.SD1",
+    "R_ch1_SD.2"
+   ],
+   "SC1": [
+    "TCA9548A.SC1",
+    "R_ch1_SC.2"
+   ],
+   "VDPU2": [
+    "R_ch2_SD.1",
+    "R_ch2_SC.1"
+   ],
+   "SD2": [
+    "TCA9548A.SD2",
+    "R_ch2_SD.2"
+   ],
+   "SC2": [
+    "TCA9548A.SC2",
+    "R_ch2_SC.2"
+   ],
+   "VDPU3": [
+    "R_ch3_SD.1",
+    "R_ch3_SC.1"
+   ],
+   "SD3": [
+    "TCA9548A.SD3",
+    "R_ch3_SD.2"
+   ],
+   "SC3": [
+    "TCA9548A.SC3",
+    "R_ch3_SC.2"
+   ],
+   "VDPU4": [
+    "R_ch4_SD.1",
+    "R_ch4_SC.1"
+   ],
+   "SD4": [
+    "TCA9548A.SD4",
+    "R_ch4_SD.2"
+   ],
+   "SC4": [
+    "TCA9548A.SC4",
+    "R_ch4_SC.2"
+   ],
+   "VDPU5": [
+    "R_ch5_SD.1",
+    "R_ch5_SC.1"
+   ],
+   "SD5": [
+    "TCA9548A.SD5",
+    "R_ch5_SD.2"
+   ],
+   "SC5": [
+    "TCA9548A.SC5",
+    "R_ch5_SC.2"
+   ],
+   "VDPU6": [
+    "R_ch6_SD.1",
+    "R_ch6_SC.1"
+   ],
+   "SD6": [
+    "TCA9548A.SD6",
+    "R_ch6_SD.2"
+   ],
+   "SC6": [
+    "TCA9548A.SC6",
+    "R_ch6_SC.2"
+   ],
+   "VDPU7": [
+    "R_ch7_SD.1",
+    "R_ch7_SC.1"
+   ],
+   "SD7": [
+    "TCA9548A.SD7",
+    "R_ch7_SD.2"
+   ],
+   "SC7": [
+    "TCA9548A.SC7",
+    "R_ch7_SC.2"
+   ]
+  },
+  "chk": "resolved"
+ },
+ "layout_notes": [
+  "Keep SCn and SDn data lines as short as possible; minimize trace width (example 5-10 mils depending on copper weight) to reduce added bus capacitance.",
+  "Use a dedicated ground plane on an inner layer; pins connected to ground need a low-impedance path to it (wide polygon pours and multiple vias).",
+  "Without voltage translation, all VDPUX and VCC can share one potential with a single copper plane for the pull-ups.",
+  "With voltage translation, VDPUM and VDPU0-VDPU7 may be on the same layer using split planes to isolate potentials.",
+  "Bypass and decoupling capacitors control VCC: larger value for short supply glitches, smaller value for high-frequency ripple.",
+  "Common PCB layout practices must be followed; high-speed matched-impedance and differential-pair rules are not a concern at I2C speeds"
+ ],
+ "extra": {
+  "figure_refs": "Figure 13 prints no reference designators; component refs above are descriptive labels, not printed refs. ic_ref null.",
+  "pin_numbers": "Pin numbers shown in the figure are for the PW package (p20).",
+  "supply_range": "VCC 1.65 V to 5.5 V (page 23); VDPUM and VDPUX 1.65 V to 5.5 V (figure)",
+  "address_pins": "A0, A1, A2 may be tied directly to GND or VCC; figure ties all three to GND",
+  "power_on": "On first power-up, or any time the device must be reset by cycling supply, follow the power-on reset requirements to ensure I2C bus logic initializes properly (details not given on these pages)",
+  "multiple_channels": "If multiple slave channels are active at once, total IOL from SCL/SDA to GND on master side equals sum of currents through all pull-up resistors Rp",
+  "bus_capacitance": "Maximum bus capacitance 400 pF for fast-mode; includes Cio(OFF), wires/traces, and every slave on all simultaneously active channels",
+  "voltage_translation": "For translation, Vpass must be equal to or lower than the lowest bus voltage; Vpass(max) is 2.7 V when VCC is 4 V or lower, so VCC can be set to 3.3 V in the example with a 5 V main bus and 3.3 V/2.7 V downstream buses (page 21)",
+  "intended_use": "Downstream channels resolve slave address conflicts; one slave per channel, with other channels switched off when reading",
+  "ref_labels": "Figure 13 prints no reference designators; U1 and R1-R19 are labels assigned for this extraction, and resistor values are not printed in the figure.",
+  "VCC_range": "1.65 V to 5.5 V applied at VCC (p23).",
+  "unused_channels": "Not addressed in the extracted text.",
+  "max_bus_capacitance": "Must not exceed 400 pF for fast-mode operation (p21).",
+  "bus_capacitance_contributors": "Cio(OFF) of TCA9548A, wires/connections/traces, and each slave on active channels (p21).",
+  "power_on_reset": "When first powered on, or whenever the device must be reset by cycling power, power-on reset requirements must be followed for I2C bus logic initialization (p23); the referenced requirements are not in the extracted text.",
+  "RESET_pin": "Figure 13 shows the master driving RESET with a pull-up to VDPUM; the text does not describe RESET usage beyond this figure."
+ },
+ "conventions": {
+  "table_conditions": [
+   {
+    "table": "Absolute Maximum Ratings (1)",
+    "conditions": "over operating free-air temperature range (unless otherwise noted)",
+    "page": 4
+   },
+   {
+    "table": "Electrical Characteristics (1)",
+    "conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+    "page": 5
+   },
+   {
+    "table": "Electrical Characteristics (1) (continued)",
+    "conditions": "VCC = 2.3 V to 3.6 V, over recommended operating free-air temperature range (unless otherwise noted)",
+    "page": 6
+   },
+   {
+    "table": "I 2 C Interface Timing Requirements",
+    "conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)",
+    "page": 6
+   },
+   {
+    "table": "I 2 C Interface Timing Requirements (continued)",
+    "conditions": "over recommended operating free-air temperature range (unless otherwise noted) (see Figure 5)",
+    "page": 7
+   },
+   {
+    "table": "Reset Timing Requirements",
+    "conditions": "over recommended operating free-air temperature range (unless otherwise noted)",
+    "page": 7
+   },
+   {
+    "table": "Switching Characteristics",
+    "conditions": "over recommended operating free-air temperature range, CL ≤ 100 pF (unless otherwise noted) (see Figure 5)",
+    "page": 7
+   }
+  ]
+ },
+ "gaps": [],
+ "tier": "datasheet",
+ "source": {
+  "file": "TCA9548A.pdf",
+  "sha256": "e514f5c9bd704c39d842534f202f332169b65b654e6fdbc311cdfd0f608d593f",
+  "pages": 39,
+  "url": null,
+  "parser": "docling",
+  "revision": "SCPS207F",
+  "read_by": [
+   "claude-code (haiku)"
+  ],
+  "settled_by": "claude-code (sonnet)"
+ },
+ "verification": {
+  "counts": {
+   "agreed": 59,
+   "resolved": 1,
+   "single": 0,
+   "parsed": 96,
+   "corrected": 1
+  },
+  "status": "verified"
+ },
+ "updated": "2026-11-09T11:27:48"
+}

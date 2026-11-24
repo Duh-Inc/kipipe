@@ -1,0 +1,165 @@
+{
+ "name": "p3_good",
+ "board": {},
+ "components": [
+  {
+   "ref": "U1",
+   "symbol": "Interface_Expansion:TCA9548APWR",
+   "footprint": "Package_SO:TSSOP-24_4.4x7.8mm_P0.65mm",
+   "value": "TCA9548APWR"
+  },
+  {
+   "ref": "C1",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0805_2012Metric",
+   "value": "100n"
+  },
+  {
+   "ref": "R3",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "10k"
+  },
+  {
+   "ref": "R1",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "4.7k"
+  },
+  {
+   "ref": "R2",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "4.7k"
+  },
+  {
+   "ref": "U2",
+   "symbol": "Sensor_Motion:ADXL343",
+   "footprint": "Package_LGA:LGA-14_3x5mm_P0.8mm_LayoutBorder1x6y",
+   "value": "ADXL345"
+  },
+  {
+   "ref": "C2",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0805_2012Metric",
+   "value": "1u"
+  },
+  {
+   "ref": "C3",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0805_2012Metric",
+   "value": "100n"
+  },
+  {
+   "ref": "J1",
+   "symbol": "Connector_Generic:Conn_01x04",
+   "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical",
+   "value": "IN"
+  },
+  {
+   "ref": "U3",
+   "symbol": "Regulator_Linear:LT1175-ADJ_SO8_DIP8",
+   "footprint": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+   "value": "LT1175"
+  },
+  {
+   "ref": "R4",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "3.16k"
+  },
+  {
+   "ref": "R5",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "10k"
+  },
+  {
+   "ref": "C4",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0805_2012Metric",
+   "value": "1u"
+  },
+  {
+   "ref": "C5",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0805_2012Metric",
+   "value": "10u"
+  }
+ ],
+ "nets": {
+  "+3V3": [
+   "U1.24",
+   "C1.1",
+   "R3.2",
+   "R1.2",
+   "R2.2",
+   "U2.6",
+   "U2.1",
+   "U2.7",
+   "C2.1",
+   "C3.1",
+   "J1.1"
+  ],
+  "GND": [
+   "U1.12",
+   "U1.2",
+   "U1.21",
+   "U1.1",
+   "C1.2",
+   "U2.2",
+   "U2.4",
+   "U2.5",
+   "U2.12",
+   "C2.2",
+   "C3.2",
+   "J1.2",
+   "U3.5",
+   "R5.2",
+   "C4.2",
+   "C5.2"
+  ],
+  "SDA": [
+   "U1.23",
+   "R1.1",
+   "U2.13"
+  ],
+  "SCL": [
+   "U1.22",
+   "R2.1",
+   "U2.14"
+  ],
+  "RST": [
+   "U1.3",
+   "R3.1"
+  ],
+  "VNEG": [
+   "J1.3",
+   "U3.1",
+   "U3.8",
+   "C4.1",
+   "U3.6"
+  ],
+  "-5V": [
+   "J1.4",
+   "U3.3",
+   "R4.1",
+   "C5.1"
+  ],
+  "FB": [
+   "U3.4",
+   "R4.2",
+   "R5.1"
+  ]
+ },
+ "rails": {
+  "VNEG": {
+   "volts": -9,
+   "amps": 0.3
+  },
+  "-5V": {
+   "volts": -5,
+   "amps": 0.3
+  }
+ }
+}

@@ -1,0 +1,77 @@
+{
+ "id": "crystal_load",
+ "title": "Crystal with load capacitors",
+ "tags": [
+  "clock",
+  "mcu"
+ ],
+ "summary": "SMD crystal (3225, four pads) with its two load capacitors.",
+ "params": {
+  "f": {
+   "default": "16MHz",
+   "label": "Frequency"
+  },
+  "c": {
+   "default": "18p",
+   "label": "Load capacitors"
+  }
+ },
+ "ports": {
+  "XA": "oscillator input pin",
+  "XB": "oscillator output pin",
+  "GND": "ground"
+ },
+ "components": [
+  {
+   "ref": "Y",
+   "symbol": "Device:Crystal_GND24",
+   "footprint": "Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm",
+   "value": "{f}"
+  },
+  {
+   "ref": "C_A",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0603_1608Metric",
+   "value": "{c}"
+  },
+  {
+   "ref": "C_B",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0603_1608Metric",
+   "value": "{c}"
+  }
+ ],
+ "nets": {
+  "XA": [
+   "Y.1",
+   "C_A.1"
+  ],
+  "XB": [
+   "Y.3",
+   "C_B.1"
+  ],
+  "GND": [
+   "Y.2",
+   "Y.4",
+   "C_A.2",
+   "C_B.2"
+  ]
+ },
+ "near": [
+  {
+   "ref": "Y",
+   "to": "C_A.1",
+   "max_mm": 4
+  },
+  {
+   "ref": "C_B",
+   "to": "Y.3",
+   "max_mm": 4
+  }
+ ],
+ "notes": [
+  "Each capacitor = 2 × (crystal load capacitance − stray), stray about 3 to 5 pF. For a 12 pF crystal: 2 × (12 − 4) = 16 pF, so 15 or 18 pF.",
+  "Keep the crystal within a few mm of the IC and route nothing under it."
+ ],
+ "source": "standard Pierce oscillator practice"
+}

@@ -1,0 +1,485 @@
+{
+ "schema": 1,
+ "identity": {
+  "mpn": "LT1175",
+  "aliases": [],
+  "description": "500mA Negative Low Dropout Micropower Regulator (stand-in for testing)",
+  "category": "negative low dropout linear regulator",
+  "packages": [
+   "N8",
+   "S8"
+  ]
+ },
+ "pins": [
+  {
+   "name": "GND",
+   "numbers": {
+    "S8": "5",
+    "N8": "5"
+   },
+   "type": "ground",
+   "functions": [
+    "ground",
+    "case",
+    "ground (case)"
+   ],
+   "description": "Ground (pin 1 is labeled as case ground)",
+   "page": 4,
+   "chk": "agreed"
+  },
+  {
+   "name": "ILIM2",
+   "numbers": {
+    "S8": "2",
+    "N8": "2"
+   },
+   "type": "none",
+   "functions": [],
+   "description": "Not described on the page; FEATURES lists a programmable current limit",
+   "page": 4,
+   "chk": "agreed"
+  },
+  {
+   "name": "ILIM4",
+   "numbers": {
+    "S8": "7",
+    "N8": "7"
+   },
+   "type": "none",
+   "functions": [],
+   "description": "Not described on the page; FEATURES lists a programmable current limit",
+   "page": 4,
+   "chk": "agreed"
+  },
+  {
+   "name": "SHDN",
+   "numbers": {
+    "S8": "6",
+    "N8": "6"
+   },
+   "type": "input",
+   "functions": [
+    "shutdown"
+   ],
+   "description": "Shutdown",
+   "page": 4,
+   "chk": "agreed"
+  },
+  {
+   "name": "VIN",
+   "numbers": {
+    "S8": "1, 8",
+    "N8": "1, 8"
+   },
+   "type": "power",
+   "functions": [
+    "negative input"
+   ],
+   "description": "Negative input",
+   "page": 4,
+   "chk": "agreed"
+  },
+  {
+   "name": "VOUT",
+   "numbers": {
+    "S8": "3",
+    "N8": "3"
+   },
+   "type": "power",
+   "functions": [
+    "negative output"
+   ],
+   "description": "Negative output",
+   "page": 4,
+   "chk": "agreed"
+  },
+  {
+   "name": "SENSE",
+   "numbers": {
+    "S8": "4",
+    "N8": "4"
+   },
+   "type": "analog",
+   "functions": [
+    "output sense",
+    "feedback"
+   ],
+   "description": "Output sense / feedback",
+   "page": 4,
+   "chk": "resolved"
+  }
+ ],
+ "ratings": [
+  {
+   "kind": "abs_max",
+   "param": "Input Voltage (Transient 1 sec)",
+   "symbol": null,
+   "min": null,
+   "typ": null,
+   "max": 25,
+   "unit": "V",
+   "conditions": "",
+   "page": 2,
+   "chk": "agreed"
+  },
+  {
+   "kind": "abs_max",
+   "param": "Input Voltage (Continuous)",
+   "symbol": null,
+   "min": null,
+   "typ": null,
+   "max": 20,
+   "unit": "V",
+   "conditions": "",
+   "page": 2,
+   "chk": "agreed"
+  },
+  {
+   "kind": "abs_max",
+   "param": "Input-to-Output Differential",
+   "symbol": null,
+   "min": null,
+   "typ": null,
+   "max": 20,
+   "unit": "V",
+   "conditions": "",
+   "page": 2,
+   "chk": "agreed"
+  },
+  {
+   "kind": "abs_max",
+   "param": "SENSE Pin",
+   "symbol": null,
+   "min": null,
+   "typ": null,
+   "max": 7,
+   "unit": "V",
+   "conditions": "",
+   "page": 2,
+   "chk": "agreed"
+  },
+  {
+   "kind": "abs_max",
+   "param": "SHDN Pin (Note 2)",
+   "symbol": null,
+   "min": -15,
+   "typ": null,
+   "max": 15,
+   "unit": "V",
+   "conditions": "Note 2",
+   "page": 2,
+   "chk": "agreed"
+  },
+  {
+   "kind": "abs_max",
+   "param": "Operating Junction Temperature",
+   "symbol": null,
+   "min": 0,
+   "typ": null,
+   "max": 125,
+   "unit": "\u00b0C",
+   "conditions": "",
+   "page": 2,
+   "chk": "agreed"
+  },
+  {
+   "kind": "abs_max",
+   "param": "Storage Temperature",
+   "symbol": null,
+   "min": -65,
+   "typ": null,
+   "max": 150,
+   "unit": "\u00b0C",
+   "conditions": "",
+   "page": 2,
+   "chk": "agreed"
+  },
+  {
+   "kind": "electrical",
+   "param": "Sense Voltage (Adjustable)",
+   "symbol": null,
+   "min": 3.72,
+   "typ": 3.8,
+   "max": 3.88,
+   "unit": "V",
+   "conditions": "TA = 25C; VOUT = 5V, VIN = 7V, IOUT = 0, VSHDN = 3V",
+   "page": 3,
+   "chk": "agreed",
+   "table_conditions": "TA = 25C for specifications without the dot; VOUT = 5V, VIN = 7V, IOUT = 0, VSHDN = 3V, unless otherwise noted"
+  },
+  {
+   "kind": "electrical",
+   "param": "Output Voltage (-5V)",
+   "symbol": null,
+   "min": 4.88,
+   "typ": 5.0,
+   "max": 5.12,
+   "unit": "V",
+   "conditions": "fixed version; TA = 25C; VOUT = 5V, VIN = 7V, IOUT = 0, VSHDN = 3V",
+   "page": 3,
+   "chk": "agreed",
+   "table_conditions": "TA = 25C for specifications without the dot; VOUT = 5V, VIN = 7V, IOUT = 0, VSHDN = 3V, unless otherwise noted"
+  },
+  {
+   "kind": "electrical",
+   "param": "Dropout Voltage",
+   "symbol": null,
+   "min": null,
+   "typ": 0.5,
+   "max": 0.65,
+   "unit": "V",
+   "conditions": "IOUT = 500mA; TA = 25C; VOUT = 5V, VIN = 7V, VSHDN = 3V",
+   "page": 3,
+   "chk": "agreed",
+   "table_conditions": "TA = 25C for specifications without the dot; VOUT = 5V, VIN = 7V, IOUT = 0, VSHDN = 3V, unless otherwise noted"
+  },
+  {
+   "kind": "electrical",
+   "param": "Quiescent Current",
+   "symbol": null,
+   "min": null,
+   "typ": 45,
+   "max": 65,
+   "unit": "uA",
+   "conditions": "TA = 25C; VOUT = 5V, VIN = 7V, IOUT = 0, VSHDN = 3V",
+   "page": 3,
+   "chk": "agreed",
+   "table_conditions": "TA = 25C for specifications without the dot; VOUT = 5V, VIN = 7V, IOUT = 0, VSHDN = 3V, unless otherwise noted"
+  },
+  {
+   "kind": "electrical",
+   "param": "Current Limit",
+   "symbol": null,
+   "min": 0.6,
+   "typ": null,
+   "max": 0.8,
+   "unit": "A",
+   "conditions": "ILIM4 tied to VIN; TA = 25C; VOUT = 5V, VIN = 7V, IOUT = 0, VSHDN = 3V",
+   "page": 3,
+   "chk": "agreed",
+   "table_conditions": "TA = 25C for specifications without the dot; VOUT = 5V, VIN = 7V, IOUT = 0, VSHDN = 3V, unless otherwise noted"
+  }
+ ],
+ "support_parts": [
+  {
+   "what": "input capacitor",
+   "kind": "C",
+   "value": "1uF minimum",
+   "between": [
+    "VIN",
+    "GND"
+   ],
+   "required": true,
+   "why": "input capacitor, 1uF minimum per datasheet",
+   "page": 5,
+   "chk": "agreed"
+  },
+  {
+   "what": "output capacitor",
+   "kind": "C",
+   "value": "2.2uF minimum",
+   "between": [
+    "VOUT",
+    "GND"
+   ],
+   "required": true,
+   "why": "output capacitor, 2.2uF minimum for stability",
+   "page": 5,
+   "chk": "agreed"
+  },
+  {
+   "what": "divider upper resistor R1",
+   "kind": "R",
+   "between": [
+    "VOUT",
+    "SENSE"
+   ],
+   "required": true,
+   "why": "output voltage set by divider from VOUT to SENSE (adjustable version)",
+   "page": 5,
+   "chk": "agreed"
+  },
+  {
+   "what": "divider lower resistor R2",
+   "kind": "R",
+   "value": "10k",
+   "between": [
+    "SENSE",
+    "GND"
+   ],
+   "required": true,
+   "why": "R2 = 10k gives about 380uA divider current",
+   "page": 5,
+   "chk": "agreed"
+  }
+ ],
+ "equations": [
+  {
+   "name": "output voltage",
+   "expr": "VOUT = VREF * (1 + R1 / R2)",
+   "vars": {
+    "VOUT": {
+     "unit": "V",
+     "from": "result"
+    },
+    "VREF": {
+     "unit": "V",
+     "from": "rating",
+     "symbol": "VREF"
+    },
+    "R1": {
+     "unit": "ohm",
+     "from": "component",
+     "ref": "R1"
+    },
+    "R2": {
+     "unit": "ohm",
+     "from": "component",
+     "ref": "R2"
+    }
+   },
+   "page": 5,
+   "notes": "Datasheet treats negative voltages as positive values; add a negative sign to the final answer. VREF = 3.8V is stated on the same page.",
+   "chk": "agreed"
+  }
+ ],
+ "application_circuit": {
+  "title": "Adjustable output with SENSE divider (described in text, no figure on these pages)",
+  "page": 5,
+  "ic_ref": "U1",
+  "components": [
+   {
+    "ref": "C1",
+    "kind": "C",
+    "value": "1uF minimum"
+   },
+   {
+    "ref": "C2",
+    "kind": "C",
+    "value": "2.2uF minimum"
+   },
+   {
+    "ref": "R1",
+    "kind": "R"
+   },
+   {
+    "ref": "R2",
+    "kind": "R",
+    "value": "10k"
+   }
+  ],
+  "nets": {
+   "VIN": [
+    "U1.VIN",
+    "C1.1"
+   ],
+   "VOUT": [
+    "U1.VOUT",
+    "C2.1",
+    "R1.1"
+   ],
+   "SENSE": [
+    "U1.SENSE",
+    "R1.2",
+    "R2.1"
+   ],
+   "GND": [
+    "C1.2",
+    "C2.2",
+    "R2.2"
+   ]
+  },
+  "chk": "resolved"
+ },
+ "layout_notes": [
+  "S8 package uses pins 1 and 8 for heat sinking (page 5).",
+  "S8 package uses pins 1 and 8 for heat sinking (p5)."
+ ],
+ "extra": {
+  "polarity": "Negative regulator. Text and formulas use positive magnitudes; add a minus sign to the final answer (page 5).",
+  "test_conditions": "Unless noted: VOUT = 5V, VIN = 7V, IOUT = 0, VSHDN = 3V. Rows without the full-range dot are at TA = 25C; no dots survive in the extracted table (page 3)",
+  "sense_voltage_adjustable": "3.72 / 3.80 / 3.88 V (page 3)",
+  "output_voltage_fixed_-5V": "4.88 / 5.00 / 5.12 V (page 3)",
+  "current_limit_strap": "ILIM4 tied to VIN; printed values 0.6 and 0.8 A. Column (min/typ/max) is not determinable from the extracted text (p3).",
+  "dropout_voltage": "0.50 and 0.65 V at IOUT = 500mA; column order not identifiable in extracted text (page 3)",
+  "quiescent_current": "45 and 65 uA; column order not identifiable in extracted text (page 3)",
+  "temperature_range_per_row": "Dot markers for the full operating temperature range are not present in the extracted text, so per-row temperature range cannot be determined (p3).",
+  "shutdown": "VSHDN is a shutdown control per features (page 1); no threshold or pin name given on these pages",
+  "part_note": "LT1175 is a stand-in name for testing (page 1).",
+  "variants": "Adjustable version uses the SENSE divider. Fixed version is a -5V output (page 1, page 3).",
+  "current_limit": "0.6 and 0.8 A with ILIM4 tied to VIN; column order not identifiable in extracted text (page 3)"
+ },
+ "conventions": {
+  "rules": [
+   {
+    "applies_to": "Electrical Characteristics",
+    "rule": "A dot marks a specification that applies over the full operating temperature range.",
+    "effect": "guarantee",
+    "page": 3,
+    "quote": "The dot denotes specifications which apply over the full operating temperature range"
+   },
+   {
+    "applies_to": "Electrical Characteristics",
+    "rule": "Specifications without the dot are at TA = 25C.",
+    "effect": "conditions",
+    "page": 3,
+    "quote": "otherwise specifications are at TA = 25C"
+   },
+   {
+    "applies_to": "Electrical Characteristics",
+    "rule": "Unless otherwise noted, VOUT = 5V, VIN = 7V, IOUT = 0 and VSHDN = 3V.",
+    "effect": "conditions",
+    "page": 3,
+    "quote": "VOUT = 5V, VIN = 7V, IOUT = 0, VSHDN = 3V, unless otherwise noted."
+   },
+   {
+    "applies_to": "all",
+    "rule": "Negative voltages are written as positive values in text and formulas; add a negative sign to the final answer.",
+    "effect": "sign",
+    "page": 5,
+    "quote": "express all voltages as positive values, both in text and in formulas. If you do the same and simply add a negative sign to the eventual answer"
+   }
+  ],
+  "sign": "magnitudes",
+  "table_conditions": [
+   {
+    "table": "Electrical Characteristics",
+    "conditions": "TA = 25C for specifications without the dot; VOUT = 5V, VIN = 7V, IOUT = 0, VSHDN = 3V, unless otherwise noted",
+    "page": 3
+   }
+  ],
+  "snippets": [
+   {
+    "page": 3,
+    "text": "ELECTRICAL CHARACTERISTICS\nThe dot denotes specifications which apply over the full operating temperature range,\notherwise specifications are at TA = 25C. VOUT = 5V, VIN = 7V, IOUT = 0, VSHDN = 3V, unless otherwise noted.\nPARAMETER   CONDITIONS   MIN   TYP   MAX   UNITS\nSense Voltage   (Adjustable)   3.72 3.80 3.88 V\nOutput Voltage (-5V)   fixed version   4.88 5.00 5.12 V\nDropout Voltage   IOUT = 500mA   0.50 0.65 V\nQuiescent Current   45   65   uA\nCurrent Limit   ILIM4 tied to VIN   0.6   0.8   A"
+   },
+   {
+    "page": 5,
+    "text": "Note to Reader: To avoid confusion when working with negative voltages (is -6V more or less than -5V?),\nI have decided to treat the LT1175 as if it were a positive regulator and express all voltages as positive\nvalues, both in text and in formulas. If you do the same and simply add a negative sign to the eventual answer,\nconfusion should be avoided. Please don't give me a hard time about preciseness or correctness."
+   }
+  ],
+  "read_by": "claude-code (haiku)"
+ },
+ "gaps": [],
+ "tier": "datasheet",
+ "source": {
+  "file": "LT1175.pdf",
+  "sha256": "e5f922462c0e5bd399a48869d0a7bb156817a5ad433e47bd7408632c0705303d",
+  "pages": 5,
+  "url": null,
+  "revision": null,
+  "read_by": [
+   "claude-code (haiku)"
+  ],
+  "settled_by": "claude-code (sonnet)"
+ },
+ "verification": {
+  "counts": {
+   "agreed": 23,
+   "resolved": 2,
+   "single": 0
+  },
+  "status": "verified"
+ },
+ "updated": "2026-11-07T21:51:03"
+}

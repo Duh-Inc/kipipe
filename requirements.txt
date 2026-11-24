@@ -1,0 +1,5 @@
+flask>=3.0
+cairosvg>=2.7
+pillow>=10
+# optional, for the build video with real part models:
+# pyrender cascadio shapely mapbox-earcut PyOpenGL>=3.1.7

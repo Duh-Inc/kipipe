@@ -1,0 +1,63 @@
+{
+ "id": "divider_adc",
+ "title": "Voltage divider for an ADC",
+ "tags": [
+  "analog",
+  "sense"
+ ],
+ "summary": "Two resistors and a filter capacitor to bring a higher voltage (battery, supply) into ADC range.",
+ "params": {
+  "rtop": {
+   "default": "100k",
+   "label": "Top resistor"
+  },
+  "rbot": {
+   "default": "33k",
+   "label": "Bottom resistor"
+  }
+ },
+ "ports": {
+  "VIN": "voltage to measure",
+  "OUT": "to the ADC pin",
+  "GND": "ground"
+ },
+ "components": [
+  {
+   "ref": "R_TOP",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "{rtop}"
+  },
+  {
+   "ref": "R_BOT",
+   "symbol": "Device:R",
+   "footprint": "Resistor_SMD:R_0805_2012Metric",
+   "value": "{rbot}"
+  },
+  {
+   "ref": "C",
+   "symbol": "Device:C",
+   "footprint": "Capacitor_SMD:C_0805_2012Metric",
+   "value": "100n"
+  }
+ ],
+ "nets": {
+  "VIN": [
+   "R_TOP.1"
+  ],
+  "OUT": [
+   "R_TOP.2",
+   "R_BOT.1",
+   "C.1"
+  ],
+  "GND": [
+   "R_BOT.2",
+   "C.2"
+  ]
+ },
+ "notes": [
+  "OUT = VIN × Rbot / (Rtop + Rbot). 100k / 33k gives 0.248: 12 V reads as 2.98 V.",
+  "The capacitor supplies the ADC's sampling charge; without it high-value dividers read low."
+ ],
+ "source": "standard practice"
+}
