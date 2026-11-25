@@ -19,11 +19,15 @@ jobs:
       options: --user root
     steps:
       - uses: actions/checkout@v4
+      # Freerouting needs Java 21; KiCad 9's image (Debian 12) only packages 17, so take it from Temurin.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
       - name: Tools
         run: |
           apt-get update -qq
-          apt-get install -y -qq python3-pip openjdk-21-jre-headless ffmpeg >/dev/null || \
-            apt-get install -y -qq python3-pip default-jre-headless ffmpeg >/dev/null
+          apt-get install -y -qq python3-pip ffmpeg >/dev/null
           python3 -m pip install --break-system-packages -q -r requirements.txt pytest
       - name: Versions
         run: |
