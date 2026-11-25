@@ -411,11 +411,11 @@ def cmd_usage(a):
     from .addons import usage
     s = usage.summary(a.days)
     t = s["total"]
-    print(f"Last {a.days} days: {t['calls']} model calls, {t['seconds'] / 60:.1f} min" + (f", ${t["cost"]:.3f} reported" if t["cost"] else ""))
+    print(f"Last {a.days} days: {t['calls']} model calls, {t['seconds'] / 60:.1f} min" + (f", ${t['cost']:.3f} reported" if t["cost"] else ""))
     for head, d in (("By step", s["by_role"]), ("By model", s["by_model"])):
         print(head)
         for k, v in sorted(d.items(), key=lambda x: -x[1]["seconds"]):
-            print(f"  {k:<34}{v['calls']:>4} calls {v['seconds'] / 60:>7.1f} min" + (f"  ${v["cost"]:.3f}" if v["cost"] else "")
+            print(f"  {k:<34}{v['calls']:>4} calls {v['seconds'] / 60:>7.1f} min" + (f"  ${v['cost']:.3f}" if v["cost"] else "")
                   + (f"  {v['in']} in / {v['out']} out tokens" if v["in"] or v["out"] else ""))
     print("Cost is only what a backend reports (Claude Code gives an API-equivalent figure; a subscription is not billed that way).")
     return 0

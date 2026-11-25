@@ -97,7 +97,7 @@ def accel_text() -> str:
     if a["torch_gpu"]:
         return f"GPU ({a['device'] or a['vendor']}, PyTorch {a['build']})"
     if a["vendor"]:
-        return f"CPU (an {a["vendor"].upper()} GPU is present but docling's PyTorch is {a['build'] or 'unknown'}; to use it: {a['hint']})"
+        return f"CPU (an {a['vendor'].upper()} GPU is present but docling's PyTorch is {a['build'] or 'unknown'}; to use it: {a['hint']})"
     return "CPU (no GPU found)"
 
 
